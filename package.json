@@ -1,0 +1,20 @@
+{
+  "name": "simple-pre-commit",
+  "version": "1.0.0",
+  "description": "A simple pre commit hook for small open source projects",
+  "main": "simple-pre-commit.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "simple-pre-commit.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "simple-pre-commit": "1.0.0"
+  },
+  "simple-pre-commit": "npx lint staged",
+  "dependencies": {
+    "find-git-root": "^1.0.4"
+  }
+}

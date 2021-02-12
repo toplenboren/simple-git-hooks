@@ -9,8 +9,8 @@ const simplePreCommit = require('./simple-pre-commit')
 let command = process.argv.slice(2)[0];
 
 if (command === undefined) {
-   command = simplePreCommit.getCommandFromPackageJson()
+    command = simplePreCommit.getCommandFromPackageJson()
+} else {
+    simplePreCommit.setCommandInPackageJson(command)
+    simplePreCommit.setPreCommitHook(command)
 }
-
-simplePreCommit.setCommandInPackageJson(command)
-simplePreCommit.setPreCommitHook(command)

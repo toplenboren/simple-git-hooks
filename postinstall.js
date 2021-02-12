@@ -5,7 +5,7 @@ const {setPreCommitHook, packageInDevDependencies ,getPackageJson} = require("./
  * 1. Creates the pre-commit hook with npx lint staged
  */
 function postinstall() {
-    const { packageJsonContent } = getPackageJson()
+    const {packageJsonContent} = getPackageJson()
 
     if (packageInDevDependencies(packageJsonContent)) {
         try {

@@ -72,10 +72,12 @@ function setPreCommitHook(command) {
     const gitRoot = findGitRoot(process.cwd())
 
     const preCommitHook = "#!/bin/sh" + os.EOL + command
+    const preCommitHookPath = gitRoot + '/hooks/pre-commit'
 
-    fs.writeFile(gitRoot + '/hooks/pre-commit', preCommitHook, function (err) {
+    fs.writeFile(preCommitHookPath, preCommitHook, function (err) {
         if (err) throw err;
     });
+    fs.chmodSync(preCommitHookPath, 0o0755)
 }
 
 module.exports = {

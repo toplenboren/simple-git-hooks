@@ -1,9 +1,9 @@
-import * as fs from "fs";
-import {getPackageJson} from "./simple-pre-commit";
+const {setPreCommitHook, packageInDevDependencies ,getPackageJson} = require("./simple-pre-commit");
 
-const {setPreCommitHook} = require("./simple-pre-commit");
-const {packageInDevDependencies} = require("./simple-pre-commit");
-
+/**
+ * Post-installs the script
+ * 1. Creates the pre-commit hook with npx lint staged
+ */
 function postinstall() {
     const { packageJsonContent } = getPackageJson()
 

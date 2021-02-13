@@ -6,6 +6,10 @@ test('getProjectRootDirectory returns correct dir in typical case:', () => {
     expect(getProjectRootDirectory('var/my-project/node_modules/simple-pre-commit')).toBe('var/my-project')
 })
 
+test('getProjectRootDirectory returns correct dir when used with windows delimiters:', () => {
+    expect(getProjectRootDirectory('toplenboren\\WebstormProjects\\untitled\\node_modules\\simple-pre-commit')).toBe('var/my-project')
+})
+
 test('getProjectRootDirectory falls back to undefined when we are not in node_modules:', () => {
     expect(getProjectRootDirectory('var/my-project/simple-pre-commit')).toBe(undefined)
 })

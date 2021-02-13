@@ -12,7 +12,7 @@ function getProjectRootDirectory(projectPath) {
         return JSON.stringify(a1) === JSON.stringify(a2)
     }
 
-    let projDir = projectPath.split('/')
+    let projDir = projectPath.split(/[\\\/]/) // <- regexp would split both on '/' and '\'
 
     if (projDir.length > 2
         && _arraysAreEqual(projDir.slice(projDir.length-2, projDir.length), ['node_modules','simple-pre-commit'])) {

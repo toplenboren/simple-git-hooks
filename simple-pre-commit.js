@@ -7,7 +7,7 @@ const findGitRoot = require('find-git-root')
  * @return {Boolean}
  */
 function simplePreCommitInDevDependencies(packageJsonData) {
-    // if simple-pre-commit in dependencies -> note user that he should remove move it!
+    // if simple-pre-commit in dependencies -> note user that he should remove move it to devDeps!
     if (!('dependencies' in packageJsonData) && 'simple-pre-commit' in packageJsonData.dependencies) {
         console.log('[WARN] You should move simple-pre-commit to the devDependencies')
     }

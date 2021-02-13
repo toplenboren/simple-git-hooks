@@ -1,5 +1,6 @@
 const fs = require('fs')
 const os = require("os");
+const path = require('path');
 const findGitRoot = require('find-git-root')
 
 /**
@@ -23,7 +24,7 @@ function simplePreCommitInDevDependencies(packageJsonData) {
  * @private
  */
 function getPackageJson() {
-    const targetPackageJson = process.cwd() + '/package.json'
+    const targetPackageJson = path.normalize(process.cwd() + '/package.json')
 
     if (!fs.statSync(targetPackageJson).isFile()) {
         console.log("[ERROR] Was not able to create a pre-commit hook. Reason: package.json doesn't exist")
@@ -72,7 +73,7 @@ function setPreCommitHook(command) {
     const gitRoot = findGitRoot(process.cwd())
 
     const preCommitHook = "#!/bin/sh" + os.EOL + command
-    const preCommitHookPath = gitRoot + '/hooks/pre-commit'
+    const preCommitHookPath = path.normalize(gitRoot + '/hooks/pre-commit')
 
     fs.writeFile(preCommitHookPath, preCommitHook, function (err) {
         if (err) throw err;

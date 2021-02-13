@@ -1,13 +1,14 @@
 {
   "name": "simple-pre-commit",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A simple pre commit hook for small open source projects",
   "author": "Mikhail Gorbunov (toplenboren.gituhb.io)",
   "main": "./simple-pre-commit.js",
   "bin": "./cli.js",
   "scripts": {
-    "postinstall": "node postinstall.js",
-    "lint": "eslint *.js"
+    "postinstall": "node ./postinstall.js",
+    "lint": "eslint *.js",
+    "test": "jest"
   },
   "keywords": [],
   "license": "MIT",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "eslint": "^7.19.0",
+    "jest": "^26.6.3",
     "lint-staged": "^10.5.4"
   }
 }

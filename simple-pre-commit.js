@@ -4,12 +4,38 @@ const path = require('path');
 const findGitRoot = require('find-git-root')
 
 /**
+ * @param projectPath - path to the simple-pre-commit in node modules
+ * @return {string | undefined} - an absolute path to the project
+ */
+function getProjectRootDirectory(projectPath) {
+    function _arraysAreEqual(a1, a2) {
+        return JSON.stringify(a1) === JSON.stringify(a2)
+    }
+
+    let projDir = projectPath.split('/')
+
+    if (projDir.length > 2
+        && _arraysAreEqual(projDir.slice(projDir.length-2, projDir.length), ['node_modules','simple-pre-commit'])) {
+
+        return projDir.slice(0, projDir.length-2).join('/')
+    }
+
+    return undefined
+}
+
+
+/**
  * Checks the 'simple-pre-commit' in dependencies of the project
+ * @param {Object} packageJsonData
+ * @throws TypeError if packageJsonData not an object
  * @return {Boolean}
  */
 function simplePreCommitInDevDependencies(packageJsonData) {
+    if (typeof packageJsonData !== 'object') {
+        throw TypeError("PackageJson is not found")
+    }
     // if simple-pre-commit in dependencies -> note user that he should remove move it to devDeps!
-    if (!('dependencies' in packageJsonData) && 'simple-pre-commit' in packageJsonData.dependencies) {
+    if ('dependencies' in packageJsonData && 'simple-pre-commit' in packageJsonData.dependencies) {
         console.log('[WARN] You should move simple-pre-commit to the devDependencies')
     }
     if (!('devDependencies' in packageJsonData)) {
@@ -19,15 +45,21 @@ function simplePreCommitInDevDependencies(packageJsonData) {
 }
 
 /** Reads package.json file, returns file buffer
+ * @param {string} projectPath - a path to the project, defaults to process.cwd
  * @return {{packageJsonContent: any, packageJsonPath: string}}
- * @throws ValueError if cant read package.json
+ * @throws TypeError if projectPath is not a string
+ * @throws Error if cant read package.json
  * @private
  */
-function getPackageJson() {
-    const targetPackageJson = path.normalize(process.cwd() + '/package.json')
+function getPackageJson(projectPath=process.cwd()) {
+    if (typeof projectPath !== "string") {
+        throw TypeError("projectPath is not a string")
+    }
+
+    const targetPackageJson = path.normalize(projectPath + '/package.json')
 
     if (!fs.statSync(targetPackageJson).isFile()) {
-        console.log("[ERROR] Was not able to create a pre-commit hook. Reason: package.json doesn't exist")
+        throw Error("Package.json doesn't exist")
     }
 
     const packageJsonDataRaw = fs.readFileSync(targetPackageJson)
@@ -36,11 +68,13 @@ function getPackageJson() {
 
 /**
  * Gets current command from package.json[simple-pre-commit]
- * @throws ValueError if package.json couldn't be read
+ * @param {string} packageJsonPath
+ * @throws TypeError if packageJsonPath is not a string
+ * @throws Error if package.json couldn't be read
  * @return {undefined | string}
  */
-function getCommandFromPackageJson() {
-    const {packageJsonContent} = getPackageJson()
+function getCommandFromPackageJson(packageJsonPath=process.cwd()) {
+    const {packageJsonContent} = getPackageJson(packageJsonPath)
     return packageJsonContent['simple-pre-commit']
 }
 
@@ -61,8 +95,9 @@ function setPreCommitHook(command) {
 }
 
 module.exports = {
-    packageInDevDependencies: simplePreCommitInDevDependencies,
+    simplePreCommitInDevDependencies,
     setPreCommitHook,
     getPackageJson,
     getCommandFromPackageJson,
+    getProjectRootDirectory
 }

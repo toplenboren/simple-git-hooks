@@ -24,4 +24,3 @@ Now the command from `package.json` is set up as executable git pre-commit hook.
 You can look up about git hooks [here](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 
 > You should run `npx simple-pre-commit` manually on every change of the command
-

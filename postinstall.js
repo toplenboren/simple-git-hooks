@@ -3,8 +3,7 @@
 const {getCommandFromPackageJson, getPackageJson, packageInDevDependencies, setPreCommitHook} = require("./simple-pre-commit");
 
 /**
- * Post-installs the script
- * 1. Creates the pre-commit hook with npx lint-staged command by default
+ * Creates the pre-commit hook with npx lint-staged command by default
  */
 function postinstall() {
     const { packageJsonContent } = getPackageJson()

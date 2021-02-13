@@ -4,20 +4,24 @@ const path = require('path');
 const findGitRoot = require('find-git-root')
 
 /**
+ * Transforms the <project>/node_modules/simple-pre-commit to <project>
  * @param projectPath - path to the simple-pre-commit in node modules
- * @return {string | undefined} - an absolute path to the project
+ * @return {string | undefined} - an absolute path to the project of undefined if projectPath is not in node_modules
  */
 function getProjectRootDirectory(projectPath) {
     function _arraysAreEqual(a1, a2) {
         return JSON.stringify(a1) === JSON.stringify(a2)
     }
 
-    let projDir = projectPath.split(/[\\\/]/) // <- regexp would split both on '/' and '\'
+    const projDir = projectPath.split(/[\\\/]/) // <- would split both on '/' and '\'
 
-    if (projDir.length > 2
-        && _arraysAreEqual(projDir.slice(projDir.length-2, projDir.length), ['node_modules','simple-pre-commit'])) {
+    if (projDir.length > 2 &&
+        _arraysAreEqual(projDir.slice(projDir.length - 2, projDir.length), [
+            'node_modules',
+            'simple-pre-commit'
+        ])) {
 
-        return projDir.slice(0, projDir.length-2).join('/')
+        return projDir.slice(0, projDir.length - 2).join('/')
     }
 
     return undefined
@@ -51,7 +55,7 @@ function simplePreCommitInDevDependencies(packageJsonData) {
  * @throws Error if cant read package.json
  * @private
  */
-function getPackageJson(projectPath=process.cwd()) {
+function getPackageJson(projectPath = process.cwd()) {
     if (typeof projectPath !== "string") {
         throw TypeError("projectPath is not a string")
     }
@@ -73,7 +77,7 @@ function getPackageJson(projectPath=process.cwd()) {
  * @throws Error if package.json couldn't be read
  * @return {undefined | string}
  */
-function getCommandFromPackageJson(packageJsonPath=process.cwd()) {
+function getCommandFromPackageJson(packageJsonPath = process.cwd()) {
     const {packageJsonContent} = getPackageJson(packageJsonPath)
     return packageJsonContent['simple-pre-commit']
 }

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const {getCommandFromPackageJson, getPackageJson, packageInDevDependencies, setPreCommitHook} = require("./simple-pre-commit");
 
 /**

@@ -15,9 +15,6 @@
   "lint-staged": {
     "*.js": "eslint"
   },
-  "dependencies": {
-    "find-git-root": "^1.0.4"
-  },
   "devDependencies": {
     "eslint": "^7.19.0",
     "jest": "^26.6.3",

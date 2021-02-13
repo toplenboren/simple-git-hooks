@@ -42,7 +42,7 @@ function getGitProjectRoot(directory=module.parent.filename) {
 /**
  * Transforms the <project>/node_modules/simple-pre-commit to <project>
  * @param projectPath - path to the simple-pre-commit in node modules
- * @return {string | undefined} - an absolute path to the project of undefined if projectPath is not in node_modules
+ * @return {string | undefined} - an absolute path to the project or undefined if projectPath is not in node_modules
  */
 function getProjectRootDirectory(projectPath) {
     function _arraysAreEqual(a1, a2) {

@@ -14,7 +14,7 @@ function postinstall() {
             if (command === undefined) {
                 console.log('[INFO] Please add the pre-commit command to the "simple-pre-commit" field in package.json')
             } else {
-                setPreCommitHook("npx lint staged")
+                setPreCommitHook(command)
             }
         } catch (err) {
             console.log('[ERROR] Was not able to create a pre-commit hook. Reason: ' + err)

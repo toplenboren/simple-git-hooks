@@ -2,7 +2,8 @@
   "name": "simple-pre-commit",
   "version": "1.0.0",
   "description": "A simple pre commit hook for small open source projects",
-  "main": "spc.js",
+  "main": "./simple-pre-commit.js",
+  "bin": "./spc.js",
   "scripts": {
     "postinstall": "node postinstall.js",
     "lint": "eslint *.js"

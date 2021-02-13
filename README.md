@@ -10,7 +10,7 @@ A simple tool, that let you set command from `package.json` as a pre-commit hook
 
 ## Usage:
 
-1. Install the simple-pre-commit as dev dependency `npm install simple-pre-commit --dev`
+1. Install the simple-pre-commit as dev dependency `npm install simple-pre-commit --save-dev`
 
 2. Add the `simple-pre-commit` to your `package.json`. Feed it with any command you would like to run as a pre-commit hook. 
    

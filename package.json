@@ -2,9 +2,9 @@
   "name": "simple-pre-commit",
   "version": "1.0.0",
   "description": "A simple pre commit hook for small open source projects",
-  "main": "simple-pre-commit.js",
+  "main": "spc.js",
   "scripts": {
-    "postinstall": "postinstall.js",
+    "postinstall": "node postinstall.js",
     "lint": "eslint *.js"
   },
   "keywords": [],
@@ -13,13 +13,11 @@
   "lint-staged": {
     "*.js": "eslint"
   },
-  "simple-pre-commit": "npx lint-staged",
   "dependencies": {
     "find-git-root": "^1.0.4"
   },
   "devDependencies": {
     "eslint": "^7.19.0",
-    "lint-staged": "^10.5.4",
-    "simple-pre-commit": "1.0.0"
+    "lint-staged": "^10.5.4"
   }
 }

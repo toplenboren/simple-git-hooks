@@ -45,27 +45,6 @@ function getCommandFromPackageJson() {
 }
 
 /**
- * Sets provided command to package.json[simple-pre-commit]
- * @param {string} command
- * @throws ValueError if package.json couldn't be read
- * @throws TypeError if command is not string
- */
-function setCommandInPackageJson(command) {
-    if (typeof command !== 'string') {
-        throw TypeError('[ERROR] Internal error: Supplied command was not string!')
-    }
-
-    const {packageJsonContent, packageJsonPath} = getPackageJson()
-
-    const newPackageJson =  {...packageJsonContent}
-    newPackageJson['simple-pre-commit'] = command
-
-    fs.writeFile(packageJsonPath, JSON.stringify(newPackageJson), function (err) {
-        if (err) throw err;
-    });
-}
-
-/**
  * Creates or replaces an existing executable script in .git/hooks/pre-commit with provided command
  * @param {string} command
  */
@@ -86,5 +65,4 @@ module.exports = {
     setPreCommitHook,
     getPackageJson,
     getCommandFromPackageJson,
-    setCommandInPackageJson
 }

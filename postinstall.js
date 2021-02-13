@@ -9,8 +9,6 @@ const {getCommandFromPackageJson, getPackageJson, simplePreCommitInDevDependenci
 function postinstall() {
     let projectDirectory = process.cwd()
 
-    console.log(projectDirectory)
-
     // When script is run after install, the process.cwd() would be like <project_folder>/node_modules/simple-pre-commit
     // Here we try to get the original project directory by going upwards by 2 levels
     // If we were not able to get new directory we assume, we are already in the project root
@@ -19,13 +17,11 @@ function postinstall() {
         projectDirectory = parsedProjectDirectory
     }
 
-    console.log(projectDirectory)
-
     const { packageJsonContent } = getPackageJson(projectDirectory)
 
     if (simplePreCommitInDevDependencies(packageJsonContent)) {
         try {
-            const command = getCommandFromPackageJson()
+            const command = getCommandFromPackageJson(projectDirectory)
             if (command === undefined) {
                 console.log('[INFO] Please add the pre-commit command to the "simple-pre-commit" field in package.json')
             } else {

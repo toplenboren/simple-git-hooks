@@ -1,8 +1,8 @@
 {
   "name": "simple-pre-commit",
   "version": "1.0.0",
-  "description": "A simple pre commit hook for small open source projects",
-  "author": "Mikhail Gorbunov (toplenboren.gituhb.io)",
+  "description": "A simple, zero dependency tool for setting up git pre-commit hook for small projects",
+  "author": "Mikhail Gorbunov <toplenboren@gmail.com> (toplenboren.gituhb.io)",
   "main": "./simple-pre-commit.js",
   "bin": "./cli.js",
   "scripts": {
@@ -12,11 +12,12 @@
   },
   "keywords": [],
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/toplenboren/simple-pre-commit/issues"
+  },
+  "homepage": "https://github.com/toplenboren/simple-pre-commit",
   "lint-staged": {
     "*.js": "eslint"
-  },
-  "dependencies": {
-    "find-git-root": "^1.0.4"
   },
   "devDependencies": {
     "eslint": "^7.19.0",

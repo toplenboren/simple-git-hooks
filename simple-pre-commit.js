@@ -85,7 +85,8 @@ function simplePreCommitInDevDependencies(packageJsonData) {
     return 'simple-pre-commit' in packageJsonData.devDependencies
 }
 
-/** Reads package.json file, returns file buffer
+
+/** Reads package.json file, returns package.json content and path
  * @param {string} projectPath - a path to the project, defaults to process.cwd
  * @return {{packageJsonContent: any, packageJsonPath: string}}
  * @throws TypeError if projectPath is not a string

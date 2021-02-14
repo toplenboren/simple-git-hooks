@@ -76,7 +76,8 @@ function simplePreCommitInDevDependencies(packageJsonData) {
     }
     // if simple-pre-commit in dependencies -> note user that he should remove move it to devDeps!
     if ('dependencies' in packageJsonData && 'simple-pre-commit' in packageJsonData.dependencies) {
-        console.log('[WARN] You should move simple-pre-commit to the devDependencies')
+        console.log('[WARN] You should move simple-pre-commit to the devDependencies!')
+        return true // We only check that we are in the correct package, e.g not in a dependency of a dependency
     }
     if (!('devDependencies' in packageJsonData)) {
         return false

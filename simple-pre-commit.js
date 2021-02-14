@@ -49,7 +49,7 @@ function getProjectRootDirectory(projectPath) {
         return JSON.stringify(a1) === JSON.stringify(a2)
     }
 
-    const projDir = projectPath.split(/[\\\/]/) // <- would split both on '/' and '\'
+    const projDir = projectPath.split(/[\\/]/) // <- would split both on '/' and '\'
 
     if (projDir.length > 2 &&
         _arraysAreEqual(projDir.slice(projDir.length - 2, projDir.length), [

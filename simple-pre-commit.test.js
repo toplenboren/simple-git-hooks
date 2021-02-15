@@ -5,15 +5,15 @@ const path = require("path")
 // Get project root directory
 
 test('getProjectRootDirectory returns correct dir in typical case:', () => {
-    expect(spc.getProjectRootDirectory('var/my-project/node_modules/simple-pre-commit')).toBe('var/my-project')
+    expect(spc.getProjectRootDirectoryFromNodeModules('var/my-project/node_modules/simple-pre-commit')).toBe('var/my-project')
 })
 
 test('getProjectRootDirectory returns correct dir when used with windows delimiters:', () => {
-    expect(spc.getProjectRootDirectory('user\\allProjects\\project\\node_modules\\simple-pre-commit')).toBe('user/allProjects/project')
+    expect(spc.getProjectRootDirectoryFromNodeModules('user\\allProjects\\project\\node_modules\\simple-pre-commit')).toBe('user/allProjects/project')
 })
 
 test('getProjectRootDirectory falls back to undefined when we are not in node_modules:', () => {
-    expect(spc.getProjectRootDirectory('var/my-project/simple-pre-commit')).toBe(undefined)
+    expect(spc.getProjectRootDirectoryFromNodeModules('var/my-project/simple-pre-commit')).toBe(undefined)
 })
 
 
@@ -38,35 +38,38 @@ test('get git root works from any file', () => {
 
 // Check if simple-pre-commit is in devDependencies or dependencies in package json
 
-const correctPackageJson = {
-    devDependencies: {
-        "simple-pre-commit":"1.0.0"
-    }
-}
-
-const correctPackageJson2 = {
-    dependencies: {
-        "simple-pre-commit":"1.0.0"
-    }
-}
-
-const incorrectPackageJson = {
-    dependencies: {
-        "not-our-dependency":"1.0.0"
-    },
-    devDependencies: {
-        "not-our-dependency":"1.0.0"
-    }
-}
+const correctPackageJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_with_simple_pre_commit_in_deps'))
+const correctPackageJsonProjectPath_2 = path.normalize(path.join(process.cwd(), '_tests', 'project_with_simple_pre_commit_in_dev_deps'))
+const incorrectPackageJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_without_simple_pre_commit'))
 
 test('returns true if simple pre commit really in devDeps', () => {
-    expect(spc.simplePreCommitInDevDependencies(correctPackageJson)).toBe(true)
+    expect(spc.checkSimplePreCommitInDependencies(correctPackageJsonProjectPath)).toBe(true)
 })
 
 test('returns true if simple pre commit really in deps', () => {
-    expect(spc.simplePreCommitInDevDependencies(correctPackageJson2)).toBe(true)
+    expect(spc.checkSimplePreCommitInDependencies(correctPackageJsonProjectPath_2)).toBe(true)
 })
 
 test('returns false if simple pre commit isn`t in deps', () => {
-    expect(spc.simplePreCommitInDevDependencies(incorrectPackageJson)).toBe(false)
+    expect(spc.checkSimplePreCommitInDependencies(incorrectPackageJsonProjectPath)).toBe(false)
 })
+
+
+// Get command from configuration
+
+const commandInPackageJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_with_configuration_in_package_json'))
+const commandInSeparateJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_with_configuration_in_separate_json'))
+const notConfiguredProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_without_configuration'))
+
+test('returns command if configured from package.json', () => {
+    expect(spc.getCommandFromConfig(commandInPackageJsonProjectPath)).toBe("test")
+})
+
+test('returns command if configured from simple-pre-commit.json', () => {
+    expect(spc.getCommandFromConfig(commandInSeparateJsonProjectPath)).toBe("test")
+})
+
+test('returns undefined if were not able to parse command', () => {
+    expect(spc.getCommandFromConfig(notConfiguredProjectPath)).toBe(undefined)
+})
+

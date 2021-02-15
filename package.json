@@ -1,6 +1,6 @@
 {
   "name": "simple-pre-commit",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A simple, zero dependency tool for setting up git pre-commit hook for small projects",
   "author": "Mikhail Gorbunov <toplenboren@gmail.com> (toplenboren.gituhb.io)",
   "main": "./simple-pre-commit.js",

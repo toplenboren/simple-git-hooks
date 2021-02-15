@@ -1,0 +1,8 @@
+{
+  "name": "simple-pre-commit-test-package",
+  "version": "1.0.0",
+  "simple-pre-commit": "test",
+  "devDependencies": {
+    "simple-pre-commit": "1.0.0"
+  }
+}

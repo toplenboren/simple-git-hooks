@@ -1,27 +1,27 @@
 #!/usr/bin/env node
 
-const {getCommandFromPackageJson, getPackageJson, simplePreCommitInDevDependencies, getProjectRootDirectory, setPreCommitHook } = require("./simple-pre-commit");
+const {getCommandFromConfig, checkSimplePreCommitInDependencies, getProjectRootDirectoryFromNodeModules, setPreCommitHook} = require("./simple-pre-commit");
 
 
 /**
- * Creates the pre-commit hook with npx lint-staged command by default
+ * Creates the pre-commit from command in config by default
  */
 function postinstall() {
-    let projectDirectory = process.cwd()
+    let projectDirectory;
 
     /* When script is run after install, the process.cwd() would be like <project_folder>/node_modules/simple-pre-commit
        Here we try to get the original project directory by going upwards by 2 levels
        If we were not able to get new directory we assume, we are already in the project root */
-    const parsedProjectDirectory = getProjectRootDirectory(process.cwd())
+    const parsedProjectDirectory = getProjectRootDirectoryFromNodeModules(process.cwd())
     if (parsedProjectDirectory !== undefined) {
         projectDirectory = parsedProjectDirectory
+    } else {
+        projectDirectory = process.cwd()
     }
 
-    const { packageJsonContent } = getPackageJson(projectDirectory)
-
-    if (simplePreCommitInDevDependencies(packageJsonContent)) {
+    if (checkSimplePreCommitInDependencies(projectDirectory)) {
         try {
-            const command = getCommandFromPackageJson(projectDirectory)
+            const command = getCommandFromConfig(projectDirectory)
             if (command === undefined) {
                 console.log('[INFO] Please add the pre-commit command to the "simple-pre-commit" field in package.json')
             } else {

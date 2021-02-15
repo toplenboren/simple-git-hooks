@@ -28,6 +28,19 @@ You can look up about git hooks [here](https://git-scm.com/book/en/v2/Customizin
 
 ## Updating a pre-commit hook command
 
-Run `npx simple-pre-commit` 
+Run `npx simple-pre-commit` **from root of your project**
 
 Note that you should manually run `npx simple-pre-commit` every time you change the command
+
+
+## Additional configuration options
+
+You can also add the `.simple-pre-commit.json` to the project and write the command inside it, if you do not want to put command inside `package.json`
+
+That way, `.simple-pre-commit.json` should look like this and `package.json` may not have `simple-pre-commit` configuration inside it
+
+```(json)
+{ 
+    "simple-pre-commit":"npx lint staged"
+}
+```

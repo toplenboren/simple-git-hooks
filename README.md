@@ -4,11 +4,12 @@ A tool, that let you set any command from `package.json` as a pre-commit hook
 
 ## Why?
 
+- Zero dependency
 - Lightweight
 - Easy to install
 - Dead simple to use
 
-## Usage:
+## Add pre-commit hook to the project:
 
 1. Install the simple-pre-commit as dev dependency 
    
@@ -25,6 +26,8 @@ A tool, that let you set any command from `package.json` as a pre-commit hook
 Now the command from `package.json` is set up as executable git pre-commit hook. 
 You can look up about git hooks [here](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 
-## Updating a command
+## Updating a pre-commit hook command
 
-You should run `npx simple-pre-commit` manually on every change of the command
+Run `npx simple-pre-commit` 
+
+Note that you should manually run `npx simple-pre-commit` every time you change the command

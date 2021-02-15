@@ -1,0 +1,21 @@
+name: Lint 
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Lint
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+    - run: npm install
+    - run: npm run test

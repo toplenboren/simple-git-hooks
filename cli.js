@@ -17,4 +17,4 @@ if (!command) {
 
 setPreCommitHook(command)
 
-console.log('Set pre commit hooK: ' + command)
+console.log('Set pre commit hook: ' + command)

@@ -11,8 +11,10 @@ const {getCommandFromConfig, setPreCommitHook} = require('./simple-pre-commit')
 const command = getCommandFromConfig(process.cwd())
 
 if (!command) {
-    console.log(`Couldn't parse command! Please add command to package.json or .simpleprecommit.json. See README.md for details`)
+    console.log(`Couldn't parse command! Please add command to package.json or .simple-pre-commit.json. See README.md for details`)
     os.exit(1)
 }
 
 setPreCommitHook(command)
+
+console.log('Set pre commit hooK: ' + command)

@@ -130,9 +130,7 @@ function setPreCommitHook(command) {
     const preCommitHook = "#!/bin/sh" + os.EOL + command
     const preCommitHookPath = path.normalize(gitRoot + '/hooks/pre-commit')
 
-    fs.writeFile(preCommitHookPath, preCommitHook, function (err) {
-        if (err) throw err;
-    });
+    fs.writeFileSync(preCommitHookPath, preCommitHook)
     fs.chmodSync(preCommitHookPath, 0o0755)
 }
 

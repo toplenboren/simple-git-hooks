@@ -4,7 +4,7 @@ node_modules
 .vscode
 
 _tests
-.simple-pre-commit.test.js
+simple-pre-commit.test.js
 
 .eslintrc.js
 .eslintignore

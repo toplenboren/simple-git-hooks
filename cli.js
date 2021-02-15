@@ -6,9 +6,9 @@ const os = require('os')
  * It really has only one function — to set new pre commit hook.
  * Checks the package.json for simple-pre-commit hook command and sets the found command as hook
  */
-const {getCommandFromPackageJson, setPreCommitHook} = require('./simple-pre-commit')
+const {getCommandFromConfig, setPreCommitHook} = require('./simple-pre-commit')
 
-const command = getCommandFromPackageJson()
+const command = getCommandFromConfig(process.cwd())
 
 if (!command) {
     console.log(`Couldn't parse command! Please add command to package.json or .simpleprecommit.json. See README.md for details`)

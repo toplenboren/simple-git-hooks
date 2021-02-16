@@ -1,6 +1,6 @@
 # simple-pre-commit
 
-A tool, that let you set any command from `package.json` as a pre-commit hook
+A tool, that let you set any command from `package.json` as a pre-commit hook.
 
 ## Why?
 
@@ -13,15 +13,21 @@ A tool, that let you set any command from `package.json` as a pre-commit hook
 
 1. Install the simple-pre-commit as dev dependency 
    
-   `npm install simple-pre-commit --save-dev`
+   ```sh
+   npm install simple-pre-commit --save-dev
+   ```
 
 2. Add the `simple-pre-commit` to your `package.json`. Feed it with any command you would like to run as a pre-commit hook. 
    
-   `"simple-pre-commit":"npx lint-staged"`
+   ```json
+     "simple-pre-commit": "npx lint-staged"`
+   ```
 
 3. Run the CLI script to update the git hook with command from `package.json`
 
-    `npx simple-pre-commit`
+   ```sh
+   npx simple-pre-commit
+   ```
     
 Now the command from `package.json` is set up as executable git pre-commit hook. 
 You can look up about git hooks [here](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)

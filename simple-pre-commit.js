@@ -5,7 +5,7 @@ const path = require('path');
 /**
  * Recursively gets the .git folder path from provided directory
  * @param {string} directory
- * @return {string | undefined} .git folder path or undefined if if was not found
+ * @return {string | undefined} .git folder path or undefined if it was not found
  */
 function getGitProjectRoot(directory=module.parent.filename) {
     let start = directory

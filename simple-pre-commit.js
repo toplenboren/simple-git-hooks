@@ -38,7 +38,6 @@ function getGitProjectRoot(directory=module.parent.filename) {
     }
 }
 
-
 /**
  * Transforms the <project>/node_modules/simple-pre-commit to <project>
  * @param projectPath - path to the simple-pre-commit in node modules
@@ -63,7 +62,6 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
     return undefined
 }
 
-
 /**
  * Checks the 'simple-pre-commit' in dependencies of the project
  * @param {string} projectRootPath
@@ -87,7 +85,6 @@ function checkSimplePreCommitInDependencies(projectRootPath) {
     }
     return 'simple-pre-commit' in packageJsonContent.devDependencies
 }
-
 
 /**
  * Gets user-set command either from sources
@@ -118,7 +115,6 @@ function getCommandFromConfig(projectRootPath) {
     return undefined
 }
 
-
 /**
  * Creates or replaces an existing executable script in .git/hooks/pre-commit with provided command
  * @param {string} command
@@ -132,7 +128,6 @@ function setPreCommitHook(command) {
     fs.writeFileSync(preCommitHookPath, preCommitHook)
     fs.chmodSync(preCommitHookPath, 0o0755)
 }
-
 
 /** Reads package.json file, returns package.json content and path
  * @param {string} projectPath - a path to the project, defaults to process.cwd
@@ -156,7 +151,6 @@ function _getPackageJson(projectPath = process.cwd()) {
     return { packageJsonContent: JSON.parse(packageJsonDataRaw), packageJsonPath: targetPackageJson }
 }
 
-
 /**
  * Gets current command from package.json[simple-pre-commit]
  * @param {string} projectRootPath
@@ -168,7 +162,6 @@ function _getCommandFromPackageJson(projectRootPath = process.cwd()) {
     const {packageJsonContent} = _getPackageJson(projectRootPath)
     return packageJsonContent['simple-pre-commit']
 }
-
 
 /**
  * Gets user-set command from simple-pre-commit.json
@@ -190,7 +183,6 @@ function _getCommandFromSimplePreCommitJson(projectRootPath) {
         return undefined
     }
 }
-
 
 module.exports = {
     checkSimplePreCommitInDependencies,

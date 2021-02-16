@@ -10,11 +10,8 @@
     "lint": "eslint *.js",
     "test": "jest"
   },
-  "keywords": [],
+  "keywords": ["pre-commit", "git", "hook", "lint"],
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/toplenboren/simple-pre-commit/issues"
-  },
   "homepage": "https://github.com/toplenboren/simple-pre-commit",
   "lint-staged": {
     "*.js": "eslint"

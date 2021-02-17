@@ -38,7 +38,7 @@ Also, this package requires you to manually update the `pre-commit` hook. If you
 
 If you need multiple hooks, flexible configuration or git hook automatic update feature — please check out other packages:
  
-* [left-hook](https://github.com/Arkweid/lefthook)
+* [Lefthook](https://github.com/Arkweid/lefthook)
 * [husky](https://github.com/Arkweid/lefthook)
 * [pre-commit](https://github.com/pre-commit/pre-commit)
 

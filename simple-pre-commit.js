@@ -101,12 +101,13 @@ function getCommandFromConfig(projectRootPath) {
 
     // every function here should accept projectRootPath as first argument and return either string or undefined
     const sources = [
-        _getCommandFromSimplePreCommitJson,
-        _getCommandFromPackageJson,
+        () => _getCommandFromFile(projectRootPath, '.simple-pre-commit.json'),
+        () => _getCommandFromFile(projectRootPath, 'simple-pre-commit.json'),
+        () => _getCommandFromPackageJson(projectRootPath),
     ]
 
     for (let i = 0; i < sources.length; ++i) {
-        let command = sources[i](projectRootPath)
+        let command = sources[i]()
         if (command) {
             return command
         }
@@ -164,18 +165,23 @@ function _getCommandFromPackageJson(projectRootPath = process.cwd()) {
 }
 
 /**
- * Gets user-set command from simple-pre-commit.json
+ * Gets user-set command from file
  * Since the file is not required in node.js projects it returns undefined if something is off
  * @param {string} projectRootPath
+ * @param {string} fileName
  * @return {string | undefined}
  */
-function _getCommandFromSimplePreCommitJson(projectRootPath) {
+function _getCommandFromFile(projectRootPath, fileName) {
     if (typeof projectRootPath !== "string") {
         throw TypeError("projectRootPath is not a string")
     }
 
+    if (typeof fileName !== "string") {
+        throw TypeError("fileName is not a string")
+    }
+
     try {
-        const simplePreCommitJsonPath = path.normalize(projectRootPath + '/simple-pre-commit.json')
+        const simplePreCommitJsonPath = path.normalize(projectRootPath + '/' + fileName)
         const simplePreCommitJsonRaw = fs.readFileSync(simplePreCommitJsonPath)
         const simplePreCommitJson = JSON.parse(simplePreCommitJsonRaw)
         return simplePreCommitJson['simple-pre-commit']

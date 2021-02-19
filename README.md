@@ -78,9 +78,9 @@ Note that you should manually run `npx simple-pre-commit` **every time you chang
 
 ### Additional configuration options
 
-You can also add the `.simple-pre-commit.json` to the project and write the command inside it, if you do not want to put command inside `package.json`
+You can also add the `.simple-pre-commit.json` or `simple-pre-commit.json` to the project and write the command inside it, if you do not want to put command inside `package.json`
 
-That way, `.simple-pre-commit.json` should look like this and `package.json` may not have `simple-pre-commit` configuration inside it
+That way, `.simple-pre-commit.json` or `simple-pre-commit.json` should look like this and `package.json` may not have `simple-pre-commit` configuration inside it
 
 ```json
 { 

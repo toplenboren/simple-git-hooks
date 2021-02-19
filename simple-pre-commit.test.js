@@ -59,6 +59,7 @@ test('returns false if simple pre commit isn`t in deps', () => {
 
 const commandInPackageJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_with_configuration_in_package_json'))
 const commandInSeparateJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_with_configuration_in_separate_json'))
+const commandInSeparateJsonProjectPath2 = path.normalize(path.join(process.cwd(), '_tests', 'project_with_configuration_in_separate_json_2'))
 const notConfiguredProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_without_configuration'))
 
 test('returns command if configured from package.json', () => {
@@ -69,7 +70,10 @@ test('returns command if configured from simple-pre-commit.json', () => {
     expect(spc.getCommandFromConfig(commandInSeparateJsonProjectPath)).toBe("test")
 })
 
+test('returns command if configured from .simple-pre-commit.json', () => {
+    expect(spc.getCommandFromConfig(commandInSeparateJsonProjectPath2)).toBe("test")
+})
+
 test('returns undefined if were not able to parse command', () => {
     expect(spc.getCommandFromConfig(notConfiguredProjectPath)).toBe(undefined)
 })
-

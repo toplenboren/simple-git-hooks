@@ -34,11 +34,11 @@ You can look up about git hooks on [git book](https://git-scm.com/book/en/v2/Cus
 
 However, this package only allows you to set the `pre-commit` hook. If you need, for example `pre-push` hook or something else — this package wouln't be able to help you
 
-Also, this package requires you to manually update the pre-commit hook. If you want update pre-commit hook often - this is probably not the best choice 
+Also, this package requires you to manually update the `pre-commit` hook. If you want update `pre-commit` hook often - this is probably not the best choice 
 
 If you need multiple hooks, flexible configuration or git hook automatic update feature — please check out other packages:
  
-* [left-hook](https://github.com/Arkweid/lefthook)
+* [Lefthook](https://github.com/Arkweid/lefthook)
 * [husky](https://github.com/Arkweid/lefthook)
 * [pre-commit](https://github.com/pre-commit/pre-commit)
 
@@ -53,7 +53,7 @@ If you need multiple hooks, flexible configuration or git hook automatic update 
    npm install simple-pre-commit --save-dev
    ```
 
-2. Add the `simple-pre-commit` to your `package.json`. Feed it with any command you would like to run as a pre-commit hook.
+2. Add the `simple-pre-commit` to your `package.json`. Feed it with any command you would like to run as a `pre-commit` hook.
    
    ```json
      "simple-pre-commit": "npx lint-staged"`
@@ -67,7 +67,7 @@ If you need multiple hooks, flexible configuration or git hook automatic update 
    npx simple-pre-commit
    ```
     
-Now the command from `package.json` is set up as executable git pre-commit hook. 
+Now the command from `package.json` is set up as executable git `pre-commit` hook. 
 
 ### Update a pre-commit hook command
 

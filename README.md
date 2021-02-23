@@ -12,8 +12,8 @@ A tool, that let you set any command from `package.json` as a pre-commit hook.
   | ------------- | ------------- |
   | husky v4 `4.3.8` | `53.5 kB`  |
   | husky v5 `5.0.9`  | `24.5 kB`  |
-  | pre-commit `1.2.2` | `~80kB` |
-  | **simple-pre-commit** `1.1.2` | `10.9 kB` |
+  | pre-commit `1.2.2` | `~80 kB` |
+  | **simple-pre-commit** `1.1.3` | `9.02 kB` |
 
 
 ### What is pre-commit hook?

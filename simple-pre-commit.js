@@ -130,6 +130,16 @@ function setPreCommitHook(command) {
     fs.chmodSync(preCommitHookPath, 0o0755)
 }
 
+/**
+ * Removes the pre-commit hook from .git/hooks
+ */
+function removePreCommitHook() {
+    const gitRoot = getGitProjectRoot(process.cwd())
+    const preCommitHookPath = path.normalize(gitRoot + '/hooks/pre-commit')
+
+    fs.unlinkSync(preCommitHookPath)
+}
+
 /** Reads package.json file, returns package.json content and path
  * @param {string} projectPath - a path to the project, defaults to process.cwd
  * @return {{packageJsonContent: any, packageJsonPath: string}}
@@ -195,5 +205,6 @@ module.exports = {
     setPreCommitHook,
     getCommandFromConfig,
     getProjectRootDirectoryFromNodeModules,
-    getGitProjectRoot
+    getGitProjectRoot,
+    removePreCommitHook
 }

@@ -87,3 +87,9 @@ That way, `.simple-pre-commit.json` or `simple-pre-commit.json` should look like
     "simple-pre-commit":"npx lint staged"
 }
 ```
+
+### Uninstall pre-commit-hook
+
+```sh
+npm uninstall --save-dev simple-pre-commit
+```

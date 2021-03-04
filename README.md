@@ -84,7 +84,7 @@ That way, `.simple-pre-commit.json` or `simple-pre-commit.json` should look like
 
 ```json
 { 
-    "simple-pre-commit":"npx lint staged"
+    "simple-pre-commit":"npx lint-staged"
 }
 ```
 

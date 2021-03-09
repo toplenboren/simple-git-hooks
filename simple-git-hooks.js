@@ -83,22 +83,22 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
  * @throws TypeError if packageJsonData not an object
  * @return {Boolean}
  */
-function checkSimplePreCommitInDependencies(projectRootPath) {
+function checkSimpleGitHooksInDependencies(projectRootPath) {
     if (typeof projectRootPath !== 'string') {
         throw TypeError("Package json path is not a string!")
     }
 
     const {packageJsonContent} = _getPackageJson(projectRootPath)
 
-    // if simple-pre-commit in dependencies -> note user that he should remove move it to devDeps!
-    if ('dependencies' in packageJsonContent && 'simple-pre-commit' in packageJsonContent.dependencies) {
-        console.log('[WARN] You should move simple-pre-commit to the devDependencies!')
+    // if simple-git-hooks in dependencies -> note user that he should remove move it to devDeps!
+    if ('dependencies' in packageJsonContent && 'simple-git-hooks' in packageJsonContent.dependencies) {
+        console.log('[WARN] You should move simple-git-hooks to the devDependencies!')
         return true // We only check that we are in the correct package, e.g not in a dependency of a dependency
     }
     if (!('devDependencies' in packageJsonContent)) {
         return false
     }
-    return 'simple-pre-commit' in packageJsonContent.devDependencies
+    return 'simple-git-hooks' in packageJsonContent.devDependencies
 }
 
 /**
@@ -194,8 +194,8 @@ function _getConfig(projectRootPath) {
         () => _getConfigFromPackageJson(projectRootPath),
     ]
 
-    for (let i = 0; i < sources.length; ++i) {
-        let config = sources[i]()
+    for (let executeSource of sources) {
+        let config = executeSource()
         if (!config) {
             throw('[ERROR] Config was not found! Please add .simple-git-hooks.json. Check README for details')
         }
@@ -238,9 +238,7 @@ function _getConfigFromFile(projectRootPath, fileName) {
 
     try {
         const fileJsonPath = path.normalize(projectRootPath + '/' + fileName)
-        const fileJsonRaw = fs.readFileSync(fileJsonPath)
-        const fileJson = JSON.parse(fileJsonRaw)
-        return fileJson
+        return JSON.parse(fs.readFileSync(fileJsonPath))
     } catch (err) {
         return undefined
     }
@@ -260,7 +258,7 @@ function _validateConfig(config) {
 }
 
 module.exports = {
-    checkSimplePreCommitInDependencies,
+    checkSimpleGitHooksInDependencies,
     setHooksFromConfig,
     getProjectRootDirectoryFromNodeModules,
     getGitProjectRoot,

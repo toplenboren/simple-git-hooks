@@ -43,37 +43,13 @@ const correctPackageJsonProjectPath_2 = path.normalize(path.join(process.cwd(), 
 const incorrectPackageJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_without_simple_pre_commit'))
 
 test('returns true if simple pre commit really in devDeps', () => {
-    expect(spc.checkSimplePreCommitInDependencies(correctPackageJsonProjectPath)).toBe(true)
+    expect(spc.checkSimpleGitHooksInDependencies(correctPackageJsonProjectPath)).toBe(true)
 })
 
 test('returns true if simple pre commit really in deps', () => {
-    expect(spc.checkSimplePreCommitInDependencies(correctPackageJsonProjectPath_2)).toBe(true)
+    expect(spc.checkSimpleGitHooksInDependencies(correctPackageJsonProjectPath_2)).toBe(true)
 })
 
 test('returns false if simple pre commit isn`t in deps', () => {
-    expect(spc.checkSimplePreCommitInDependencies(incorrectPackageJsonProjectPath)).toBe(false)
-})
-
-
-// Get command from configuration
-
-const commandInPackageJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_with_configuration_in_package_json'))
-const commandInSeparateJsonProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_with_configuration_in_separate_json'))
-const commandInSeparateJsonProjectPath2 = path.normalize(path.join(process.cwd(), '_tests', 'project_with_configuration_in_separate_json_2'))
-const notConfiguredProjectPath = path.normalize(path.join(process.cwd(), '_tests', 'project_without_configuration'))
-
-test('returns command if configured from package.json', () => {
-    expect(spc.getCommandFromConfig(commandInPackageJsonProjectPath)).toBe("test")
-})
-
-test('returns command if configured from simple-pre-commit.json', () => {
-    expect(spc.getCommandFromConfig(commandInSeparateJsonProjectPath)).toBe("test")
-})
-
-test('returns command if configured from .simple-pre-commit.json', () => {
-    expect(spc.getCommandFromConfig(commandInSeparateJsonProjectPath2)).toBe("test")
-})
-
-test('returns undefined if were not able to parse command', () => {
-    expect(spc.getCommandFromConfig(notConfiguredProjectPath)).toBe(undefined)
+    expect(spc.checkSimpleGitHooksInDependencies(incorrectPackageJsonProjectPath)).toBe(false)
 })

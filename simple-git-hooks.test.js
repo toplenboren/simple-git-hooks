@@ -57,7 +57,7 @@ test('returns false if simple pre commit isn`t in deps', () => {
 })
 
 
-// Set git hooks
+// Set and remove git hooks
 
 const testsFolder = path.normalize(path.join(process.cwd(), '_tests'))
 
@@ -138,4 +138,36 @@ test('creates git hooks if configuration is correct from .simple-git-hooks.json'
     expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`, 'pre-push':`#!/bin/sh${os.EOL}exit 1`}))
 
     removeGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsonPath)
+})
+
+test('fails to create git hooks if configuration contains bad git hooks', () => {
+    createGitHooksFolder(projectWithIncorrectConfigurationInPackageJson)
+
+    expect(() => spc.setHooksFromConfig(projectWithIncorrectConfigurationInPackageJson)).toThrow('[ERROR] Config was not in correct format. Please check git hooks name')
+
+    removeGitHooksFolder(projectWithIncorrectConfigurationInPackageJson)
+})
+
+test('fails to create git hooks if not configured', () => {
+    createGitHooksFolder(projectWithoutConfiguration)
+
+    expect(() => spc.setHooksFromConfig(projectWithoutConfiguration)).toThrow('[ERROR] Config was not found! Please add .simple-git-hooks.json or simple-git-hooks.json or simple-git-hooks entry in package.json.')
+
+    removeGitHooksFolder(projectWithoutConfiguration)
+})
+
+test('removes git hooks', () => {
+    createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+
+    spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
+
+    let installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
+
+    spc.removeHooks(projectWithConfigurationInPackageJsonPath)
+
+    installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({}))
+
+    removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
 })

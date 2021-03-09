@@ -138,10 +138,11 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
 
 /**
  * Deletes all git hooks
+ * @param {string} projectRoot
  */
-function removeHooks() {
+function removeHooks(projectRoot=process.cwd()) {
     for (let configEntry of VALID_GIT_HOOKS) {
-        _removeHook(configEntry)
+        _removeHook(configEntry, projectRoot)
     }
 }
 
@@ -155,7 +156,9 @@ function _removeHook(hook, projectRoot=process.cwd()) {
     const gitRoot = getGitProjectRoot(projectRoot)
     const hookPath = path.normalize(gitRoot + '/hooks/' + hook)
 
-    fs.unlinkSync(hookPath)
+    if (fs.existsSync(hookPath)) {
+        fs.unlinkSync(hookPath)
+    }
 }
 
 /** Reads package.json file, returns package.json content and path

@@ -1,9 +1,9 @@
 {
-  "name": "simple-pre-commit",
-  "version": "1.2.1",
+  "name": "simple-git-hooks",
+  "version": "2.0.0",
   "description": "A simple, zero dependency tool for setting up git pre-commit hook for small projects",
   "author": "Mikhail Gorbunov <toplenboren@gmail.com> (toplenboren.gituhb.io)",
-  "main": "./simple-pre-commit.js",
+  "main": "simple-git-hooks.js",
   "bin": "./cli.js",
   "scripts": {
     "postinstall": "node ./postinstall.js",
@@ -14,9 +14,11 @@
   },
   "keywords": [
     "pre-commit",
+    "pre-push",
     "git",
     "hook",
-    "lint"
+    "lint",
+    "linter"
   ],
   "license": "MIT",
   "homepage": "https://github.com/toplenboren/simple-pre-commit",
@@ -27,7 +29,7 @@
     "files": [
       "LICENSE.txt",
       ".gitignore",
-      "simple-pre-commit.test.js",
+      "simple-git_hooks.test.js",
       "_tests",
       ".github",
       ".idea",

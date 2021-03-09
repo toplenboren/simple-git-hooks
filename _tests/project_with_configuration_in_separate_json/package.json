@@ -2,6 +2,6 @@
   "name": "simple-pre-commit-test-package",
   "version": "1.0.0",
   "devDependencies": {
-    "simple-pre-commit": "1.0.0"
+    "simple-git-hooks": "1.0.0"
   }
 }

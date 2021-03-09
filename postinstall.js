@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const {getCommandFromConfig, checkSimplePreCommitInDependencies, getProjectRootDirectoryFromNodeModules, setPreCommitHook} = require("./simple-pre-commit");
+const {checkSimplePreCommitInDependencies, getProjectRootDirectoryFromNodeModules, setHooksFromConfig} = require("./simple-git-hooks");
 
 
 /**
@@ -21,13 +21,7 @@ function postinstall() {
 
     if (checkSimplePreCommitInDependencies(projectDirectory)) {
         try {
-            const command = getCommandFromConfig(projectDirectory)
-            if (command === undefined) {
-                console.log('[INFO] Please add the pre-commit command to the "simple-pre-commit" field in package.json')
-            } else {
-                setPreCommitHook(command)
-                console.log('[INFO] Set pre-commit hook: ' + command)
-            }
+            setHooksFromConfig(projectDirectory)
         } catch (err) {
             console.log('[ERROR] Was not able to create a pre-commit hook. Reason: ' + err)
         }

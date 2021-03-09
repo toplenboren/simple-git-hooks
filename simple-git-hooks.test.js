@@ -1,4 +1,4 @@
-const spc = require("./simple-pre-commit");
+const spc = require("./simple-git-hooks");
 const path = require("path")
 
 

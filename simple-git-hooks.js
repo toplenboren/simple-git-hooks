@@ -2,12 +2,27 @@ const fs = require('fs')
 const os = require("os");
 const path = require('path');
 
+const VALID_GIT_HOOKS = [
+    'applypatch-msg',
+    'commit-msg',
+    'fsmonitor-watchman',
+    'post-update',
+    'pre-applypatch',
+    'pre-commit',
+    'pre-merge-commit',
+    'pre-push',
+    'pre-rebase',
+    'pre-receive',
+    'prepare-commit-msg',
+    'update'
+]
+
 /**
  * Recursively gets the .git folder path from provided directory
  * @param {string} directory
  * @return {string | undefined} .git folder path or undefined if it was not found
  */
-function getGitProjectRoot(directory=module.parent.filename) {
+function getGitProjectRoot(directory=process.cwd()) {
     let start = directory
     if (typeof start === 'string') {
         if (start[start.length - 1] !== path.sep) {
@@ -87,57 +102,53 @@ function checkSimplePreCommitInDependencies(projectRootPath) {
 }
 
 /**
- * Gets user-set command either from sources
- * First try to get command from .simple-pre-commit.json
- * If not found -> try to get command from package.json
+ * Parses the config and sets git hooks
  * @param {string} projectRootPath
- * @throws TypeError if projectRootPath is not string
- * @return {string | undefined}
  */
-function getCommandFromConfig(projectRootPath) {
-    if (typeof projectRootPath !== 'string') {
-        throw TypeError("Check project root path! Expected a string, but got " + typeof projectRootPath)
+function setHooksFromConfig(projectRootPath) {
+    const config = _getConfig(projectRootPath)
+    for (let configEntry of config) {
+        _setHook(configEntry, config[configEntry])
     }
-
-    // every function here should accept projectRootPath as first argument and return either string or undefined
-    const sources = [
-        () => _getCommandFromFile(projectRootPath, '.simple-pre-commit.json'),
-        () => _getCommandFromFile(projectRootPath, 'simple-pre-commit.json'),
-        () => _getCommandFromPackageJson(projectRootPath),
-    ]
-
-    for (let i = 0; i < sources.length; ++i) {
-        let command = sources[i]()
-        if (command) {
-            return command
-        }
-    }
-
-    return undefined
 }
 
 /**
- * Creates or replaces an existing executable script in .git/hooks/pre-commit with provided command
+ * Creates or replaces an existing executable script in .git/hooks/<hook> with provided command
  * @param {string} command
+ * @param {string} hook
+ * @private
  */
-function setPreCommitHook(command) {
+function _setHook(command, hook) {
     const gitRoot = getGitProjectRoot(process.cwd())
 
-    const preCommitHook = "#!/bin/sh" + os.EOL + command
-    const preCommitHookPath = path.normalize(gitRoot + '/hooks/pre-commit')
+    const hookCommand = "#!/bin/sh" + os.EOL + command
+    const hookPath = path.normalize(gitRoot + '/hooks/' + hook)
 
-    fs.writeFileSync(preCommitHookPath, preCommitHook)
-    fs.chmodSync(preCommitHookPath, 0o0755)
+    fs.writeFileSync(hookPath, hookCommand)
+    fs.chmodSync(hookPath, 0o0755)
+
+    console.log(`[INFO] Successfully set the ${hook} with command: ${command}`)
+}
+
+/**
+ * Deletes all git hooks
+ */
+function removeHooks() {
+    for (let configEntry of VALID_GIT_HOOKS) {
+        _removeHook(configEntry)
+    }
 }
 
 /**
  * Removes the pre-commit hook from .git/hooks
+ * @param {string} hook
+ * @private
  */
-function removePreCommitHook() {
+function _removeHook(hook) {
     const gitRoot = getGitProjectRoot(process.cwd())
-    const preCommitHookPath = path.normalize(gitRoot + '/hooks/pre-commit')
+    const hookPath = path.normalize(gitRoot + '/hooks/' + hook)
 
-    fs.unlinkSync(preCommitHookPath)
+    fs.unlinkSync(hookPath)
 }
 
 /** Reads package.json file, returns package.json content and path
@@ -163,25 +174,60 @@ function _getPackageJson(projectPath = process.cwd()) {
 }
 
 /**
- * Gets current command from package.json[simple-pre-commit]
+ * Gets user-set command either from sources
+ * First try to get command from .simple-pre-commit.json
+ * If not found -> try to get command from package.json
  * @param {string} projectRootPath
- * @throws TypeError if packageJsonPath is not a string
- * @throws Error if package.json couldn't be read
- * @return {undefined | string}
+ * @throws TypeError if projectRootPath is not string
+ * @return {{string: string} | undefined}
+ * @private
  */
-function _getCommandFromPackageJson(projectRootPath = process.cwd()) {
-    const {packageJsonContent} = _getPackageJson(projectRootPath)
-    return packageJsonContent['simple-pre-commit']
+function _getConfig(projectRootPath) {
+    if (typeof projectRootPath !== 'string') {
+        throw TypeError("Check project root path! Expected a string, but got " + typeof projectRootPath)
+    }
+
+    // every function here should accept projectRootPath as first argument and return either string or undefined
+    const sources = [
+        () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.json'),
+        () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.json'),
+        () => _getConfigFromPackageJson(projectRootPath),
+    ]
+
+    for (let i = 0; i < sources.length; ++i) {
+        let config = sources[i]()
+        if (!config) {
+            throw('[ERROR] Config was not found! Please add .simple-git-hooks.json. Check README for details')
+        }
+        if (!_validateConfig(config)) {
+            throw('[ERROR] Config was not in correct format. Please check git hooks name')
+        }
+        return config
+    }
+
+    return undefined
 }
 
 /**
- * Gets user-set command from file
+ * Gets current config from package.json[simple-pre-commit]
+ * @param {string} projectRootPath
+ * @throws TypeError if packageJsonPath is not a string
+ * @throws Error if package.json couldn't be read or was not validated
+ * @return {{string: string} | undefined}
+ */
+function _getConfigFromPackageJson(projectRootPath = process.cwd()) {
+    const {packageJsonContent} = _getPackageJson(projectRootPath)
+    return packageJsonContent
+}
+
+/**
+ * Gets user-set config from file
  * Since the file is not required in node.js projects it returns undefined if something is off
  * @param {string} projectRootPath
  * @param {string} fileName
- * @return {string | undefined}
+ * @return {{string: string} | undefined}
  */
-function _getCommandFromFile(projectRootPath, fileName) {
+function _getConfigFromFile(projectRootPath, fileName) {
     if (typeof projectRootPath !== "string") {
         throw TypeError("projectRootPath is not a string")
     }
@@ -191,20 +237,32 @@ function _getCommandFromFile(projectRootPath, fileName) {
     }
 
     try {
-        const simplePreCommitJsonPath = path.normalize(projectRootPath + '/' + fileName)
-        const simplePreCommitJsonRaw = fs.readFileSync(simplePreCommitJsonPath)
-        const simplePreCommitJson = JSON.parse(simplePreCommitJsonRaw)
-        return simplePreCommitJson['simple-pre-commit']
+        const fileJsonPath = path.normalize(projectRootPath + '/' + fileName)
+        const fileJsonRaw = fs.readFileSync(fileJsonPath)
+        const fileJson = JSON.parse(fileJsonRaw)
+        return fileJson
     } catch (err) {
         return undefined
     }
 }
 
+/**
+ * Validates the config, checks that every git hook is named correctly
+ * @param {{}} config
+ * @return {boolean}
+ */
+function _validateConfig(config) {
+    for (let configEntry in config) {
+        if (!VALID_GIT_HOOKS.includes(configEntry)) {
+            return false
+        }
+    }
+}
+
 module.exports = {
     checkSimplePreCommitInDependencies,
-    setPreCommitHook,
-    getCommandFromConfig,
+    setHooksFromConfig,
     getProjectRootDirectoryFromNodeModules,
     getGitProjectRoot,
-    removePreCommitHook
+    removeHooks,
 }

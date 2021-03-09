@@ -7,7 +7,7 @@ const {removeHooks} = require("./simple-git-hooks");
  * Removes the pre-commit from command in config by default
  */
 function uninstall() {
-    console.log("[INFO] Removing pre-commit hook from .git/hooks")
+    console.log("[INFO] Removing git hooks from .git/hooks")
 
     try {
         removeHooks()

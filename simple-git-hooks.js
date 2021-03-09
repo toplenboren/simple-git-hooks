@@ -114,7 +114,7 @@ function setHooksFromConfig(projectRootPath) {
 
     const configHooks = config['simple-git-hooks']
     for (let configEntry in configHooks) {
-        _setHook(configEntry, configHooks[configEntry])
+        _setHook(configEntry, configHooks[configEntry], projectRootPath)
     }
 }
 

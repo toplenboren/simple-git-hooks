@@ -89,8 +89,8 @@ function createGitHooksFolder(root) {
  * @param {string} root
  */
 function removeGitHooksFolder(root) {
-    if (fs.existsSync(root + './git')) {
-        fs.unlinkSync(root + '/.git')
+    if (fs.existsSync(root + '/.git')) {
+        fs.rmdirSync(root + '/.git', { recursive: true })
     }
 }
 
@@ -104,7 +104,7 @@ function getInstalledGitHooks(hooksDir) {
     const hooks = fs.readdirSync(hooksDir)
 
     for (let hook of hooks) {
-        const hookCode = fs.readFileSync(hook)
+        const hookCode = fs.readFileSync(path.normalize(path.join(hooksDir, hook))).toString()
         result[hook] = hookCode
     }
 
@@ -115,8 +115,18 @@ test('creates git hooks if configuration is correct from package.json', () => {
     createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
 
     spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
-    const installedHooks = getInstalledGitHooks(projectWithConfigurationInPackageJsonPath + '.git/hooks')
-    expect(JSON.stringify(installedHooks) === JSON.stringify({'pre-commit':`"#!/bin/sh"${os.EOL}exit 1`})).toBe(true)
+    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
 
     removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+})
+
+test('creates git hooks if configuration is correct from simple-git-hooks.json', () => {
+    createGitHooksFolder(projectWithConfigurationInSeparateJsonPath)
+
+    spc.setHooksFromConfig(projectWithConfigurationInSeparateJsonPath)
+    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInSeparateJsonPath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-push':`#!/bin/sh${os.EOL}exit 1`, 'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
+
+    removeGitHooksFolder(projectWithConfigurationInSeparateJsonPath)
 })

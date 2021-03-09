@@ -1,3 +1,5 @@
+const fs = require('fs')
+const os = require('os')
 const spc = require("./simple-git-hooks");
 const path = require("path")
 
@@ -52,4 +54,69 @@ test('returns true if simple pre commit really in deps', () => {
 
 test('returns false if simple pre commit isn`t in deps', () => {
     expect(spc.checkSimpleGitHooksInDependencies(incorrectPackageJsonProjectPath)).toBe(false)
+})
+
+
+// Set git hooks
+
+const testsFolder = path.normalize(path.join(process.cwd(), '_tests'))
+
+// Correct configurations
+
+const projectWithConfigurationInPackageJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_package_json'))
+const projectWithConfigurationInSeparateJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_separate_json'))
+const projectWithConfigurationInAlternativeSeparateJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_alternative_separate_json'))
+
+// Incorrect configurations
+
+const projectWithIncorrectConfigurationInPackageJson = path.normalize(path.join(testsFolder, 'project_with_incorrect_configuration_in_package_json'))
+const projectWithoutConfiguration = path.normalize(path.join(testsFolder, 'project_without_configuration'))
+
+/**
+ * Creates .git/hooks dir from root
+ * @param {string} root
+ */
+function createGitHooksFolder(root) {
+    if (fs.existsSync(root + '/.git')) {
+        return
+    }
+    fs.mkdirSync(root + '/.git')
+    fs.mkdirSync(root + '/.git/hooks')
+}
+
+/**
+ * Removes .git directory from root
+ * @param {string} root
+ */
+function removeGitHooksFolder(root) {
+    if (fs.existsSync(root + './git')) {
+        fs.unlinkSync(root + '/.git')
+    }
+}
+
+/**
+ * Returns all installed git hooks
+ * @return { string: string }
+ */
+function getInstalledGitHooks(hooksDir) {
+    const result = {}
+
+    const hooks = fs.readdirSync(hooksDir)
+
+    for (let hook of hooks) {
+        const hookCode = fs.readFileSync(hook)
+        result[hook] = hookCode
+    }
+
+    return result
+}
+
+test('creates git hooks if configuration is correct from package.json', () => {
+    createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+
+    spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
+    const installedHooks = getInstalledGitHooks(projectWithConfigurationInPackageJsonPath + '.git/hooks')
+    expect(JSON.stringify(installedHooks) === JSON.stringify({'pre-commit':`"#!/bin/sh"${os.EOL}exit 1`})).toBe(true)
+
+    removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
 })

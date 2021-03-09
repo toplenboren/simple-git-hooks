@@ -107,19 +107,26 @@ function checkSimpleGitHooksInDependencies(projectRootPath) {
  */
 function setHooksFromConfig(projectRootPath) {
     const config = _getConfig(projectRootPath)
-    for (let configEntry of config) {
-        _setHook(configEntry, config[configEntry])
+
+    if (!config) {
+        throw('[ERROR] Config was not found! Please add .simple-git-hooks.json or simple-git-hooks.json or simple-git-hooks entry in package.json.\r\nCheck README for details')
+    }
+
+    const configHooks = config['simple-git-hooks']
+    for (let configEntry in configHooks) {
+        _setHook(configEntry, configHooks[configEntry])
     }
 }
 
 /**
  * Creates or replaces an existing executable script in .git/hooks/<hook> with provided command
- * @param {string} command
  * @param {string} hook
+ * @param {string} command
+ * @param {string} projectRoot
  * @private
  */
-function _setHook(command, hook) {
-    const gitRoot = getGitProjectRoot(process.cwd())
+function _setHook(hook, command, projectRoot=process.cwd()) {
+    const gitRoot = getGitProjectRoot(projectRoot)
 
     const hookCommand = "#!/bin/sh" + os.EOL + command
     const hookPath = path.normalize(gitRoot + '/hooks/' + hook)
@@ -196,13 +203,12 @@ function _getConfig(projectRootPath) {
 
     for (let executeSource of sources) {
         let config = executeSource()
-        if (!config) {
-            throw('[ERROR] Config was not found! Please add .simple-git-hooks.json. Check README for details')
+        if (config && _validateConfig(config)) {
+            return config
         }
-        if (!_validateConfig(config)) {
+        else if (config && !_validateConfig(config)) {
             throw('[ERROR] Config was not in correct format. Please check git hooks name')
         }
-        return config
     }
 
     return undefined
@@ -250,11 +256,20 @@ function _getConfigFromFile(projectRootPath, fileName) {
  * @return {boolean}
  */
 function _validateConfig(config) {
-    for (let configEntry in config) {
+
+    if (!('simple-git-hooks' in config)) {
+        return false
+    }
+
+    const configGitHooks = config["simple-git-hooks"]
+
+    for (let configEntry in configGitHooks) {
         if (!VALID_GIT_HOOKS.includes(configEntry)) {
             return false
         }
     }
+
+    return true
 }
 
 module.exports = {

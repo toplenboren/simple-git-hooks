@@ -112,9 +112,8 @@ function setHooksFromConfig(projectRootPath) {
         throw('[ERROR] Config was not found! Please add .simple-git-hooks.json or simple-git-hooks.json or simple-git-hooks entry in package.json.\r\nCheck README for details')
     }
 
-    const configHooks = config['simple-git-hooks']
-    for (let configEntry in configHooks) {
-        _setHook(configEntry, configHooks[configEntry], projectRootPath)
+    for (let configEntry in config) {
+        _setHook(configEntry, config[configEntry], projectRootPath)
     }
 }
 
@@ -149,10 +148,11 @@ function removeHooks() {
 /**
  * Removes the pre-commit hook from .git/hooks
  * @param {string} hook
+ * @param {string} projectRoot
  * @private
  */
-function _removeHook(hook) {
-    const gitRoot = getGitProjectRoot(process.cwd())
+function _removeHook(hook, projectRoot=process.cwd()) {
+    const gitRoot = getGitProjectRoot(projectRoot)
     const hookPath = path.normalize(gitRoot + '/hooks/' + hook)
 
     fs.unlinkSync(hookPath)
@@ -194,7 +194,7 @@ function _getConfig(projectRootPath) {
         throw TypeError("Check project root path! Expected a string, but got " + typeof projectRootPath)
     }
 
-    // every function here should accept projectRootPath as first argument and return either string or undefined
+    // every function here should accept projectRootPath as first argument and return object
     const sources = [
         () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.json'),
         () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.json'),
@@ -203,10 +203,10 @@ function _getConfig(projectRootPath) {
 
     for (let executeSource of sources) {
         let config = executeSource()
-        if (config && _validateConfig(config)) {
+        if (config && _validateHooks(config)) {
             return config
         }
-        else if (config && !_validateConfig(config)) {
+        else if (config && !_validateHooks(config)) {
             throw('[ERROR] Config was not in correct format. Please check git hooks name')
         }
     }
@@ -223,7 +223,7 @@ function _getConfig(projectRootPath) {
  */
 function _getConfigFromPackageJson(projectRootPath = process.cwd()) {
     const {packageJsonContent} = _getPackageJson(projectRootPath)
-    return packageJsonContent
+    return packageJsonContent['simple-git-hooks']
 }
 
 /**
@@ -252,19 +252,13 @@ function _getConfigFromFile(projectRootPath, fileName) {
 
 /**
  * Validates the config, checks that every git hook is named correctly
- * @param {{}} config
+ * @param {{string: string}} config
  * @return {boolean}
  */
-function _validateConfig(config) {
+function _validateHooks(hooks) {
 
-    if (!('simple-git-hooks' in config)) {
-        return false
-    }
-
-    const configGitHooks = config["simple-git-hooks"]
-
-    for (let configEntry in configGitHooks) {
-        if (!VALID_GIT_HOOKS.includes(configEntry)) {
+    for (let hook in hooks) {
+        if (!VALID_GIT_HOOKS.includes(hook)) {
             return false
         }
     }

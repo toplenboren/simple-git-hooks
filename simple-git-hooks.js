@@ -252,8 +252,8 @@ function _getConfigFromFile(projectRootPath, fileName) {
 
 /**
  * Validates the config, checks that every git hook is named correctly
- * @param {{string: string}} config
  * @return {boolean}
+ * @param {{string: string}} hooks
  */
 function _validateHooks(hooks) {
 

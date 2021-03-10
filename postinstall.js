@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const {checkSimplePreCommitInDependencies, getProjectRootDirectoryFromNodeModules, setHooksFromConfig} = require("./simple-git-hooks");
+const {checkSimpleGitHooksInDependencies, getProjectRootDirectoryFromNodeModules, setHooksFromConfig} = require("./simple-git-hooks");
 
 
 /**
@@ -19,7 +19,7 @@ function postinstall() {
         projectDirectory = process.cwd()
     }
 
-    if (checkSimplePreCommitInDependencies(projectDirectory)) {
+    if (checkSimpleGitHooksInDependencies(projectDirectory)) {
         try {
             setHooksFromConfig(projectDirectory)
         } catch (err) {

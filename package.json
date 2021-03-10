@@ -1,7 +1,7 @@
 {
   "name": "simple-git-hooks",
   "version": "2.0.0",
-  "description": "A simple, zero dependency tool for setting up git pre-commit hook for small projects",
+  "description": "A simple, zero dependency tool for setting up git hooks for small projects",
   "author": "Mikhail Gorbunov <toplenboren@gmail.com> (toplenboren.gituhb.io)",
   "main": "simple-git-hooks.js",
   "bin": "./cli.js",

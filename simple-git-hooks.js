@@ -54,8 +54,8 @@ function getGitProjectRoot(directory=process.cwd()) {
 }
 
 /**
- * Transforms the <project>/node_modules/simple-pre-commit to <project>
- * @param projectPath - path to the simple-pre-commit in node modules
+ * Transforms the <project>/node_modules/simple-git-hooks to <project>
+ * @param projectPath - path to the simple-git-hooks in node modules
  * @return {string | undefined} - an absolute path to the project or undefined if projectPath is not in node_modules
  */
 function getProjectRootDirectoryFromNodeModules(projectPath) {
@@ -68,7 +68,7 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
     if (projDir.length > 2 &&
         _arraysAreEqual(projDir.slice(projDir.length - 2, projDir.length), [
             'node_modules',
-            'simple-pre-commit'
+            'simple-git-hooks'
         ])) {
 
         return projDir.slice(0, projDir.length - 2).join('/')
@@ -78,7 +78,7 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
 }
 
 /**
- * Checks the 'simple-pre-commit' in dependencies of the project
+ * Checks the 'simple-git-hooks' in dependencies of the project
  * @param {string} projectRootPath
  * @throws TypeError if packageJsonData not an object
  * @return {Boolean}

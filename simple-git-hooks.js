@@ -65,6 +65,11 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
 
     const projDir = projectPath.split(/[\\/]/) // <- would split both on '/' and '\'
 
+    // A yarn2 STAB
+    if (projDir.includes('.yarn') && projDir.includes('unplugged')) {
+        return undefined
+    }
+
     if (projDir.length > 2 &&
         _arraysAreEqual(projDir.slice(projDir.length - 2, projDir.length), [
             'node_modules',

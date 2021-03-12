@@ -85,6 +85,8 @@ Now all the git hooks are created.
 
 2. Run `npx simple-git-hooks` **from the root of your project**.
 
+Note for **yarn2** users: Please run `yarn dlx simple-git-hooks` instead of the command above. More info on [dlx](https://yarnpkg.com/cli/dlx)
+
 Note that you should manually run `npx simple-git-hooks` **every time you change a command**.
 
 

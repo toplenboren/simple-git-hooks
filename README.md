@@ -16,8 +16,17 @@ A tool that lets you easily manage git hooks
   | husky v4 `4.3.8` | `53.5 kB`  |
   | husky v5 `5.0.9`  | `24.5 kB`  |
   | pre-commit `1.2.2` | `~80 kB` |
-  | **simple-git-hooks** `2.0.0` | `~10 kB` |
+  | **simple-git-hooks** `2.0.3` | `~10 kB` |
 
+### Who uses simple-git-hooks?
+
+* [Autoprefixer](https://github.com/postcss/autoprefixer])
+* [PostCSS](https://github.com/postcss/postcss.org)
+* [Browserslist](https://github.com/browserslist/browserslist])
+* [Nano ID](https://github.com/ai/nanoid)
+* [Size Limit](https://github.com/ai/size-limit)
+* [Storeon](https://github.com/storeon/storeon)
+* More, see [full list](https://github.com/toplenboren/simple-git-hooks/network/dependents?package_id=UGFja2FnZS0xOTk1ODMzMTA4)
 
 ### What is a git hook?
 

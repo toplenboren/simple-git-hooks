@@ -1,7 +1,7 @@
 # simple-git-hooks
 
 
- ![](https://img.shields.io/badge/dependencies-zero-green)
+ ![](https://img.shields.io/badge/dependencies-zero-green) [![Tests](https://github.com/toplenboren/simple-git-hooks/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/toplenboren/simple-git-hooks/actions/workflows/tests.yml)
 
 A tool that lets you easily manage git hooks
 

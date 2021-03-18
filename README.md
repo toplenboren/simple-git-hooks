@@ -20,9 +20,9 @@ A tool that lets you easily manage git hooks
 
 ### Who uses simple-git-hooks?
 
-* [Autoprefixer](https://github.com/postcss/autoprefixer])
+* [Autoprefixer](https://github.com/postcss/autoprefixer)
 * [PostCSS](https://github.com/postcss/postcss.org)
-* [Browserslist](https://github.com/browserslist/browserslist])
+* [Browserslist](https://github.com/browserslist/browserslist)
 * [Nano ID](https://github.com/ai/nanoid)
 * [Size Limit](https://github.com/ai/size-limit)
 * [Storeon](https://github.com/storeon/storeon)

@@ -6,6 +6,7 @@ const VALID_GIT_HOOKS = [
     'applypatch-msg',
     'commit-msg',
     'fsmonitor-watchman',
+    'post-merge',
     'post-update',
     'pre-applypatch',
     'pre-commit',

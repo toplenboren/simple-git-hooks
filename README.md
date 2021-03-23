@@ -13,7 +13,7 @@ A tool that lets you easily manage git hooks
 
   | Package | Unpacked size | With deps |
   | ------------- | ------------- | ------------- |
-  | husky v4 `4.3.8` | `53.5 kB`  |  `> ~322 kB`  |
+  | husky v4 `4.3.8` | `53.5 kB`  |  `~1 mB`  |
   | husky v5 `5.0.9`  | `24.5 kB`  |  `24.5 kB`  |
   | pre-commit `1.2.2` | `~80 kB` |  `~80 kB`   |
   | **simple-git-hooks** `2.2.0` | `10.1 kB` |  `10.1 kB` |

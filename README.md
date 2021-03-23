@@ -11,14 +11,16 @@ A tool that lets you easily manage git hooks
 - Easy to configure (one line in `package.json`)
 - Lightweight*:
 
-  | Package | Unpacked size |
-  | ------------- | ------------- |
-  | husky v4 `4.3.8` | `53.5 kB`  |
-  | husky v5 `5.0.9`  | `24.5 kB`  |
-  | pre-commit `1.2.2` | `~80 kB` |
-  | **simple-git-hooks** `2.0.3` | `~10 kB` |
+  | Package | Unpacked size | With deps |
+  | ------------- | ------------- | ------------- |
+  | husky v4 `4.3.8` | `53.5 kB`  |  `> ~322 kB`  |
+  | husky v5 `5.0.9`  | `24.5 kB`  |  `24.5 kB`  |
+  | pre-commit `1.2.2` | `~80 kB` |  `~80 kB`   |
+  | **simple-git-hooks** `2.2.0` | `10.1 kB` |  `10.1 kB` |
 
 ### Who uses simple-git-hooks?
+
+> The package is recommended by [`lint-staged`](https://github.com/okonet/lint-staged) 
 
 * [Autoprefixer](https://github.com/postcss/autoprefixer)
 * [PostCSS](https://github.com/postcss/postcss.org)

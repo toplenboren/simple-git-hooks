@@ -68,14 +68,16 @@ If you need multiple verbose commands per git hook, flexible configuration or au
 2. Add `simple-git-hooks` to your `package.json`. Fill it with git hooks and the corresponding commands.
 
     For example:
-   
-   ```json
-     "simple-git-hooks": {
-       "pre-commit": "npx lint-staged",
-       "pre-push": "cd ../../ && npm run format"
-     }
-   ```
-    
+
+    ```json
+    {
+      "simple-git-hooks": {
+        "pre-commit": "npx lint-staged",
+        "pre-push": "cd ../../ && npm run format"
+      }
+    }
+    ```
+
     This configuration is going to run all linters on every `commit` and formatter on `push`.
     
    > There are more ways to configure the package. Check out [Additional configuration options](#additional-configuration-options).
@@ -101,14 +103,25 @@ Note that you should manually run `npx simple-git-hooks` **every time you change
 
 ### Additional configuration options
 
-You can also add a `.simple-git-hooks.json` or `simple-git-hooks.json` file to the project and write the configuration inside it.
+You can also add a `.simple-git-hooks.js`, `simple-git-hooks.js`, `.simple-git-hooks.json` or `simple-git-hooks.json` file to the project and write the configuration inside it.
 
-That way, `.simple-git-hooks.json` or `simple-git-hooks.json` should look like the following and `package.json` may not contain the `simple-git-hooks` configuration.
+This way `simple-git-hooks` configuration in `package.json` will not take effect any more.
+
+`.simple-git-hooks.js` or `simple-git-hooks.js` should look like the following.
+
+```js
+module.exports = {
+  "pre-commit": "npx lint staged",
+  "pre-push": "cd ../../ && npm run format"
+}
+```
+
+`.simple-git-hooks.json` or `simple-git-hooks.json` should look like the following.
 
 ```json
 {
-    "pre-commit": "npx lint staged",
-    "pre-push": "cd ../../ && npm run format"
+  "pre-commit": "npx lint staged",
+  "pre-push": "cd ../../ && npm run format"
 }
 ```
 

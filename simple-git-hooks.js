@@ -205,6 +205,8 @@ function _getConfig(projectRootPath) {
 
     // every function here should accept projectRootPath as first argument and return object
     const sources = [
+        () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.js'),
+        () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.js'),
         () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.json'),
         () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.json'),
         () => _getConfigFromPackageJson(projectRootPath),
@@ -252,8 +254,11 @@ function _getConfigFromFile(projectRootPath, fileName) {
     }
 
     try {
-        const fileJsonPath = path.normalize(projectRootPath + '/' + fileName)
-        return JSON.parse(fs.readFileSync(fileJsonPath))
+        const filePath = path.normalize(projectRootPath + '/' + fileName)
+        if (filePath === __filename) {
+            return undefined
+        }
+        return require(filePath) // handle `.js` and `.json`
     } catch (err) {
         return undefined
     }

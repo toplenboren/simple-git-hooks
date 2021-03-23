@@ -64,6 +64,8 @@ const testsFolder = path.normalize(path.join(process.cwd(), '_tests'))
 // Correct configurations
 
 const projectWithConfigurationInPackageJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_package_json'))
+const projectWithConfigurationInSeparateJsPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_separate_js'))
+const projectWithConfigurationInAlternativeSeparateJsPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_alternative_separate_js'))
 const projectWithConfigurationInSeparateJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_separate_json'))
 const projectWithConfigurationInAlternativeSeparateJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_alternative_separate_json'))
 
@@ -110,14 +112,35 @@ function getInstalledGitHooks(hooksDir) {
     return result
 }
 
-test('creates git hooks if configuration is correct from package.json', () => {
-    createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+test('creates git hooks if configuration is correct from .simple-git-hooks.js', () => {
+    createGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsPath)
 
-    spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
-    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
+    spc.setHooksFromConfig(projectWithConfigurationInAlternativeSeparateJsPath)
+    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInAlternativeSeparateJsPath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`, 'pre-push':`#!/bin/sh${os.EOL}exit 1`}))
 
-    removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+    removeGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsPath)
+})
+
+test('creates git hooks if configuration is correct from simple-git-hooks.js', () => {
+    createGitHooksFolder(projectWithConfigurationInSeparateJsPath)
+
+    spc.setHooksFromConfig(projectWithConfigurationInSeparateJsPath)
+    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInSeparateJsPath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`, 'pre-push':`#!/bin/sh${os.EOL}exit 1`}))
+
+    removeGitHooksFolder(projectWithConfigurationInSeparateJsPath)
+})
+
+
+test('creates git hooks if configuration is correct from .simple-git-hooks.json', () => {
+    createGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsonPath)
+
+    spc.setHooksFromConfig(projectWithConfigurationInAlternativeSeparateJsonPath)
+    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInAlternativeSeparateJsonPath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`, 'pre-push':`#!/bin/sh${os.EOL}exit 1`}))
+
+    removeGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsonPath)
 })
 
 test('creates git hooks if configuration is correct from simple-git-hooks.json', () => {
@@ -130,14 +153,14 @@ test('creates git hooks if configuration is correct from simple-git-hooks.json',
     removeGitHooksFolder(projectWithConfigurationInSeparateJsonPath)
 })
 
-test('creates git hooks if configuration is correct from .simple-git-hooks.json', () => {
-    createGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsonPath)
+test('creates git hooks if configuration is correct from package.json', () => {
+    createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
 
-    spc.setHooksFromConfig(projectWithConfigurationInAlternativeSeparateJsonPath)
-    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInAlternativeSeparateJsonPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`, 'pre-push':`#!/bin/sh${os.EOL}exit 1`}))
+    spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
+    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
 
-    removeGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsonPath)
+    removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
 })
 
 test('fails to create git hooks if configuration contains bad git hooks', () => {

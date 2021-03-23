@@ -1,6 +1,6 @@
 {
   "name": "simple-git-hooks",
-  "version": "2.0.2",
+  "version": "2.2.0",
   "description": "A simple, zero dependency tool for setting up git hooks for small projects",
   "author": "Mikhail Gorbunov <toplenboren@gmail.com> (toplenboren.github.io)",
   "main": "simple-git-hooks.js",
@@ -29,7 +29,7 @@
     "files": [
       "LICENSE.txt",
       ".gitignore",
-      "simple-git_hooks.test.js",
+      "simple-git-hooks.test.js",
       "_tests",
       ".github",
       ".idea",

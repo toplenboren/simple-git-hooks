@@ -111,7 +111,7 @@ function checkSimpleGitHooksInDependencies(projectRootPath) {
  * Parses the config and sets git hooks
  * @param {string} projectRootPath
  */
-function setHooksFromConfig(projectRootPath) {
+function setHooksFromConfig(projectRootPath=process.cwd()) {
     const config = _getConfig(projectRootPath)
 
     if (!config) {

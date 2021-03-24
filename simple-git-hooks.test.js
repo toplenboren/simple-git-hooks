@@ -174,7 +174,7 @@ test('fails to create git hooks if configuration contains bad git hooks', () => 
 test('fails to create git hooks if not configured', () => {
     createGitHooksFolder(projectWithoutConfiguration)
 
-    expect(() => spc.setHooksFromConfig(projectWithoutConfiguration)).toThrow('[ERROR] Config was not found! Please add .simple-git-hooks.json or simple-git-hooks.json or simple-git-hooks entry in package.json.')
+    expect(() => spc.setHooksFromConfig(projectWithoutConfiguration)).toThrow('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.')
 
     removeGitHooksFolder(projectWithoutConfiguration)
 })

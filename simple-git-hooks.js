@@ -115,11 +115,11 @@ function setHooksFromConfig(projectRootPath=process.cwd()) {
     const config = _getConfig(projectRootPath)
 
     if (!config) {
-        throw('[ERROR] Config was not found! Please add .simple-git-hooks.json or simple-git-hooks.json or simple-git-hooks entry in package.json.\r\nCheck README for details')
+        throw('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')
     }
 
     for (let hook of VALID_GIT_HOOKS) {
-        if (hook in config) {
+        if (Object.prototype.hasOwnProperty.call(config, hook)) {
             _setHook(hook, config[hook], projectRootPath)
         } else {
             _removeHook(hook, projectRootPath)

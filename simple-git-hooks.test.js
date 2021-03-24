@@ -194,3 +194,21 @@ test('removes git hooks', () => {
 
     removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
 })
+
+test('creates git hooks and removes unused git hooks', () => {
+    createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+
+    const installedHooksDir = path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks'))
+
+    fs.writeFileSync(path.resolve(installedHooksDir, 'pre-push'), "# do nothing")
+
+    let installedHooks = getInstalledGitHooks(installedHooksDir);
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-push':'# do nothing'}))
+
+    spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
+
+    installedHooks = getInstalledGitHooks(installedHooksDir);
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
+
+    removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+})

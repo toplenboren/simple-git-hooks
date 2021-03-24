@@ -118,8 +118,12 @@ function setHooksFromConfig(projectRootPath=process.cwd()) {
         throw('[ERROR] Config was not found! Please add .simple-git-hooks.json or simple-git-hooks.json or simple-git-hooks entry in package.json.\r\nCheck README for details')
     }
 
-    for (let configEntry in config) {
-        _setHook(configEntry, config[configEntry], projectRootPath)
+    for (let hook of VALID_GIT_HOOKS) {
+        if (hook in config) {
+            _setHook(hook, config[hook], projectRootPath)
+        } else {
+            _removeHook(hook, projectRootPath)
+        }
     }
 }
 

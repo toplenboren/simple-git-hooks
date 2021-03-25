@@ -29,6 +29,7 @@ A tool that lets you easily manage git hooks
 * [Size Limit](https://github.com/ai/size-limit)
 * [Storeon](https://github.com/storeon/storeon)
 * [Directus](https://github.com/directus/directus)
+* [Vercel/pkg](https://github.com/vercel/pkg)
 * More, see [full list](https://github.com/toplenboren/simple-git-hooks/network/dependents?package_id=UGFja2FnZS0xOTk1ODMzMTA4)
 
 ### What is a git hook?

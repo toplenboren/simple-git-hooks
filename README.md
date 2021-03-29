@@ -136,3 +136,32 @@ module.exports = {
 ```sh
 npm uninstall simple-git-hooks
 ```
+
+
+## Common issues
+
+### When migrating from `husky` git hooks are not running
+
+**Why is this happening?**
+
+Husky might change the `core.gitHooks` value to `.husky`, this way, git hooks would search `.husky` directory instead of `$GIT_DIR/hooks`. 
+
+Read more on git configuration in [Git book](https://git-scm.com/docs/githooks)
+
+You can check it by running this command inside of your repo:
+
+`git config core.hooksPath`
+
+If it outputs `.husky` then this is your case
+
+**How to fix?**
+
+you need to point `core.gitHooks` value to `your-awesome-project/.git/hooks`. You can use this command:
+
+`git config core.hooksPath .git/hooks/`
+
+validate the value is set:
+
+`git config core.hooksPath`
+
+should output: `.git/hooks/`

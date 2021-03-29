@@ -144,7 +144,7 @@ npm uninstall simple-git-hooks
 
 **Why is this happening?**
 
-Husky might change the `core.gitHooks` value to `.husky`, this way, git hooks would search `.husky` directory instead of `$GIT_DIR/hooks`. 
+Husky might change the `core.gitHooks` value to `.husky`, this way, git hooks would search `.husky` directory instead of `.git/hooks/`. 
 
 Read more on git configuration in [Git book](https://git-scm.com/docs/githooks)
 

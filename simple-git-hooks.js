@@ -84,15 +84,13 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
     const projDir = projectPath.split(/[\\/]/) // <- would split both on '/' and '\'
 
     if (projDir.includes('.pnpm')
-        && projDir.length > 5
-        && _arraysAreEqual(projDir.slice(projDir.length - 5), [
+        && projDir.length > 3
+        && _arraysAreEqual(projDir.slice(projDir.length - 3), [
             'node_modules',
             '.pnpm',
             `simple-git-hooks@${packageVersion}`,
-            'node_modules',
-            'simple-git-hooks'
         ])) {
-        return projDir.slice(0, projDir.length - 5).join('/');
+        return projDir.slice(0, projDir.length - 3).join('/');
     }
 
     // A yarn2 STAB

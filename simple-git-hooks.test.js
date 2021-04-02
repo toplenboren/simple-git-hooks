@@ -174,7 +174,7 @@ test('fails to create git hooks if configuration contains bad git hooks', () => 
 test('fails to create git hooks if not configured', () => {
     createGitHooksFolder(projectWithoutConfiguration)
 
-    expect(() => spc.setHooksFromConfig(projectWithoutConfiguration)).toThrow('[ERROR] Config was not found! Please add .simple-git-hooks.json or simple-git-hooks.json or simple-git-hooks entry in package.json.')
+    expect(() => spc.setHooksFromConfig(projectWithoutConfiguration)).toThrow('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.')
 
     removeGitHooksFolder(projectWithoutConfiguration)
 })
@@ -191,6 +191,24 @@ test('removes git hooks', () => {
 
     installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks')))
     expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({}))
+
+    removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+})
+
+test('creates git hooks and removes unused git hooks', () => {
+    createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+
+    const installedHooksDir = path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks'))
+
+    fs.writeFileSync(path.resolve(installedHooksDir, 'pre-push'), "# do nothing")
+
+    let installedHooks = getInstalledGitHooks(installedHooksDir);
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-push':'# do nothing'}))
+
+    spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
+
+    installedHooks = getInstalledGitHooks(installedHooksDir);
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
 
     removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
 })

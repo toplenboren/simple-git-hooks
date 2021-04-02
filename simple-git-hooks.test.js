@@ -3,6 +3,8 @@ const os = require('os')
 const spc = require("./simple-git-hooks");
 const path = require("path")
 
+const { packageVersion } = require('./package.json');
+
 
 // Get project root directory
 
@@ -16,6 +18,10 @@ test('getProjectRootDirectory returns correct dir when used with windows delimit
 
 test('getProjectRootDirectory falls back to undefined when we are not in node_modules:', () => {
     expect(spc.getProjectRootDirectoryFromNodeModules('var/my-project/simple-git-hooks')).toBe(undefined)
+})
+
+test('getProjectRootDirectory return correct dir when installed using pnpm:', () => {
+    expect(spc.getProjectRootDirectoryFromNodeModules(`var/my-project/node_modules/.pnpm/simple-git-hooks@${packageVersion}/node_modules/simple-git-hooks`)).toBe('var/my-project')
 })
 
 

@@ -2,6 +2,8 @@ const fs = require('fs')
 const os = require("os");
 const path = require('path');
 
+const { packageVersion } = require('./package.json');
+
 const VALID_GIT_HOOKS = [
     'applypatch-msg',
     'commit-msg',
@@ -65,6 +67,18 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
     }
 
     const projDir = projectPath.split(/[\\/]/) // <- would split both on '/' and '\'
+
+    if (projDir.includes('.pnpm')
+        && projDir.length > 5
+        && _arraysAreEqual(projDir.slice(projDir.length - 5), [
+            'node_modules',
+            '.pnpm',
+            `simple-git-hooks@${packageVersion}`,
+            'node_modules',
+            'simple-git-hooks'
+        ])) {
+        return projDir.slice(0, projDir.length - 5).join('/');
+    }
 
     // A yarn2 STAB
     if (projDir.includes('.yarn') && projDir.includes('unplugged')) {

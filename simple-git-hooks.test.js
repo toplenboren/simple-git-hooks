@@ -173,7 +173,7 @@ test('creates git hooks if configuration is correct from package.json', () => {
 test('fails to create git hooks if configuration contains bad git hooks', () => {
     createGitHooksFolder(projectWithIncorrectConfigurationInPackageJson)
 
-    expect(() => spc.setHooksFromConfig(projectWithIncorrectConfigurationInPackageJson)).toThrow('[ERROR] Config was not in correct format. Please check git hooks name')
+    expect(() => spc.setHooksFromConfig(projectWithIncorrectConfigurationInPackageJson)).toThrow('[ERROR] Config was not in correct format. Please check git hooks or options name')
 
     removeGitHooksFolder(projectWithIncorrectConfigurationInPackageJson)
 })

@@ -253,7 +253,7 @@ function _getConfig(projectRootPath) {
             return config
         }
         else if (config && !_validateHooks(config)) {
-            throw('[ERROR] Config was not in correct format. Please check git hooks name')
+            throw('[ERROR] Config was not in correct format. Please check git hooks or options name')
         }
     }
 

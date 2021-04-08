@@ -35,6 +35,8 @@ const VALID_GIT_HOOKS = [
     'post-index-change',
 ]
 
+const VALID_OPTIONS = ['preserveUnused']
+
 /**
  * Recursively gets the .git folder path from provided directory
  * @param {string} directory
@@ -145,10 +147,12 @@ function setHooksFromConfig(projectRootPath=process.cwd()) {
         throw('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')
     }
 
+    const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : config.preserveUnused ? VALID_GIT_HOOKS: []
+
     for (let hook of VALID_GIT_HOOKS) {
         if (Object.prototype.hasOwnProperty.call(config, hook)) {
             _setHook(hook, config[hook], projectRootPath)
-        } else {
+        } else if (!preserveUnused.includes(hook)) {
             _removeHook(hook, projectRootPath)
         }
     }
@@ -296,14 +300,18 @@ function _getConfigFromFile(projectRootPath, fileName) {
 }
 
 /**
- * Validates the config, checks that every git hook is named correctly
+ * Validates the config, checks that every git hook or option is named correctly
  * @return {boolean}
- * @param {{string: string}} hooks
+ * @param {{string: string}} config
  */
-function _validateHooks(hooks) {
+function _validateHooks(config) {
 
-    for (let hook in hooks) {
-        if (!VALID_GIT_HOOKS.includes(hook)) {
+    for (let hook in config) {
+        if (!Object.prototype.hasOwnProperty.call(config, hook)) {
+            continue
+        }
+
+        if (!VALID_GIT_HOOKS.includes(hook) && !VALID_OPTIONS.includes(hook)) {
             return false
         }
     }

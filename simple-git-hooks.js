@@ -307,10 +307,6 @@ function _getConfigFromFile(projectRootPath, fileName) {
 function _validateHooks(config) {
 
     for (let hookOrOption in config) {
-        if (!Object.prototype.hasOwnProperty.call(config, hookOrOption)) {
-            continue
-        }
-
         if (!VALID_GIT_HOOKS.includes(hookOrOption) && !VALID_OPTIONS.includes(hookOrOption)) {
             return false
         }

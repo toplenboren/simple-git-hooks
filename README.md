@@ -9,7 +9,7 @@ A tool that lets you easily manage git hooks
 
 - Zero dependency
 - Easy to configure (one line in `package.json`)
-- Lightweight*:
+- Lightweight:
 
   | Package | Unpacked size | With deps |
   | ------------- | ------------- | ------------- |

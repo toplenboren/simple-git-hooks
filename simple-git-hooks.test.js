@@ -74,6 +74,7 @@ const projectWithConfigurationInSeparateJsPath = path.normalize(path.join(testsF
 const projectWithConfigurationInAlternativeSeparateJsPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_alternative_separate_js'))
 const projectWithConfigurationInSeparateJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_separate_json'))
 const projectWithConfigurationInAlternativeSeparateJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_alternative_separate_json'))
+const projectWithUnusedConfigurationInPackageJsonPath = path.normalize(path.join(testsFolder, 'project_with_unused_configuration_in_package_json'))
 
 // Incorrect configurations
 
@@ -172,7 +173,7 @@ test('creates git hooks if configuration is correct from package.json', () => {
 test('fails to create git hooks if configuration contains bad git hooks', () => {
     createGitHooksFolder(projectWithIncorrectConfigurationInPackageJson)
 
-    expect(() => spc.setHooksFromConfig(projectWithIncorrectConfigurationInPackageJson)).toThrow('[ERROR] Config was not in correct format. Please check git hooks name')
+    expect(() => spc.setHooksFromConfig(projectWithIncorrectConfigurationInPackageJson)).toThrow('[ERROR] Config was not in correct format. Please check git hooks or options name')
 
     removeGitHooksFolder(projectWithIncorrectConfigurationInPackageJson)
 })
@@ -217,4 +218,24 @@ test('creates git hooks and removes unused git hooks', () => {
     expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
 
     removeGitHooksFolder(projectWithConfigurationInPackageJsonPath)
+})
+
+
+test('creates git hooks and removes unused but preserves specific git hooks', () => {
+    createGitHooksFolder(projectWithUnusedConfigurationInPackageJsonPath)
+
+    const installedHooksDir = path.normalize(path.join(projectWithUnusedConfigurationInPackageJsonPath, '.git', 'hooks'))
+
+    fs.writeFileSync(path.resolve(installedHooksDir, 'commit-msg'), "# do nothing")
+    fs.writeFileSync(path.resolve(installedHooksDir, 'pre-push'), "# do nothing")
+
+    let installedHooks = getInstalledGitHooks(installedHooksDir);
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'commit-msg': '# do nothing', 'pre-push':'# do nothing'}))
+
+    spc.setHooksFromConfig(projectWithUnusedConfigurationInPackageJsonPath)
+
+    installedHooks = getInstalledGitHooks(installedHooksDir);
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'commit-msg': '# do nothing', 'pre-commit':`#!/bin/sh${os.EOL}exit 1`}))
+
+    removeGitHooksFolder(projectWithUnusedConfigurationInPackageJsonPath)
 })

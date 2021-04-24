@@ -3,7 +3,7 @@ const os = require('os')
 const spc = require("./simple-git-hooks");
 const path = require("path")
 
-const { packageVersion } = require('./package.json');
+const { version: packageVersion } = require('./package.json');
 
 
 // Get project root directory
@@ -22,6 +22,7 @@ test('getProjectRootDirectory falls back to undefined when we are not in node_mo
 
 test('getProjectRootDirectory return correct dir when installed using pnpm:', () => {
     expect(spc.getProjectRootDirectoryFromNodeModules(`var/my-project/node_modules/.pnpm/simple-git-hooks@${packageVersion}`)).toBe('var/my-project')
+    expect(spc.getProjectRootDirectoryFromNodeModules(`var/my-project/node_modules/.pnpm/simple-git-hooks@${packageVersion}/node_modules/simple-git-hooks`)).toBe('var/my-project')
 })
 
 

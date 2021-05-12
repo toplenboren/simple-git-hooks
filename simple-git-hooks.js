@@ -162,7 +162,13 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     const gitRoot = getGitProjectRoot(projectRoot)
 
     const hookCommand = "#!/bin/sh" + os.EOL + command
-    const hookPath = path.normalize(gitRoot + '/hooks/' + hook)
+    const hookDirectory = gitRoot + '/hooks/'
+    const hookPath = path.normalize(hookDirectory + hook)
+
+    const normalizedHookDirectory = path.normalize(hookDirectory)
+    if (!fs.existsSync(normalizedHookDirectory)) {
+        fs.mkdirSync(normalizedHookDirectory)
+    }
 
     fs.writeFileSync(hookPath, hookCommand)
     fs.chmodSync(hookPath, 0o0755)

@@ -1,5 +1,4 @@
 const fs = require('fs')
-const os = require("os");
 const path = require('path');
 
 const VALID_GIT_HOOKS = [
@@ -161,7 +160,7 @@ function setHooksFromConfig(projectRootPath=process.cwd()) {
 function _setHook(hook, command, projectRoot=process.cwd()) {
     const gitRoot = getGitProjectRoot(projectRoot)
 
-    const hookCommand = "#!/bin/sh" + os.EOL + command
+    const hookCommand = "#!/bin/sh\n" + command
     const hookDirectory = gitRoot + '/hooks/'
     const hookPath = path.normalize(hookDirectory + hook)
 

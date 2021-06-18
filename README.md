@@ -38,7 +38,7 @@ A git hook is a command or script that is going to be run every time you perform
  
 If the execution of a git hook fails, then the git action aborts.
 
-For example, if you want to run `linter` on every commit to ensure code quality in your project, then you can create a `pre-commit` hook that would call `npx lint staged`.
+For example, if you want to run `linter` on every commit to ensure code quality in your project, then you can create a `pre-commit` hook that would call `npx lint-staged`.
 
 Check out [lint-staged](https://github.com/okonet/lint-staged#readme). It works really well with `simple-git-hooks`.
 
@@ -124,7 +124,7 @@ This way `simple-git-hooks` configuration in `package.json` will not take effect
 
 ```js
 module.exports = {
-  "pre-commit": "npx lint staged",
+  "pre-commit": "npx lint-staged",
   "pre-push": "cd ../../ && npm run format"
 }
 ```
@@ -133,7 +133,7 @@ module.exports = {
 
 ```json
 {
-  "pre-commit": "npx lint staged",
+  "pre-commit": "npx lint-staged",
   "pre-push": "cd ../../ && npm run format"
 }
 ```

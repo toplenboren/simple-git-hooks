@@ -34,7 +34,8 @@
       ".github",
       ".idea",
       ".vscode",
-      ".npmignore"
+      ".npmignore",
+      "changelog.md"
     ],
     "packageManager": "npm"
   },

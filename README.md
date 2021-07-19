@@ -7,7 +7,7 @@ A tool that lets you easily manage git hooks
 
 > The package was recently renamed from `simple-pre-commit`. 
 
-> See **Releases** for the `simple-pre-commit` documentation.
+> See **Releases** for the `simple-pre-commit` documentation and challengelog
 
 - Zero dependency
 - Small configuration (1 object in package.json)

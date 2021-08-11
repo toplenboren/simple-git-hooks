@@ -238,7 +238,9 @@ function _getConfig(projectRootPath) {
 
     // every function here should accept projectRootPath as first argument and return object
     const sources = [
+        () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.cjs'),
         () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.js'),
+        () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.cjs'),
         () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.js'),
         () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.json'),
         () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.json'),

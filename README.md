@@ -7,7 +7,7 @@ A tool that lets you easily manage git hooks
 
 > The package was recently renamed from `simple-pre-commit`. 
 
-> See **Releases** for the `simple-pre-commit` documentation and challengelog
+> See **Releases** for the `simple-pre-commit` documentation and changelog
 
 - Zero dependency
 - Small configuration (1 object in package.json)
@@ -118,11 +118,11 @@ Note that you should manually run `npx simple-git-hooks` **every time you change
 
 ### Additional configuration options
 
-You can also add a `.simple-git-hooks.js`, `simple-git-hooks.js`, `.simple-git-hooks.json` or `simple-git-hooks.json` file to the project and write the configuration inside it.
+You can also add a `.simple-git-hooks.cjs`, `.simple-git-hooks.js`, `simple-git-hooks.cjs`, `simple-git-hooks.js`, `.simple-git-hooks.json` or `simple-git-hooks.json` file to the project and write the configuration inside it.
 
 This way `simple-git-hooks` configuration in `package.json` will not take effect any more.
 
-`.simple-git-hooks.js` or `simple-git-hooks.js` should look like the following.
+`.simple-git-hooks.cjs`, `.simple-git-hooks.js` or `simple-git-hooks.cjs`, `simple-git-hooks.js` should look like the following.
 
 ```js
 module.exports = {

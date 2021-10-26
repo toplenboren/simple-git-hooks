@@ -77,6 +77,7 @@ const projectWithConfigurationInAlternativeSeparateJsPath = path.normalize(path.
 const projectWithConfigurationInSeparateJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_separate_json'))
 const projectWithConfigurationInAlternativeSeparateJsonPath = path.normalize(path.join(testsFolder, 'project_with_configuration_in_alternative_separate_json'))
 const projectWithUnusedConfigurationInPackageJsonPath = path.normalize(path.join(testsFolder, 'project_with_unused_configuration_in_package_json'))
+const projectWithCustomConfigurationFilePath = path.normalize(path.join(testsFolder, 'project_with_custom_configuration'))
 
 // Incorrect configurations
 
@@ -259,4 +260,14 @@ test('creates git hooks and removes unused but preserves specific git hooks', ()
     expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'commit-msg': '# do nothing', 'pre-commit':`#!/bin/sh\nexit 1`}))
 
     removeGitHooksFolder(projectWithUnusedConfigurationInPackageJsonPath)
+})
+
+test('creates git hooks and removes unused but preserves specific git hooks', () => {
+    createGitHooksFolder(projectWithCustomConfigurationFilePath)
+
+    spc.setHooksFromConfig(projectWithCustomConfigurationFilePath, 'git-hooks.js')
+    const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithCustomConfigurationFilePath, '.git', 'hooks')))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh\nexit 1`, 'pre-push':`#!/bin/sh\nexit 1`}))
+
+    removeGitHooksFolder(projectWithCustomConfigurationFilePath)
 })

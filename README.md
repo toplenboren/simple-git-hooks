@@ -1,12 +1,10 @@
 # simple-git-hooks
 
-
- ![](https://img.shields.io/badge/dependencies-zero-green) [![Tests](https://github.com/toplenboren/simple-git-hooks/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/toplenboren/simple-git-hooks/actions/workflows/tests.yml)
+![](https://img.shields.io/badge/dependencies-zero-green) [![Tests](https://github.com/toplenboren/simple-git-hooks/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/toplenboren/simple-git-hooks/actions/workflows/tests.yml)
 
 A tool that lets you easily manage git hooks
 
-> The package was recently renamed from `simple-pre-commit`. 
-
+> The package was recently renamed from `simple-pre-commit`.
 
 > See **Releases** for the `simple-pre-commit` documentation and changelog
 
@@ -14,31 +12,31 @@ A tool that lets you easily manage git hooks
 - Small configuration (1 object in package.json)
 - Lightweight:
 
-  | Package | Unpacked size | With deps |
-  | ------------- | ------------- | ------------- |
-  | husky v4 `4.3.8` | `53.5 kB`  |  `~1 mB`  |
-  | husky v6 `6.0.0`  | `6.86 kB`  |  `6.86 kB`  |
-  | pre-commit `1.2.2` | `~80 kB` |  `~850 kB`   |
-  | **simple-git-hooks** `2.2.0` | `10.1 kB` |  `10.1 kB` |
+  | Package                      | Unpacked size | With deps |
+  | ---------------------------- | ------------- | --------- |
+  | husky v4 `4.3.8`             | `53.5 kB`     | `~1 mB`   |
+  | husky v6 `6.0.0`             | `6.86 kB`     | `6.86 kB` |
+  | pre-commit `1.2.2`           | `~80 kB`      | `~850 kB` |
+  | **simple-git-hooks** `2.2.0` | `10.1 kB`     | `10.1 kB` |
 
 ### Who uses simple-git-hooks?
 
-> The package is recommended by [`lint-staged`](https://github.com/okonet/lint-staged) 
+> The package is recommended by [`lint-staged`](https://github.com/okonet/lint-staged)
 
-* [Autoprefixer](https://github.com/postcss/autoprefixer)
-* [PostCSS](https://github.com/postcss/postcss.org)
-* [Browserslist](https://github.com/browserslist/browserslist)
-* [Nano ID](https://github.com/ai/nanoid)
-* [Size Limit](https://github.com/ai/size-limit)
-* [Storeon](https://github.com/storeon/storeon)
-* [Directus](https://github.com/directus/directus)
-* [Vercel/pkg](https://github.com/vercel/pkg)
-* More, see [full list](https://github.com/toplenboren/simple-git-hooks/network/dependents?package_id=UGFja2FnZS0xOTk1ODMzMTA4)
+- [Autoprefixer](https://github.com/postcss/autoprefixer)
+- [PostCSS](https://github.com/postcss/postcss.org)
+- [Browserslist](https://github.com/browserslist/browserslist)
+- [Nano ID](https://github.com/ai/nanoid)
+- [Size Limit](https://github.com/ai/size-limit)
+- [Storeon](https://github.com/storeon/storeon)
+- [Directus](https://github.com/directus/directus)
+- [Vercel/pkg](https://github.com/vercel/pkg)
+- More, see [full list](https://github.com/toplenboren/simple-git-hooks/network/dependents?package_id=UGFja2FnZS0xOTk1ODMzMTA4)
 
 ### What is a git hook?
 
 A git hook is a command or script that is going to be run every time you perform a git action, like `git commit` or `git push`.
- 
+
 If the execution of a git hook fails, then the git action aborts.
 
 For example, if you want to run `linter` on every commit to ensure code quality in your project, then you can create a `pre-commit` hook that would call `npx lint-staged`.
@@ -53,57 +51,56 @@ You can look up about git hooks on the [Pro Git book](https://git-scm.com/book/e
 
 However, this package requires you to manually apply the changes to git hooks. If you update them often, this is probably not the best choice.
 
-Also, this package allows you to set only one command per git hook. 
+Also, this package allows you to set only one command per git hook.
 
 If you need multiple verbose commands per git hook, flexible configuration or automatic update of git hooks, please check out the other packages:
- 
-* [Lefthook](https://github.com/Arkweid/lefthook)
-* [husky](https://github.com/typicode/husky)
-* [pre-commit](https://github.com/pre-commit/pre-commit)
 
+- [Lefthook](https://github.com/Arkweid/lefthook)
+- [husky](https://github.com/typicode/husky)
+- [pre-commit](https://github.com/pre-commit/pre-commit)
 
 ## Usage
 
 ### Add simple-git-hooks to the project
 
 1. Install simple-git-hooks as a dev dependency:
-   
+
    ```sh
    npm install simple-git-hooks --save-dev
    ```
 
 2. Add `simple-git-hooks` to your `package.json`. Fill it with git hooks and the corresponding commands.
 
-    For example:
+   For example:
 
-    ```jsonc
-    {
-      "simple-git-hooks": {
-        "pre-commit": "npx lint-staged",
-        "pre-push": "cd ../../ && npm run format",
+   ```jsonc
+   {
+     "simple-git-hooks": {
+       "pre-commit": "npx lint-staged",
+       "pre-push": "cd ../../ && npm run format",
 
-        // All unused hooks will be removed automatically by default
-        // but you can use the `preserveUnused` option like following to prevent this behavior
+       // All unused hooks will be removed automatically by default
+       // but you can use the `preserveUnused` option like following to prevent this behavior
 
-        // if you'd prefer preserve all unused hooks
-        "preserveUnused": true,
+       // if you'd prefer preserve all unused hooks
+       "preserveUnused": true,
 
-        // if you'd prefer preserve specific unused hooks
-        "preserveUnused": ["commit-msg"]
-      }
-    }
-    ```
+       // if you'd prefer preserve specific unused hooks
+       "preserveUnused": ["commit-msg"]
+     }
+   }
+   ```
 
-    This configuration is going to run all linters on every `commit` and formatter on `push`.
-    
+   This configuration is going to run all linters on every `commit` and formatter on `push`.
+
    > There are more ways to configure the package. Check out [Additional configuration options](#additional-configuration-options).
-    
+
 3. Run the CLI script to update the git hooks with the commands from the config:
 
    ```sh
    npx simple-git-hooks
    ```
-    
+
 Now all the git hooks are created.
 
 ### Update git hooks command
@@ -116,7 +113,6 @@ Note for **yarn2** users: Please run `yarn dlx simple-git-hooks` instead of the 
 
 Note that you should manually run `npx simple-git-hooks` **every time you change a command**.
 
-
 ### Additional configuration options
 
 You can also add a `.simple-git-hooks.cjs`, `.simple-git-hooks.js`, `simple-git-hooks.cjs`, `simple-git-hooks.js`, `.simple-git-hooks.json` or `simple-git-hooks.json` file to the project and write the configuration inside it.
@@ -128,8 +124,8 @@ This way `simple-git-hooks` configuration in `package.json` will not take effect
 ```js
 module.exports = {
   "pre-commit": "npx lint-staged",
-  "pre-push": "cd ../../ && npm run format"
-}
+  "pre-push": "cd ../../ && npm run format",
+};
 ```
 
 `.simple-git-hooks.json` or `simple-git-hooks.json` should look like the following.
@@ -141,6 +137,8 @@ module.exports = {
 }
 ```
 
+If you need to have multiple configuration files or just your-own configuration file, you install hooks manually from it by `npx simple-git-hooks ./my-config.js`.
+
 ### Uninstall simple-git-hooks
 
 > Uninstallation will remove all the existing git hooks.
@@ -149,14 +147,13 @@ module.exports = {
 npm uninstall simple-git-hooks
 ```
 
-
 ## Common issues
 
 ### When migrating from `husky` git hooks are not running
 
 **Why is this happening?**
 
-Husky might change the `core.gitHooks` value to `.husky`, this way, git hooks would search `.husky` directory instead of `.git/hooks/`. 
+Husky might change the `core.gitHooks` value to `.husky`, this way, git hooks would search `.husky` directory instead of `.git/hooks/`.
 
 Read more on git configuration in [Git book](https://git-scm.com/docs/githooks)
 

@@ -1,5 +1,5 @@
 const fs = require('fs')
-const path = require('path');
+const path = require('path')
 
 const VALID_GIT_HOOKS = [
     'applypatch-msg',
@@ -131,9 +131,10 @@ function checkSimpleGitHooksInDependencies(projectRootPath) {
 /**
  * Parses the config and sets git hooks
  * @param {string} projectRootPath
+ * @param {string} [configFileName]
  */
-function setHooksFromConfig(projectRootPath=process.cwd()) {
-    const config = _getConfig(projectRootPath)
+function setHooksFromConfig(projectRootPath=process.cwd(), configFileName='') {
+    const config = _getConfig(projectRootPath, configFileName)
 
     if (!config) {
         throw('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')
@@ -227,11 +228,12 @@ function _getPackageJson(projectPath = process.cwd()) {
  * First try to get command from .simple-pre-commit.json
  * If not found -> try to get command from package.json
  * @param {string} projectRootPath
+ * @param {string} [configFileName]
  * @throws TypeError if projectRootPath is not string
  * @return {{string: string} | undefined}
  * @private
  */
-function _getConfig(projectRootPath) {
+function _getConfig(projectRootPath, configFileName='') {
     if (typeof projectRootPath !== 'string') {
         throw TypeError("Check project root path! Expected a string, but got " + typeof projectRootPath)
     }
@@ -246,6 +248,11 @@ function _getConfig(projectRootPath) {
         () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.json'),
         () => _getConfigFromPackageJson(projectRootPath),
     ]
+
+    // if user pass his-own config path prepend custom path before the default ones
+    if (configFileName) {
+        sources.unshift(() => _getConfigFromFile(projectRootPath, configFileName))
+    }
 
     for (let executeSource of sources) {
         let config = executeSource()

@@ -265,7 +265,7 @@ test('creates git hooks and removes unused but preserves specific git hooks', ()
 test('creates git hooks and removes unused but preserves specific git hooks', () => {
     createGitHooksFolder(projectWithCustomConfigurationFilePath)
 
-    spc.setHooksFromConfig(projectWithCustomConfigurationFilePath, 'git-hooks.js')
+    spc.setHooksFromConfig(projectWithCustomConfigurationFilePath, ['npx', 'simple-git-hooks', './git-hooks.js'])
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithCustomConfigurationFilePath, '.git', 'hooks')))
     expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`#!/bin/sh\nexit 1`, 'pre-push':`#!/bin/sh\nexit 1`}))
 

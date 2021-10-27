@@ -7,7 +7,7 @@
 const {setHooksFromConfig} = require('./simple-git-hooks')
 
 try {
-    setHooksFromConfig()
+    setHooksFromConfig(process.cwd(), process.argv)
     console.log('[INFO] Successfully set all git hooks')
 } catch (e) {
     console.log('[ERROR], Was not able to set git hooks. Error: ' + e)

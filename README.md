@@ -98,6 +98,11 @@ If you need multiple verbose commands per git hook, flexible configuration or au
 3. Run the CLI script to update the git hooks with the commands from the config:
 
    ```sh
+   # [Optional] These 2 steps can be skipped for non-husky users
+   git config core.hooksPath .git/hooks/
+   rm -rf .git/hooks
+   
+   # Update ./git/hooks
    npx simple-git-hooks
    ```
 
@@ -174,3 +179,5 @@ validate the value is set:
 `git config core.hooksPath`
 
 should output: `.git/hooks/`
+
+Then remove the `.git/hooks/` folder that are generated previously by `husky`.

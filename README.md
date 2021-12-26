@@ -180,4 +180,4 @@ validate the value is set:
 
 should output: `.git/hooks/`
 
-Then remove the `.git/hooks/` folder that are generated previously by `husky`.
+Then remove the `.husky` folder that are generated previously by `husky`.

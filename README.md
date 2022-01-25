@@ -21,8 +21,6 @@ A tool that lets you easily manage git hooks
 
 ### Who uses simple-git-hooks?
 
-> The package is recommended by [`lint-staged`](https://github.com/okonet/lint-staged)
-
 - [Autoprefixer](https://github.com/postcss/autoprefixer)
 - [PostCSS](https://github.com/postcss/postcss.org)
 - [Browserslist](https://github.com/browserslist/browserslist)

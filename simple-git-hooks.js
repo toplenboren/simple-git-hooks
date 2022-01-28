@@ -162,7 +162,7 @@ function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv) {
 function _setHook(hook, command, projectRoot=process.cwd()) {
     const gitRoot = getGitProjectRoot(projectRoot)
 
-    const hookCommand = "#!/bin/sh\n" + command
+    const hookCommand = "#!/bin/sh\n" + Array.isArray(command) && typeof command === 'object' ? command.join(";\n") : command
     const hookDirectory = gitRoot + '/hooks/'
     const hookPath = path.normalize(hookDirectory + hook)
 

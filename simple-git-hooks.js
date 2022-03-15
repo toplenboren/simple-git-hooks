@@ -231,11 +231,10 @@ function _getPackageJson(projectPath = process.cwd()) {
  * @returns {string}
  */
 function _getCustomConfigPath(argv=[]) {
-    const cmdIdx = argv.findIndex(val => val === 'simple-git-hooks')
-
-    if (cmdIdx === -1) return ''
-    
-    return argv[cmdIdx + 1] || ''
+    // We'll run as one of the following:
+    // npx simple-git-hooks ./config.js
+    // node path/to/simple-git-hooks/cli.js ./config.js
+    return argv[2] || ''
 }
 
 /**

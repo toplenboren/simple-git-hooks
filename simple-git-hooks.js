@@ -310,7 +310,9 @@ function _getConfigFromFile(projectRootPath, fileName) {
     }
 
     try {
-        const filePath = path.normalize(projectRootPath + '/' + fileName)
+        const filePath = path.isAbsolute(fileName)
+            ? fileName
+            : path.normalize(projectRootPath + '/' + fileName)
         if (filePath === __filename) {
             return undefined
         }

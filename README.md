@@ -93,13 +93,13 @@ If you need multiple verbose commands per git hook, flexible configuration or au
 
    > There are more ways to configure the package. Check out [Additional configuration options](#additional-configuration-options).
 
-3. Run the CLI script to update the git hooks with the commands from the config:
+3. Run the CLI script to initialize the git hooks with the commands from the config:
 
    ```sh
    # [Optional] These 2 steps can be skipped for non-husky users
    git config core.hooksPath .git/hooks/
    rm -rf .git/hooks
-   
+
    # Update ./git/hooks
    npx simple-git-hooks
    ```
@@ -114,7 +114,9 @@ Now all the git hooks are created.
 
 Note for **yarn2** users: Please run `yarn dlx simple-git-hooks` instead of the command above. More info on [dlx](https://yarnpkg.com/cli/dlx)
 
-Note that you should manually run `npx simple-git-hooks` **every time you change a command**.
+The package will automatically update this command for you every time you commit. This works by hijacking the pre-commit hook and running `npx simple-git-hooks` behind the scenes. In addition, to make sure you run the newest pre-commit command, it will use the command from `package.json` and only leave a fallback command in the `.git/hooks` folder for usage with `preserveUnused`.
+
+Note that you should manually run `npx simple-git-hooks` if you want to apply changes from non-commit related hooks. This command will also run initially when running `yarn` using a `postinstall` hook. So ideally you will only call the command once when you setup simple-git-hooks, and never having to worry about it again.
 
 ### Additional configuration options
 

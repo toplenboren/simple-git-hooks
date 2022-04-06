@@ -47,9 +47,7 @@ You can look up about git hooks on the [Pro Git book](https://git-scm.com/book/e
 
 `simple-git-hooks` works well for small-sized projects when you need quickly set up hooks and forget about it.
 
-However, this package requires you to manually apply the changes to git hooks. If you update them often, this is probably not the best choice.
-
-Also, this package allows you to set only one command per git hook.
+This package allows you to set only one command per git hook.
 
 If you need multiple verbose commands per git hook, flexible configuration or automatic update of git hooks, please check out the other packages:
 

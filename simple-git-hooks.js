@@ -222,7 +222,7 @@ function _runPreCommitCommand(command) {
         spawn(command, {
             shell: true,
             stdio: [process.stdin, process.stdout, process.stderr, 'pipe']
-        })
+        }).on('exit', code => process.exit(code))
     }
 }
 

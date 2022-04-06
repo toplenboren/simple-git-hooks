@@ -169,7 +169,8 @@ function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv, ar
 function _setHook(hook, command, projectRoot=process.cwd(), args) {
     const gitRoot = getGitProjectRoot(projectRoot)
 
-    const hookCommand = "#!/bin/sh\n" + (hook === 'pre-commit' ? _autoUpdateHooksCommand(command, projectRoot) : command)
+    const updateHooksComamnd = `${_getPackageManagerRunCommand(projectRoot)} simple-git-hooks --auto --silent`
+    const hookCommand = "#!/bin/sh\n" + (hook === 'pre-commit' ? updateHooksComamnd : command)
     const hookDirectory = gitRoot + '/hooks/'
     const hookPath = path.normalize(hookDirectory + hook)
 
@@ -222,22 +223,7 @@ function _runPreCommitCommand(command) {
             shell: true,
             stdio: [process.stdin, process.stdout, process.stderr, 'pipe']
         })
-    } else {
-        process.exit(1)
     }
-}
-
-/**
- * Creates a command to silently update the Git hooks automatically on every commit
- * Prioritizes configured command on consecutive commits
- * @param {string} command
- * @param {string} projectRoot
- * @return {boolean}
- * @private
- */
-function _autoUpdateHooksCommand(command, projectRoot=process.cwd()) {
-    const updateHooksAndRunPreCommit = `${_getPackageManagerRunCommand(projectRoot)} simple-git-hooks --auto --silent`
-    return `${updateHooksAndRunPreCommit} || ${command}`
 }
 
 /** Reads package.json file, returns package.json content and path

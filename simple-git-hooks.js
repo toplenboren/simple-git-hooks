@@ -220,7 +220,7 @@ function _runPreCommitCommand(command) {
     if (command) {
         spawn(command, {
             shell: true,
-            stdio: [process.stdin, process.stdout, 'pipe']
+            stdio: [process.stdin, process.stdout, process.stderr, 'pipe']
         })
     } else {
         process.exit(1)

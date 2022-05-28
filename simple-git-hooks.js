@@ -290,7 +290,8 @@ function _getConfig(projectRootPath, configFileName='') {
  */
 function _getConfigFromPackageJson(projectRootPath = process.cwd()) {
     const {packageJsonContent} = _getPackageJson(projectRootPath)
-    return packageJsonContent['simple-git-hooks']
+    const config = packageJsonContent['simple-git-hooks'];
+    return typeof config === 'string' ? _getConfig(config) : packageJsonContent['simple-git-hooks']
 }
 
 /**

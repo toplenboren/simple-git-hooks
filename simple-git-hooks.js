@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const { spawn } = require('child_process')
 
 const VALID_GIT_HOOKS = [
     'applypatch-msg',
@@ -84,7 +85,7 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
 
     const indexOfPnpmDir = projDir.indexOf('.pnpm')
     if (indexOfPnpmDir > -1) {
-        return projDir.slice(0, indexOfPnpmDir - 1).join('/');
+        return projDir.slice(0, indexOfPnpmDir - 1).join('/')
     }
 
     // A yarn2 STAB
@@ -108,7 +109,7 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
  * Checks the 'simple-git-hooks' in dependencies of the project
  * @param {string} projectRootPath
  * @throws TypeError if packageJsonData not an object
- * @return {Boolean}
+ * @return {boolean}
  */
 function checkSimpleGitHooksInDependencies(projectRootPath) {
     if (typeof projectRootPath !== 'string') {
@@ -132,8 +133,9 @@ function checkSimpleGitHooksInDependencies(projectRootPath) {
  * Parses the config and sets git hooks
  * @param {string} projectRootPath
  * @param {string[]} [argv]
+ * @param {object} [args]
  */
-function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv) {
+function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv, args={}) {
     const customConfigPath = _getCustomConfigPath(argv)
     const config = _getConfig(projectRootPath, customConfigPath)
 
@@ -145,9 +147,13 @@ function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv) {
 
     for (let hook of VALID_GIT_HOOKS) {
         if (Object.prototype.hasOwnProperty.call(config, hook)) {
-            _setHook(hook, config[hook], projectRootPath)
+            _setHook(hook, config[hook], projectRootPath, args)
         } else if (!preserveUnused.includes(hook)) {
             _removeHook(hook, projectRootPath)
+        }
+
+        if (hook === 'pre-commit' && args.auto) {
+            _runPreCommitCommand(config[hook])
         }
     }
 }
@@ -157,12 +163,14 @@ function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv) {
  * @param {string} hook
  * @param {string} command
  * @param {string} projectRoot
+ * @param {object} args
  * @private
  */
-function _setHook(hook, command, projectRoot=process.cwd()) {
+function _setHook(hook, command, projectRoot=process.cwd(), args) {
     const gitRoot = getGitProjectRoot(projectRoot)
 
-    const hookCommand = "#!/bin/sh\n" + command
+    const updateHooksComamnd = `${_getPackageManagerRunCommand(projectRoot)} simple-git-hooks --auto --silent`
+    const hookCommand = "#!/bin/sh\n" + (hook === 'pre-commit' ? updateHooksComamnd : command)
     const hookDirectory = gitRoot + '/hooks/'
     const hookPath = path.normalize(hookDirectory + hook)
 
@@ -174,7 +182,9 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     fs.writeFileSync(hookPath, hookCommand)
     fs.chmodSync(hookPath, 0o0755)
 
-    console.log(`[INFO] Successfully set the ${hook} with command: ${command}`)
+    if (!args.silent) {
+        console.log(`[INFO] Successfully set the ${hook} with command: ${command}`)
+    }
 }
 
 /**
@@ -202,6 +212,20 @@ function _removeHook(hook, projectRoot=process.cwd()) {
     }
 }
 
+/**
+ * Runs the configured pre-commit if it exists, or exit with an error to propagate to hook command
+ * @param {string} command
+ * @private
+ */
+function _runPreCommitCommand(command) {
+    if (command) {
+        spawn(command, {
+            shell: true,
+            stdio: [process.stdin, process.stdout, process.stderr, 'pipe']
+        }).on('exit', code => process.exit(code))
+    }
+}
+
 /** Reads package.json file, returns package.json content and path
  * @param {string} projectPath - a path to the project, defaults to process.cwd
  * @return {{packageJsonContent: any, packageJsonPath: string}}
@@ -225,10 +249,24 @@ function _getPackageJson(projectPath = process.cwd()) {
 }
 
 /**
+ * Gets a run command based on the current package manager
+ * @param {string} projectRoot
+ * @return {string}
+ * @private
+ */
+function _getPackageManagerRunCommand(projectRoot=process.cwd()) {
+    const usesYarn = fs.existsSync(path.resolve(projectRoot, 'yarn.lock'))
+    const usesYarn2 = fs.existsSync(path.resolve(projectRoot, '.yarn'))
+
+    return usesYarn ? 'yarn run --silent' : usesYarn2 ? 'yarn dxl' : 'npx'
+}
+
+/**
  * Takes the first argument from current process argv and returns it
  * Returns empty string when argument wasn't passed
  * @param {string[]} [argv]
  * @returns {string}
+ * @private
  */
 function _getCustomConfigPath(argv=[]) {
     // We'll run as one of the following:
@@ -287,6 +325,7 @@ function _getConfig(projectRootPath, configFileName='') {
  * @throws TypeError if packageJsonPath is not a string
  * @throws Error if package.json couldn't be read or was not validated
  * @return {{string: string} | undefined}
+ * @private
  */
 function _getConfigFromPackageJson(projectRootPath = process.cwd()) {
     const {packageJsonContent} = _getPackageJson(projectRootPath)
@@ -300,6 +339,7 @@ function _getConfigFromPackageJson(projectRootPath = process.cwd()) {
  * @param {string} projectRootPath
  * @param {string} fileName
  * @return {{string: string} | undefined}
+ * @private
  */
 function _getConfigFromFile(projectRootPath, fileName) {
     if (typeof projectRootPath !== "string") {
@@ -327,6 +367,7 @@ function _getConfigFromFile(projectRootPath, fileName) {
  * Validates the config, checks that every git hook or option is named correctly
  * @return {boolean}
  * @param {{string: string}} config
+ * @private
  */
 function _validateHooks(config) {
 

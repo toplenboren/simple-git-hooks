@@ -59,7 +59,7 @@ function getGitProjectRoot(directory=process.cwd()) {
     if (fs.existsSync(fullPath)) {
         if(!fs.lstatSync(fullPath).isDirectory()) {
             let content = fs.readFileSync(fullPath, { encoding: 'utf-8' })
-            let match = /^gitdir: (.*)\s*$/.exec(content)
+            let match = /^gitdir: (.*\.git)((\/.*)|(\s*))/.exec(content)
             if (match) {
                 return path.normalize(match[1])
             }

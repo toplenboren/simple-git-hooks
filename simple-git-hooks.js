@@ -164,6 +164,7 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
 
     if (!gitRoot) {
         console.log('[INFO] No `.git` root folder found, skipping')
+        return
     }
 
     const hookCommand = "#!/bin/sh\n" + command

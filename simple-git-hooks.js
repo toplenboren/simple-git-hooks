@@ -162,6 +162,11 @@ function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv) {
 function _setHook(hook, command, projectRoot=process.cwd()) {
     const gitRoot = getGitProjectRoot(projectRoot)
 
+    if (!gitRoot) {
+        console.log('[INFO] No `.git` root folder found, skipping')
+        return
+    }
+
     const hookCommand = "#!/bin/sh\n" + command
     const hookDirectory = gitRoot + '/hooks/'
     const hookPath = path.normalize(hookDirectory + hook)

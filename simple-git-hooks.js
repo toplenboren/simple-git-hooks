@@ -87,6 +87,11 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
         return projDir.slice(0, indexOfPnpmDir - 1).join('/');
     }
 
+    const indexOfStoreDir = projDir.indexOf('.store')
+    if (indexOfStoreDir > -1) {
+        return projDir.slice(0, indexOfStoreDir - 1).join('/');
+    }
+
     // A yarn2 STAB
     if (projDir.includes('.yarn') && projDir.includes('unplugged')) {
         return undefined

@@ -24,6 +24,10 @@ test('getProjectRootDirectory return correct dir when installed using pnpm:', ()
     expect(spc.getProjectRootDirectoryFromNodeModules(`var/my-project/node_modules/.pnpm/simple-git-hooks@${packageVersion}/node_modules/simple-git-hooks`)).toBe('var/my-project')
 })
 
+test('getProjectRootDirectory return correct dir when installed using yarn3 nodeLinker pnpm:', () => {
+    expect(spc.getProjectRootDirectoryFromNodeModules(`var/my-project/node_modules/.store/simple-git-hooks@${packageVersion}/node_modules/simple-git-hooks`)).toBe('var/my-project')
+})
+
 
 // Get git root
 

@@ -61,7 +61,13 @@ function getGitProjectRoot(directory=process.cwd()) {
             let content = fs.readFileSync(fullPath, { encoding: 'utf-8' })
             let match = /^gitdir: (.*)\s*$/.exec(content)
             if (match) {
-                return path.normalize(match[1])
+                let gitDir = match[1]
+                let commonDir = path.join(gitDir, 'commondir');
+                if (fs.existsSync(commonDir)) {
+                    commonDir = fs.readFileSync(commonDir, 'utf8').trim();
+                    return path.resolve(gitDir, commonDir)
+                }
+                return path.normalize(gitDir)
             }
         }
         return path.normalize(fullPath)

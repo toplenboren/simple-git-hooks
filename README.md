@@ -152,6 +152,12 @@ npm uninstall simple-git-hooks
 
 ## Common issues
 
+### I want to skip git hooks!
+
+You should use -no-verify option
+
+https://bobbyhadz.com/blog/git-commit-skip-hooks#skip-git-commit-hooks
+
 ### When migrating from `husky` git hooks are not running
 
 **Why is this happening?**

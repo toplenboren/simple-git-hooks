@@ -154,7 +154,7 @@ npm uninstall simple-git-hooks
 
 ### I want to skip git hooks!
 
-You should use -no-verify option
+You should use `--no-verify` option
 
 https://bobbyhadz.com/blog/git-commit-skip-hooks#skip-git-commit-hooks
 

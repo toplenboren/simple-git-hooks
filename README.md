@@ -99,7 +99,7 @@ If you need multiple verbose commands per git hook, flexible configuration or au
    # [Optional] These 2 steps can be skipped for non-husky users
    git config core.hooksPath .git/hooks/
    rm -rf .git/hooks
-   
+
    # Update ./git/hooks
    npx simple-git-hooks
    ```
@@ -157,6 +157,18 @@ npm uninstall simple-git-hooks
 You should use `--no-verify` option
 
 https://bobbyhadz.com/blog/git-commit-skip-hooks#skip-git-commit-hooks
+
+If you need to bypass hooks for multiple Git operations, setting the SIMPLE_GIT_HOOKS environment variable can be more convenient. Once set, all subsequent Git operations in the same terminal session will bypass the associated hooks.
+
+```sh
+# Set the environment variable
+export SIMPLE_GIT_HOOKS=0
+
+# Subsequent Git commands will skip the hooks
+git add .
+git commit -m "commit message"  # pre-commit hooks are bypassed
+git push origin main  # pre-push hooks are bypassed
+```
 
 ### When migrating from `husky` git hooks are not running
 

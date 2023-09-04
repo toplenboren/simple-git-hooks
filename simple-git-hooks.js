@@ -178,7 +178,13 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
         return
     }
 
-    const hookCommand = "#!/bin/sh\n" + command
+    const prependScript =
+      "#!/bin/sh\n\n" +
+      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
+      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
+      "    exit 0\n" +
+      "fi\n\n";
+    const hookCommand = prependScript + command
     const hookDirectory = gitRoot + '/hooks/'
     const hookPath = path.normalize(hookDirectory + hook)
 

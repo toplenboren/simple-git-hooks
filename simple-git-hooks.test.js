@@ -395,7 +395,9 @@ afterEach(() => {
 })
 
 test("bypasses hooks when SIMPLE_GIT_HOOKS is set to 0", () => {
-   execSync("git init", { cwd: projectWithConfigurationInPackageJsonPath });
+  execSync("git init \
+    && git config user.name github-actions \
+    && git config user.email github-actions@github.com", { cwd: projectWithConfigurationInPackageJsonPath });
 
    createGitHooksFolder(projectWithConfigurationInPackageJsonPath);
 
@@ -408,6 +410,9 @@ test("bypasses hooks when SIMPLE_GIT_HOOKS is set to 0", () => {
        env: { ...process.env },
      });
    } catch (e) { 
+     console.log(e)
+     console.log(e.stdout.toString())
+      console.log(e.stderr.toString())
      errorOccured = true;
    }
 
@@ -416,7 +421,12 @@ test("bypasses hooks when SIMPLE_GIT_HOOKS is set to 0", () => {
  
 
 test("hook executes when bypass var is not set", () => {
-  execSync("git init", { cwd: projectWithConfigurationInPackageJsonPath });
+  execSync(
+    "git init \
+    && git config user.name github-actions \
+    && git config user.email github-actions@github.com",
+    { cwd: projectWithConfigurationInPackageJsonPath }
+  );
 
   createGitHooksFolder(projectWithConfigurationInPackageJsonPath);
 

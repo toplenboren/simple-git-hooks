@@ -154,15 +154,7 @@ test('creates git hooks if configuration is correct from .simple-git-hooks.js', 
 
     spc.setHooksFromConfig(projectWithConfigurationInAlternativeSeparateJsPath)
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInAlternativeSeparateJsPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`, 'pre-push':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`, 'pre-push':`${spc.PREPEND_SCRIPT}exit 1`}))
 })
 
 
@@ -171,15 +163,7 @@ test('creates git hooks if configuration is correct from .simple-git-hooks.cjs',
 
     spc.setHooksFromConfig(projectWithConfigurationInAlternativeSeparateCjsPath)
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInAlternativeSeparateCjsPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`, 'pre-push':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`, 'pre-push':`${spc.PREPEND_SCRIPT}exit 1`}))
 })
 
 
@@ -188,15 +172,7 @@ test('creates git hooks if configuration is correct from simple-git-hooks.cjs', 
 
     spc.setHooksFromConfig(projectWithConfigurationInSeparateCjsPath)
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInSeparateCjsPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`, 'pre-push':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`, 'pre-push':`${spc.PREPEND_SCRIPT}exit 1`}))
 })
 
 
@@ -205,15 +181,7 @@ test('creates git hooks if configuration is correct from simple-git-hooks.js', (
 
     spc.setHooksFromConfig(projectWithConfigurationInSeparateJsPath)
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInSeparateJsPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`, 'pre-push':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`, 'pre-push':`${spc.PREPEND_SCRIPT}exit 1`}))
 })
 
 
@@ -222,15 +190,7 @@ test('creates git hooks if configuration is correct from .simple-git-hooks.json'
 
     spc.setHooksFromConfig(projectWithConfigurationInAlternativeSeparateJsonPath)
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInAlternativeSeparateJsonPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`, 'pre-push':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`, 'pre-push':`${spc.PREPEND_SCRIPT}exit 1`}))
 })
 
 
@@ -239,15 +199,7 @@ test('creates git hooks if configuration is correct from simple-git-hooks.json',
 
     spc.setHooksFromConfig(projectWithConfigurationInSeparateJsonPath)
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInSeparateJsonPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`, 'pre-push':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`, 'pre-push':`${spc.PREPEND_SCRIPT}exit 1`}))
 })
 
 
@@ -256,11 +208,7 @@ test('creates git hooks if configuration is correct from package.json', () => {
 
     spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`}))
 
 })
 
@@ -287,11 +235,7 @@ test('removes git hooks', () => {
     spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
 
     let installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithConfigurationInPackageJsonPath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`}))
 
     spc.removeHooks(projectWithConfigurationInPackageJsonPath)
 
@@ -314,11 +258,7 @@ test('creates git hooks and removes unused git hooks', () => {
     spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath)
 
     installedHooks = getInstalledGitHooks(installedHooksDir);
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`}))
 
 })
 
@@ -337,11 +277,7 @@ test('creates git hooks and removes unused but preserves specific git hooks', ()
     spc.setHooksFromConfig(projectWithUnusedConfigurationInPackageJsonPath)
 
     installedHooks = getInstalledGitHooks(installedHooksDir);
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'commit-msg': '# do nothing', 'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'commit-msg': '# do nothing', 'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`}))
 
 })
 
@@ -355,15 +291,7 @@ test.each([
 
     spc.setHooksFromConfig(projectWithCustomConfigurationFilePath, args)
     const installedHooks = getInstalledGitHooks(path.normalize(path.join(projectWithCustomConfigurationFilePath, '.git', 'hooks')))
-    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`, 'pre-push':`${"#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n"}exit 1`}))
+    expect(JSON.stringify(installedHooks)).toBe(JSON.stringify({'pre-commit':`${spc.PREPEND_SCRIPT}exit 1`, 'pre-push':`${spc.PREPEND_SCRIPT}exit 1`}))
 })
 
 

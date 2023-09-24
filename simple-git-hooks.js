@@ -34,6 +34,13 @@ const VALID_GIT_HOOKS = [
 
 const VALID_OPTIONS = ['preserveUnused']
 
+const PREPEND_SCRIPT =
+  "#!/bin/sh\n\n" +
+  'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
+  '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
+  "    exit 0\n" +
+  "fi\n\n";
+
 /**
  * Recursively gets the .git folder path from provided directory
  * @param {string} directory
@@ -178,13 +185,7 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
         return
     }
 
-    const prependScript =
-      "#!/bin/sh\n\n" +
-      'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-      '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
-      "    exit 0\n" +
-      "fi\n\n";
-    const hookCommand = prependScript + command
+    const hookCommand = PREPEND_SCRIPT + command
     const hookDirectory = gitRoot + '/hooks/'
     const hookPath = path.normalize(hookDirectory + hook)
 
@@ -367,4 +368,5 @@ module.exports = {
     getProjectRootDirectoryFromNodeModules,
     getGitProjectRoot,
     removeHooks,
+    PREPEND_SCRIPT
 }

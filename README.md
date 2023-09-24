@@ -158,11 +158,11 @@ You should use `--no-verify` option
 
 https://bobbyhadz.com/blog/git-commit-skip-hooks#skip-git-commit-hooks
 
-If you need to bypass hooks for multiple Git operations, setting the SIMPLE_GIT_HOOKS environment variable can be more convenient. Once set, all subsequent Git operations in the same terminal session will bypass the associated hooks.
+If you need to bypass hooks for multiple Git operations, setting the SKIP_SIMPLE_GIT_HOOKS environment variable can be more convenient. Once set, all subsequent Git operations in the same terminal session will bypass the associated hooks.
 
 ```sh
 # Set the environment variable
-export SIMPLE_GIT_HOOKS=0
+export SKIP_SIMPLE_GIT_HOOKS=1
 
 # Subsequent Git commands will skip the hooks
 git add .

@@ -36,8 +36,8 @@ const VALID_OPTIONS = ['preserveUnused']
 
 const PREPEND_SCRIPT =
   "#!/bin/sh\n\n" +
-  'if [ "$SIMPLE_GIT_HOOKS" = "0" ]; then\n' +
-  '    echo "[INFO] SIMPLE_GIT_HOOKS is set to 0, skipping hook."\n' +
+  'if [ "$SKIP_SIMPLE_GIT_HOOKS" = "1" ]; then\n' +
+  '    echo "[INFO] SKIP_SIMPLE_GIT_HOOKS is set to 1, skipping hook."\n' +
   "    exit 0\n" +
   "fi\n\n";
 

@@ -143,7 +143,7 @@ afterEach(() => {
         projectWithUnusedConfigurationInPackageJsonPath,
         projectWithCustomConfigurationFilePath,
       ].forEach((testCase) => {
-          delete process.env.SIMPLE_GIT_HOOKS;
+          delete process.env.SKIP_SIMPLE_GIT_HOOKS;
           removeGitHooksFolder(testCase);
       });
     });
@@ -295,7 +295,7 @@ test.each([
 })
 
 
-test("bypasses hooks when SIMPLE_GIT_HOOKS is set to 0", () => {
+test("bypasses hooks when SKIP_SIMPLE_GIT_HOOKS is set to 1", () => {
   execSync("git init \
     && git config user.name github-actions \
     && git config user.email github-actions@github.com", { cwd: projectWithConfigurationInPackageJsonPath });
@@ -303,7 +303,7 @@ test("bypasses hooks when SIMPLE_GIT_HOOKS is set to 0", () => {
    createGitHooksFolder(projectWithConfigurationInPackageJsonPath);
 
    spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath);
-   process.env.SIMPLE_GIT_HOOKS = '0';  // Set environment variable
+   process.env.SKIP_SIMPLE_GIT_HOOKS = '1';  // Set environment variable
    let errorOccured = false;
    try {
      execSync('git add . && git commit --allow-empty -m "Test commit" && git commit --allow-empty -am "Change commit msg"', {

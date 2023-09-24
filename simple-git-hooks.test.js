@@ -128,7 +128,25 @@ function getInstalledGitHooks(hooksDir) {
 }
 
 afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsPath);
+    afterEach(() => {
+      [
+        projectWithConfigurationInAlternativeSeparateJsPath,
+        projectWithConfigurationInAlternativeSeparateCjsPath,
+        projectWithConfigurationInSeparateCjsPath,
+        projectWithConfigurationInSeparateJsPath,
+        projectWithConfigurationInAlternativeSeparateJsonPath,
+        projectWithConfigurationInSeparateJsonPath,
+        projectWithConfigurationInPackageJsonPath,
+        projectWithIncorrectConfigurationInPackageJson,
+        projectWithoutConfiguration,
+        projectWithConfigurationInPackageJsonPath,
+        projectWithUnusedConfigurationInPackageJsonPath,
+        projectWithCustomConfigurationFilePath,
+      ].forEach((testCase) => {
+          delete process.env.SIMPLE_GIT_HOOKS;
+          removeGitHooksFolder(testCase);
+      });
+    });
 });
 
 test('creates git hooks if configuration is correct from .simple-git-hooks.js', () => {
@@ -147,9 +165,6 @@ test('creates git hooks if configuration is correct from .simple-git-hooks.js', 
       "fi\n\n"}exit 1`}))
 })
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInAlternativeSeparateCjsPath);
-});
 
 test('creates git hooks if configuration is correct from .simple-git-hooks.cjs', () => {
     createGitHooksFolder(projectWithConfigurationInAlternativeSeparateCjsPath)
@@ -167,9 +182,6 @@ test('creates git hooks if configuration is correct from .simple-git-hooks.cjs',
       "fi\n\n"}exit 1`}))
 })
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInSeparateCjsPath);
-});
 
 test('creates git hooks if configuration is correct from simple-git-hooks.cjs', () => {
     createGitHooksFolder(projectWithConfigurationInSeparateCjsPath)
@@ -187,9 +199,6 @@ test('creates git hooks if configuration is correct from simple-git-hooks.cjs', 
       "fi\n\n"}exit 1`}))
 })
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInSeparateJsPath);
-});
 
 test('creates git hooks if configuration is correct from simple-git-hooks.js', () => {
     createGitHooksFolder(projectWithConfigurationInSeparateJsPath)
@@ -206,10 +215,6 @@ test('creates git hooks if configuration is correct from simple-git-hooks.js', (
       "    exit 0\n" +
       "fi\n\n"}exit 1`}))
 })
-
-afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInAlternativeSeparateJsonPath);
-});
 
 
 test('creates git hooks if configuration is correct from .simple-git-hooks.json', () => {
@@ -228,9 +233,6 @@ test('creates git hooks if configuration is correct from .simple-git-hooks.json'
       "fi\n\n"}exit 1`}))
 })
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInSeparateJsonPath);
-});
 
 test('creates git hooks if configuration is correct from simple-git-hooks.json', () => {
     createGitHooksFolder(projectWithConfigurationInSeparateJsonPath)
@@ -248,9 +250,6 @@ test('creates git hooks if configuration is correct from simple-git-hooks.json',
       "fi\n\n"}exit 1`}))
 })
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInPackageJsonPath);
-});
 
 test('creates git hooks if configuration is correct from package.json', () => {
     createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
@@ -265,9 +264,6 @@ test('creates git hooks if configuration is correct from package.json', () => {
 
 })
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithIncorrectConfigurationInPackageJson);
-});
 
 test('fails to create git hooks if configuration contains bad git hooks', () => {
     createGitHooksFolder(projectWithIncorrectConfigurationInPackageJson)
@@ -276,10 +272,6 @@ test('fails to create git hooks if configuration contains bad git hooks', () => 
 
 })
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithoutConfiguration);
-});
-
 
 test('fails to create git hooks if not configured', () => {
     createGitHooksFolder(projectWithoutConfiguration)
@@ -287,10 +279,6 @@ test('fails to create git hooks if not configured', () => {
     expect(() => spc.setHooksFromConfig(projectWithoutConfiguration)).toThrow('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.')
 
 })
-
-afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInPackageJsonPath);
-});
 
 
 test('removes git hooks', () => {
@@ -313,10 +301,6 @@ test('removes git hooks', () => {
 })
 
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithConfigurationInPackageJsonPath);
-});
-
 test('creates git hooks and removes unused git hooks', () => {
     createGitHooksFolder(projectWithConfigurationInPackageJsonPath)
 
@@ -337,10 +321,6 @@ test('creates git hooks and removes unused git hooks', () => {
       "fi\n\n"}exit 1`}))
 
 })
-
-afterEach(() => {
-  removeGitHooksFolder(projectWithUnusedConfigurationInPackageJsonPath);
-});
 
 
 test('creates git hooks and removes unused but preserves specific git hooks', () => {
@@ -365,9 +345,6 @@ test('creates git hooks and removes unused but preserves specific git hooks', ()
 
 })
 
-afterEach(() => {
-  removeGitHooksFolder(projectWithCustomConfigurationFilePath);
-});
 
 test.each([
   ['npx', 'simple-git-hooks', './git-hooks.js'],
@@ -389,10 +366,6 @@ test.each([
       "fi\n\n"}exit 1`}))
 })
 
-afterEach(() => {
-    delete process.env.SIMPLE_GIT_HOOKS;
-    removeGitHooksFolder(projectWithConfigurationInPackageJsonPath);
-})
 
 test("bypasses hooks when SIMPLE_GIT_HOOKS is set to 0", () => {
   execSync("git init \

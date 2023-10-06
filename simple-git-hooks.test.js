@@ -298,57 +298,71 @@ test.each([
 
 describe('Tests for skipping git hooks using SKIP_SIMPLE_GIT_HOOKS env var', () => {
 
-    afterEach(() => {
-        delete process.env.SKIP_SIMPLE_GIT_HOOKS;
-    })
+    const GIT_USER_NAME = "github-actions";
+    const GIT_USER_EMAIL = "github-actions@github.com";
 
-    test("bypasses hooks when SKIP_SIMPLE_GIT_HOOKS is set to 1", () => {
-        execSync("git init \
-        && git config user.name github-actions \
-        && git config user.email github-actions@github.com", { cwd: projectWithConfigurationInPackageJsonPath });
+    const initializeGitRepository = (path) => {
+      execSync(
+        `git init \
+        && git config user.name ${GIT_USER_NAME} \
+        && git config user.email ${GIT_USER_EMAIL}`,
+        { cwd: path }
+      );
+    };
 
-        createGitHooksFolder(projectWithConfigurationInPackageJsonPath);
-
-        spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath);
-        process.env.SKIP_SIMPLE_GIT_HOOKS = '1';  // Set environment variable
-        let errorOccured = false;
-        try {
-            execSync('git add . && git commit --allow-empty -m "Test commit" && git commit --allow-empty -am "Change commit msg"', {
-                cwd: projectWithConfigurationInPackageJsonPath,
-                env: { ...process.env },
-            });
-        } catch (e) {
-            errorOccured = true;
-        }
-
-        expect(errorOccured).toBe(false);
-    });
-
-    test("hook executes when bypass var is not set", () => {
+    const performTestCommit = (path, env = process.env) => {
+      try {
         execSync(
-            "git init \
-        && git config user.name github-actions \
-        && git config user.email github-actions@github.com",
-            { cwd: projectWithConfigurationInPackageJsonPath }
+          'git add . && git commit --allow-empty -m "Test commit" && git commit --allow-empty -am "Change commit msg"',
+          {
+            cwd: path,
+            env: env,
+          }
         );
+        return false;
+      } catch (e) {
+        return true;
+      }
+    };
 
-        createGitHooksFolder(projectWithConfigurationInPackageJsonPath);
-
-        spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath);
-
-        let errorOccured = false;
-        try {
-            execSync(
-                'git add . && git commit --allow-empty -m "Test commit" && git commit --allow-empty -am "Change commit msg"',
-                {
-                    cwd: projectWithConfigurationInPackageJsonPath,
-                }
-            );
-        } catch (e) {
-            errorOccured = true;
-        }
-
-        expect(errorOccured).toBe(true);
+    beforeEach(() => {
+      initializeGitRepository(projectWithConfigurationInPackageJsonPath);
+      createGitHooksFolder(projectWithConfigurationInPackageJsonPath);
+      spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath);
     });
+
+    afterEach(() => {
+      delete process.env.SKIP_SIMPLE_GIT_HOOKS;
+    });
+
+    const expectCommitToSucceed = (path) => {
+      const errorOccurred = performTestCommit(path);
+      expect(errorOccurred).toBe(false);
+    };
+
+    const expectCommitToFail = (path) => {
+      const errorOccurred = performTestCommit(path);
+      expect(errorOccurred).toBe(true);
+    };
+
+    test('commits successfully when SKIP_SIMPLE_GIT_HOOKS is set to "1"', () => {
+      process.env.SKIP_SIMPLE_GIT_HOOKS = "1";
+      expectCommitToSucceed(projectWithConfigurationInPackageJsonPath);
+    });
+
+    test("commit fails when SKIP_SIMPLE_GIT_HOOKS is not set", () => {
+      expectCommitToFail(projectWithConfigurationInPackageJsonPath);
+    });
+
+    test('commit fails when SKIP_SIMPLE_GIT_HOOKS is set to "0"', () => {
+      process.env.SKIP_SIMPLE_GIT_HOOKS = "0";
+      expectCommitToFail(projectWithConfigurationInPackageJsonPath);
+    });
+
+    test("commit fails when SKIP_SIMPLE_GIT_HOOKS is set to a random string", () => {
+      process.env.SKIP_SIMPLE_GIT_HOOKS = "simple-git-hooks";
+      expectCommitToFail(projectWithConfigurationInPackageJsonPath);
+    });
+
 });
 

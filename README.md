@@ -114,6 +114,8 @@ Now all the git hooks are created.
 
 Note for **yarn2** users: Please run `yarn dlx simple-git-hooks` instead of the command above. More info on [dlx](https://yarnpkg.com/cli/dlx)
 
+Note for **yarn1** users: Please run `ynpx simple-git-hooks` instead of the command above. More info on [ynpx](https://npm.io/package/ynpx)
+
 Note that you should manually run `npx simple-git-hooks` **every time you change a command**.
 
 ### Additional configuration options

@@ -4,6 +4,8 @@ const path = require("path")
 
 const { version: packageVersion } = require('./package.json');
 
+// eslint-disable-next-line no-unused-vars
+const fsMock = jest.mock('fs')
 
 // Get project root directory
 
@@ -45,6 +47,34 @@ test('get git root works from any directory', () => {
 
 test('get git root works from any file', () => {
     expect(spc.getGitProjectRoot(currentFilePath)).toBe(gitProjectRoot)
+})
+
+
+function mockFsImplementation(gitdir){
+    const mocks = [
+        jest.spyOn(fs, 'existsSync').mockImplementation(()=>true),
+        jest.spyOn(fs, 'lstatSync').mockImplementation(()=>({
+            isDirectory: jest.fn(()=>false)
+        })),
+        jest.spyOn(fs, 'readFileSync').mockImplementation(()=>gitdir)
+    ]
+    return ()=> mocks.forEach(mock=>mock.mockRestore())
+}
+
+const gitRoot = '/home/user/projects/simple-git-hooks/.git';
+const workTreePath = '/home/user/projects/worktree1';
+const workTreeTestFilePath = '/home/user/projects/worktree1/simple-git-hooks.test.js';
+
+test('get git root works from worktree directory', () => {
+    const clearMocks = mockFsImplementation('gitdir: /home/user/projects/simple-git-hooks/.git/worktrees/worktree1')
+    expect(spc.getGitProjectRoot(workTreePath)).toBe(gitRoot);
+    clearMocks();
+})
+
+test('get git root works from any file', () => {
+    const clearMocks = mockFsImplementation('gitdir: /home/user/projects/simple-git-hooks/.git/worktrees/worktree1')
+    expect(spc.getGitProjectRoot(workTreeTestFilePath)).toBe(gitRoot);
+    clearMocks();
 })
 
 

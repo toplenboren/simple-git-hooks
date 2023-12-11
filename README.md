@@ -15,9 +15,9 @@ A tool that lets you easily manage git hooks
   | Package                      | Unpacked size | With deps |
   | ---------------------------- | ------------- | --------- |
   | husky v4 `4.3.8`             | `53.5 kB`     | `~1 mB`   |
-  | husky v6 `6.0.0`             | `6.86 kB`     | `6.86 kB` |
+  | husky v8 `8.0.3`             | `6.44 kB`     | `6.44 kB` |
   | pre-commit `1.2.2`           | `~80 kB`      | `~850 kB` |
-  | **simple-git-hooks** `2.2.0` | `10.1 kB`     | `10.1 kB` |
+  | **simple-git-hooks** `2.9.0` | `12.8 kB`     | `12.8 kB` |
 
 ### Who uses simple-git-hooks?
 
@@ -54,7 +54,7 @@ Also, this package allows you to set only one command per git hook.
 If you need multiple verbose commands per git hook, flexible configuration or automatic update of git hooks, please check out the other packages:
 
 - [Lefthook](https://github.com/Arkweid/lefthook)
-- [husky](https://github.com/typicode/husky)
+- [husky](https://typicode.github.io/husky/)
 - [pre-commit](https://github.com/pre-commit/pre-commit)
 
 ## Usage

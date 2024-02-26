@@ -212,3 +212,23 @@ validate the value is set:
 should output: `.git/hooks/`
 
 Then remove the `.husky` folder that are generated previously by `husky`.
+
+### I am getting "npx: command not found" error in a GUI git client
+
+This happens when using a node version manager such as `nodenv`, `nvm`, `mise` which require
+init script to provide project-specific node binaries.
+
+Create init script in `~/.simple-git-hooks.rc` that should be executed prior to git hooks.
+Please refer to your node manager documentation for details. For example, for mise, that will
+be:
+
+```sh
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+```
+
+Add `SIMPLE_GIT_HOOKS_RC` global environment variable pointing to that new script. For
+example, on macOS, add this to `~/.zshenv`:
+
+```sh
+export SIMPLE_GIT_HOOKS_RC="$HOME/.simple-git-hooks.rc"
+```

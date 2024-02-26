@@ -35,11 +35,18 @@ const VALID_GIT_HOOKS = [
 const VALID_OPTIONS = ['preserveUnused']
 
 const PREPEND_SCRIPT =
-  "#!/bin/sh\n\n" +
-  'if [ "$SKIP_SIMPLE_GIT_HOOKS" = "1" ]; then\n' +
-  '    echo "[INFO] SKIP_SIMPLE_GIT_HOOKS is set to 1, skipping hook."\n' +
-  "    exit 0\n" +
-  "fi\n\n";
+`#!/bin/sh
+
+if [ "$SKIP_SIMPLE_GIT_HOOKS" = "1" ]; then
+    echo "[INFO] SKIP_SIMPLE_GIT_HOOKS is set to 1, skipping hook."
+    exit 0
+fi
+
+if [ -f "$SIMPLE_GIT_HOOKS_RC" ]; then
+    . "$SIMPLE_GIT_HOOKS_RC"
+fi
+
+`
 
 /**
  * Recursively gets the .git folder path from provided directory

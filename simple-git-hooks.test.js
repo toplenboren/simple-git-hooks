@@ -459,7 +459,7 @@ describe("CLI Command-Based Hook Management", () => {
   });
 });
 
-describe("Tests for skipping git hooks using SKIP_SIMPLE_GIT_HOOKS env var", () => {
+describe("Test env vars", () => {
   const GIT_USER_NAME = "github-actions";
   const GIT_USER_EMAIL = "github-actions@github.com";
 
@@ -493,10 +493,6 @@ describe("Tests for skipping git hooks using SKIP_SIMPLE_GIT_HOOKS env var", () 
     spc.setHooksFromConfig(projectWithConfigurationInPackageJsonPath);
   });
 
-  afterEach(() => {
-    delete process.env.SKIP_SIMPLE_GIT_HOOKS;
-  });
-
   const expectCommitToSucceed = (path) => {
     const errorOccurred = performTestCommit(path);
     expect(errorOccurred).toBe(false);
@@ -507,22 +503,48 @@ describe("Tests for skipping git hooks using SKIP_SIMPLE_GIT_HOOKS env var", () 
     expect(errorOccurred).toBe(true);
   };
 
-  it('commits successfully when SKIP_SIMPLE_GIT_HOOKS is set to "1"', () => {
-    process.env.SKIP_SIMPLE_GIT_HOOKS = "1";
-    expectCommitToSucceed(projectWithConfigurationInPackageJsonPath);
-  });
+  describe("SKIP_SIMPLE_GIT_HOOKS", () => {
+    afterEach(() => {
+      delete process.env.SKIP_SIMPLE_GIT_HOOKS;
+    });
 
-  it("fails to commit when SKIP_SIMPLE_GIT_HOOKS is not set", () => {
-    expectCommitToFail(projectWithConfigurationInPackageJsonPath);
-  });
+    it('commits successfully when SKIP_SIMPLE_GIT_HOOKS is set to "1"', () => {
+      process.env.SKIP_SIMPLE_GIT_HOOKS = "1";
+      expectCommitToSucceed(projectWithConfigurationInPackageJsonPath);
+    });
 
-  it('fails to commit when SKIP_SIMPLE_GIT_HOOKS is set to "0"', () => {
-    process.env.SKIP_SIMPLE_GIT_HOOKS = "0";
-    expectCommitToFail(projectWithConfigurationInPackageJsonPath);
-  });
+    it("fails to commit when SKIP_SIMPLE_GIT_HOOKS is not set", () => {
+      expectCommitToFail(projectWithConfigurationInPackageJsonPath);
+    });
 
-  it("fails to commit when SKIP_SIMPLE_GIT_HOOKS is set to a random string", () => {
-    process.env.SKIP_SIMPLE_GIT_HOOKS = "simple-git-hooks";
-    expectCommitToFail(projectWithConfigurationInPackageJsonPath);
-  });
+    it('fails to commit when SKIP_SIMPLE_GIT_HOOKS is set to "0"', () => {
+      process.env.SKIP_SIMPLE_GIT_HOOKS = "0";
+      expectCommitToFail(projectWithConfigurationInPackageJsonPath);
+    });
+
+    it("fails to commit when SKIP_SIMPLE_GIT_HOOKS is set to a random string", () => {
+      process.env.SKIP_SIMPLE_GIT_HOOKS = "simple-git-hooks";
+      expectCommitToFail(projectWithConfigurationInPackageJsonPath);
+    });
+  })
+
+  describe("SIMPLE_GIT_HOOKS_RC", () => {
+    afterEach(() => {
+      delete process.env.SIMPLE_GIT_HOOKS_RC;
+    });
+
+    it("fails to commit when SIMPLE_GIT_HOOKS_RC is not set", () => {
+      expectCommitToFail(projectWithConfigurationInPackageJsonPath);
+    });
+
+    it('commits successfully when SIMPLE_GIT_HOOKS_RC points to initrc_that_prevents_hook_fail.sh', () => {
+      process.env.SIMPLE_GIT_HOOKS_RC = path.join(projectWithConfigurationInPackageJsonPath, "initrc_that_prevents_hook_fail.sh");
+      expectCommitToSucceed(projectWithConfigurationInPackageJsonPath);
+    });
+
+    it('fails to commit when SIMPLE_GIT_HOOKS_RC points to initrc_that_does_nothing.sh', () => {
+      process.env.SIMPLE_GIT_HOOKS_RC = path.join(projectWithConfigurationInPackageJsonPath, "initrc_that_does_nothing.sh");
+      expectCommitToFail(projectWithConfigurationInPackageJsonPath);
+    });
+  })
 });

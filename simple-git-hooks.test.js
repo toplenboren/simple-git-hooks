@@ -85,34 +85,32 @@ describe("Simple Git Hooks tests", () => {
     });
 
     describe("checkSimpleGitHooksInDependencies", () => {
-      const correctPackageJsonProjectPath = path.normalize(
-          path.join(process.cwd(), "_tests", "project_with_simple_pre_commit_in_deps")
+      const PROJECT_WITH_SIMPLE_GIT_HOOKS_IN_DEPS = path.normalize(
+          path.join(process.cwd(), "_tests", "project_with_simple_git_hooks_in_deps")
       );
-      const correctPackageJsonProjectPath_2 = path.normalize(
+      const PROJECT_WITH_SIMPLE_GIT_HOOKS_IN_DEV_DEPS = path.normalize(
           path.join(
-              process.cwd(),
-              "_tests",
-              "project_with_simple_pre_commit_in_dev_deps"
+              process.cwd(), "_tests", "project_with_simple_git_hooks_in_dev_deps"
           )
       );
-      const incorrectPackageJsonProjectPath = path.normalize(
-          path.join(process.cwd(), "_tests", "project_without_simple_pre_commit")
+      const PROJECT_WITHOUT_SIMPLE_GIT_HOOKS = path.normalize(
+          path.join(process.cwd(), "_tests", "project_without_simple_git_hooks")
       );
-      it("returns true if simple pre commit really in devDeps", () => {
+      it("returns true if simple-git-hooks really in deps", () => {
         expect(
-            simpleGitHooks.checkSimpleGitHooksInDependencies(correctPackageJsonProjectPath)
+            simpleGitHooks.checkSimpleGitHooksInDependencies(PROJECT_WITH_SIMPLE_GIT_HOOKS_IN_DEPS)
         ).toBe(true);
       });
 
-      it("returns true if simple pre commit really in deps", () => {
+      it("returns true if simple-git-hooks really in devDeps", () => {
         expect(
-            simpleGitHooks.checkSimpleGitHooksInDependencies(correctPackageJsonProjectPath_2)
+            simpleGitHooks.checkSimpleGitHooksInDependencies(PROJECT_WITH_SIMPLE_GIT_HOOKS_IN_DEV_DEPS)
         ).toBe(true);
       });
 
-      it("returns false if simple pre commit isn`t in deps", () => {
+      it("returns false if simple-git-hooks isn`t in deps", () => {
         expect(
-            simpleGitHooks.checkSimpleGitHooksInDependencies(incorrectPackageJsonProjectPath)
+            simpleGitHooks.checkSimpleGitHooksInDependencies(PROJECT_WITHOUT_SIMPLE_GIT_HOOKS)
         ).toBe(false);
       });
     });

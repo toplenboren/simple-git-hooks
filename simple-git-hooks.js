@@ -144,7 +144,7 @@ function checkSimpleGitHooksInDependencies(projectRootPath) {
 
     // if simple-git-hooks in dependencies -> note user that he should remove move it to devDeps!
     if ('dependencies' in packageJsonContent && 'simple-git-hooks' in packageJsonContent.dependencies) {
-        console.log('[WARN] You should move simple-git-hooks to the devDependencies!')
+        console.warn('[WARN] You should move simple-git-hooks to the devDependencies!')
         return true // We only check that we are in the correct package, e.g not in a dependency of a dependency
     }
     if (!('devDependencies' in packageJsonContent)) {
@@ -188,7 +188,7 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     const gitRoot = getGitProjectRoot(projectRoot)
 
     if (!gitRoot) {
-        console.log('[INFO] No `.git` root folder found, skipping')
+        console.info('[INFO] No `.git` root folder found, skipping')
         return
     }
 
@@ -204,7 +204,7 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     fs.writeFileSync(hookPath, hookCommand)
     fs.chmodSync(hookPath, 0o0755)
 
-    console.log(`[INFO] Successfully set the ${hook} with command: ${command}`)
+    console.info(`[INFO] Successfully set the ${hook} with command: ${command}`)
 }
 
 /**

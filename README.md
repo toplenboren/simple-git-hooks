@@ -144,6 +144,12 @@ module.exports = {
 
 If you need to have multiple configuration files or just your-own configuration file, you install hooks manually from it by `npx simple-git-hooks ./my-config.js`.
 
+### Note for `npm` package developers
+
+Please do not add `postinstall: "npx simple-git-hooks"` script in your `package.json`. Or at least remove it before `npm publish`
+
+It causes errors for end users of your package
+
 ### Uninstall simple-git-hooks
 
 > Uninstallation will remove all the existing git hooks.

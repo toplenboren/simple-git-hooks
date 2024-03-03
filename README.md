@@ -17,7 +17,7 @@ A tool that lets you easily manage git hooks
   | husky v4 `4.3.8`             | `53.5 kB`     | `~1 mB`   |
   | husky v8 `8.0.3`             | `6.44 kB`     | `6.44 kB` |
   | pre-commit `1.2.2`           | `~80 kB`      | `~850 kB` |
-  | **simple-git-hooks** `2.9.0` | `12.8 kB`     | `12.8 kB` |
+  | **simple-git-hooks** `2.10.0` | `11.8 kB`     | `11.8 kB` |
 
 ### Who uses simple-git-hooks?
 

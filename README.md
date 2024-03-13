@@ -162,7 +162,15 @@ npm uninstall simple-git-hooks
 
 ### I want to skip git hooks!
 
-You should use `--no-verify` option
+If you need to bypass install hooks at all, for example on CI, you can use `SKIP_INSTALL_SIMPLE_GIT_HOOKS` environment variable at the first place.
+
+```sh
+export SKIP_INSTALL_SIMPLE_GIT_HOOKS=1
+
+npm install simple-git-hooks --save-dev
+```
+
+Or if you only need to bypass hooks for a single git operation, you should use `--no-verify` option
 
 ```sh
 git commit -m "commit message" --no-verify # -n for shorthand

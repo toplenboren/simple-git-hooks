@@ -22,7 +22,10 @@
     "linter"
   ],
   "license": "MIT",
-  "repository": "toplenboren/simple-git-hooks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toplenboren/simple-git-hooks.git"
+  },
   "lint-staged": {
     "*.js": "eslint"
   },

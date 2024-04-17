@@ -75,7 +75,7 @@ If you need multiple verbose commands per git hook, flexible configuration or au
    {
      "simple-git-hooks": {
        "pre-commit": "npx lint-staged",
-       "pre-push": "cd ../../ && npm run format",
+       "pre-push": "npm run format",
 
        // All unused hooks will be removed automatically by default
        // but you can use the `preserveUnused` option like following to prevent this behavior
@@ -129,7 +129,7 @@ This way `simple-git-hooks` configuration in `package.json` will not take effect
 ```js
 module.exports = {
   "pre-commit": "npx lint-staged",
-  "pre-push": "cd ../../ && npm run format",
+  "pre-push": "npm run format",
 };
 ```
 
@@ -138,7 +138,7 @@ module.exports = {
 ```json
 {
   "pre-commit": "npx lint-staged",
-  "pre-push": "cd ../../ && npm run format"
+  "pre-push": "npm run format"
 }
 ```
 

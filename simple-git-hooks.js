@@ -232,6 +232,24 @@ function _removeHook(hook, projectRoot=process.cwd()) {
     }
 }
 
+/**
+ * In keeping with zero dependencies, this attempts to import peer modules if they exist
+ * @param {string} moduleName 
+ * @param {string} projectPath
+ * @param {string} warningMessage
+ * @returns 
+ */
+function optionalRequire(moduleName, projectPath, warningMessage) {
+    try {
+        // Use require.resolve to ensure that the dependency is loaded from the project's root context
+        const resolvedPath = require.resolve(moduleName, { paths: [projectPath] });
+        return require(resolvedPath);
+    } catch (err) {
+        console.warn(warningMessage);
+        return null;
+    }
+}
+
 /** Reads package.json file, returns package.json content and path
  * @param {string} projectPath - a path to the project, defaults to process.cwd
  * @return {{packageJsonContent: any, packageJsonPath: string}}
@@ -241,17 +259,45 @@ function _removeHook(hook, projectRoot=process.cwd()) {
  */
 function _getPackageJson(projectPath = process.cwd()) {
     if (typeof projectPath !== "string") {
-        throw TypeError("projectPath is not a string")
+        throw TypeError("projectPath is not a string");
     }
 
-    const targetPackageJson = path.normalize(projectPath + '/package.json')
+    const json5Path = path.normalize(projectPath + '/package.json5');
+    const yamlPath = path.normalize(projectPath + '/package.yaml');
+    const ymlPath = path.normalize(projectPath + '/package.yml');
+    const targetPackageJson = path.normalize(projectPath + '/package.json');
+
+    if (fs.existsSync(json5Path) && fs.statSync(json5Path).isFile()) {
+        const JSON5 = optionalRequire('json5', projectPath, `Warning: json5 not installed, falling back to yaml`);
+        if (JSON5) {
+            const packageJsonDataRaw = fs.readFileSync(json5Path, 'utf8');
+            return { packageJsonContent: JSON5.parse(packageJsonDataRaw), packageJsonPath: json5Path };
+        }
+    }
+
+    if (fs.existsSync(yamlPath) && fs.statSync(yamlPath).isFile()) {
+        const YAML = optionalRequire('yaml', projectPath, `Warning: yaml not installed, falling back to package.json`);
+        if (YAML) {
+            const packageJsonDataRaw = fs.readFileSync(yamlPath, 'utf8');
+            return { packageJsonContent: YAML.parse(packageJsonDataRaw), packageJsonPath: yamlPath };
+        }
+    }
+
+    if (fs.existsSync(ymlPath) && fs.statSync(ymlPath).isFile()) {
+        const YAML = optionalRequire('yaml', projectPath, `Warning: yaml not installed, falling back to package.json`);
+        if (YAML) {
+            const packageJsonDataRaw = fs.readFileSync(ymlPath, 'utf8');
+            return { packageJsonContent: YAML.parse(packageJsonDataRaw), packageJsonPath: ymlPath };
+        }
+    }
 
     if (!fs.statSync(targetPackageJson).isFile()) {
         throw Error("Package.json doesn't exist")
     }
 
-    const packageJsonDataRaw = fs.readFileSync(targetPackageJson)
-    return { packageJsonContent: JSON.parse(packageJsonDataRaw), packageJsonPath: targetPackageJson }
+    // fallback to package.json
+    const packageJsonDataRaw = fs.readFileSync(targetPackageJson, 'utf8');
+    return { packageJsonContent: JSON.parse(packageJsonDataRaw), packageJsonPath: targetPackageJson };
 }
 
 /**

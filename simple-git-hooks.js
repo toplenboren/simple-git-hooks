@@ -202,7 +202,13 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
         fs.mkdirSync(normalizedHookDirectory)
     }
 
-    fs.writeFileSync(hookPath, hookCommand)
+    // use PREFER_APPEND_FILE_SYNC env to append hook command into file
+    if (['1', 'true'].includes(process.env.PREFER_APPEND_FILE_SYNC)) {
+        fs.appendFileSync(hookPath, `
+${hookCommand}`)
+    } else {
+        fs.writeFileSync(hookPath, hookCommand)
+    }
     fs.chmodSync(hookPath, 0o0755)
 
     console.info(`[INFO] Successfully set the ${hook} with command: ${command}`)

@@ -633,7 +633,10 @@ describe("Simple Git Hooks tests", () => {
     describe("Env var PREFER_APPEND_FILE_SYNC tests", () => {
       const GIT_USER_NAME = "github-actions";
       const GIT_USER_EMAIL = "github-actions@github.com";
-      const PRE_COMMIT_FILE_PATH = path.join(PROJECT_WITH_CUSTOM_APPEND_FILE_SYNC_ENV, ".git", "hooks", "pre-commit");
+      const EXISTING_PRE_COMMIT_FILE_CONTENT = "test pre commit";
+      const GIT_HOOKS_PATH = path.join(PROJECT_WITH_CUSTOM_APPEND_FILE_SYNC_ENV, ".git", "hooks");
+      const PRE_COMMIT_FILE_PATH = path.join(GIT_HOOKS_PATH, "pre-commit");
+      const ADD_PRE_COMMIT_FILE_CONTENT = "prettier --write";
 
       const initializeGitRepository = (path) => {
         execSync(
@@ -646,7 +649,7 @@ describe("Simple Git Hooks tests", () => {
 
       // replace pre commit content with 'test pre commit' 
       const writePreCommitFile = () => {
-        fs.writeFileSync(PRE_COMMIT_FILE_PATH, "test pre commit");
+        fs.writeFileSync(PRE_COMMIT_FILE_PATH, EXISTING_PRE_COMMIT_FILE_CONTENT);
       }
 
       beforeEach(() => {
@@ -663,37 +666,25 @@ describe("Simple Git Hooks tests", () => {
           process.env.PREFER_APPEND_FILE_SYNC = 1;
           writePreCommitFile();
           simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_APPEND_FILE_SYNC_ENV);
-          const installedHooks = getInstalledGitHooks(
-            path.normalize(
-              path.join(PROJECT_WITH_CUSTOM_APPEND_FILE_SYNC_ENV, ".git", "hooks")
-            )
-          );
-          expect(installedHooks["pre-commit"]).toBe(`test pre commit
-${simpleGitHooks.PREPEND_SCRIPT}prettier --write .`);
+          const installedHooks = getInstalledGitHooks(GIT_HOOKS_PATH);
+          expect(installedHooks["pre-commit"]).toBe(`${EXISTING_PRE_COMMIT_FILE_CONTENT}
+${simpleGitHooks.PREPEND_SCRIPT}${ADD_PRE_COMMIT_FILE_CONTENT}`);
         })
 
         it("should append to the hook file when PREFER_APPEND_FILE_SYNC is true", () => {
           process.env.PREFER_APPEND_FILE_SYNC = "true";
           writePreCommitFile();
           simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_APPEND_FILE_SYNC_ENV);
-          const installedHooks = getInstalledGitHooks(
-            path.normalize(
-              path.join(PROJECT_WITH_CUSTOM_APPEND_FILE_SYNC_ENV, ".git", "hooks")
-            )
-          );
-          expect(installedHooks["pre-commit"]).toBe(`test pre commit
-${simpleGitHooks.PREPEND_SCRIPT}prettier --write .`);
+          const installedHooks = getInstalledGitHooks(GIT_HOOKS_PATH);
+          expect(installedHooks["pre-commit"]).toBe(`${EXISTING_PRE_COMMIT_FILE_CONTENT}
+${simpleGitHooks.PREPEND_SCRIPT}${ADD_PRE_COMMIT_FILE_CONTENT}`);
         })
 
         it("should write to the hook file when PREFER_APPEND_FILE_SYNC is not true", () => {
           writePreCommitFile();
           simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_APPEND_FILE_SYNC_ENV);
-          const installedHooks = getInstalledGitHooks(
-            path.normalize(
-              path.join(PROJECT_WITH_CUSTOM_APPEND_FILE_SYNC_ENV, ".git", "hooks")
-            )
-          );
-          expect(installedHooks["pre-commit"]).toBe(`${simpleGitHooks.PREPEND_SCRIPT}prettier --write .`);
+          const installedHooks = getInstalledGitHooks(GIT_HOOKS_PATH);
+          expect(installedHooks["pre-commit"]).toBe(`${simpleGitHooks.PREPEND_SCRIPT}${ADD_PRE_COMMIT_FILE_CONTENT}`);
         })
       })
 

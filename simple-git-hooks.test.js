@@ -150,6 +150,14 @@ describe("Simple Git Hooks tests", () => {
         path.join(testsFolder, "project_with_configuration_in_alternative_separate_cjs")
     );
 
+    // Configuration in .mjs file
+    const PROJECT_WITH_CONF_IN_SEPARATE_MJS = path.normalize(
+        path.join(testsFolder, "project_with_configuration_in_separate_mjs")
+    );
+    const PROJECT_WITH_CONF_IN_SEPARATE_MJS_ALT = path.normalize(
+        path.join(testsFolder, "project_with_configuration_in_alternative_separate_mjs")
+    );
+
     // Configuration in .json file
     const PROJECT_WITH_CONF_IN_SEPARATE_JSON = path.normalize(
         path.join(testsFolder, "project_with_configuration_in_separate_json")
@@ -216,10 +224,10 @@ describe("Simple Git Hooks tests", () => {
 
     describe('Configuration tests', function () {
       describe("Valid configurations", () => {
-        it("creates git hooks if configuration is correct from .simple-git-hooks.js", () => {
+        it("creates git hooks if configuration is correct from .simple-git-hooks.js", async () => {
           createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_JS_ALT);
 
-          simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_JS_ALT);
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_JS_ALT);
           const installedHooks = getInstalledGitHooks(
               path.normalize(
                   path.join(
@@ -232,10 +240,10 @@ describe("Simple Git Hooks tests", () => {
           expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
         });
 
-        it("creates git hooks if configuration is correct from .simple-git-hooks.cjs", () => {
+        it("creates git hooks if configuration is correct from .simple-git-hooks.cjs", async () => {
           createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_CJS_ALT);
 
-          simpleGitHooks.setHooksFromConfig(
+          await simpleGitHooks.setHooksFromConfig(
               PROJECT_WITH_CONF_IN_SEPARATE_CJS_ALT
           );
           const installedHooks = getInstalledGitHooks(
@@ -250,10 +258,10 @@ describe("Simple Git Hooks tests", () => {
           expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
         });
 
-        it("creates git hooks if configuration is correct from simple-git-hooks.cjs", () => {
+        it("creates git hooks if configuration is correct from simple-git-hooks.cjs", async () => {
           createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_CJS);
 
-          simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_CJS);
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_CJS);
           const installedHooks = getInstalledGitHooks(
               path.normalize(
                   path.join(PROJECT_WITH_CONF_IN_SEPARATE_CJS, ".git", "hooks")
@@ -262,10 +270,40 @@ describe("Simple Git Hooks tests", () => {
           expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
         });
 
-        it("creates git hooks if configuration is correct from simple-git-hooks.js", () => {
+        it("creates git hooks if configuration is correct from .simple-git-hooks.mjs", async () => {
+          createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_MJS_ALT);
+
+          await simpleGitHooks.setHooksFromConfig(
+            PROJECT_WITH_CONF_IN_SEPARATE_MJS_ALT
+          );
+          const installedHooks = getInstalledGitHooks(
+              path.normalize(
+                  path.join(
+                    PROJECT_WITH_CONF_IN_SEPARATE_MJS_ALT,
+                      ".git",
+                      "hooks"
+                  )
+              )
+          );
+          expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
+        });
+
+        it("creates git hooks if configuration is correct from simple-git-hooks.mjs", async () => {
+          createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_MJS);
+
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_MJS);
+          const installedHooks = getInstalledGitHooks(
+              path.normalize(
+                  path.join(PROJECT_WITH_CONF_IN_SEPARATE_MJS, ".git", "hooks")
+              )
+          );
+          expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
+        });
+
+        it("creates git hooks if configuration is correct from simple-git-hooks.js", async () => {
           createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_JS);
 
-          simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_JS);
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_JS);
           const installedHooks = getInstalledGitHooks(
               path.normalize(
                   path.join(PROJECT_WITH_CONF_IN_SEPARATE_JS, ".git", "hooks")
@@ -274,10 +312,10 @@ describe("Simple Git Hooks tests", () => {
           expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
         });
 
-        it("creates git hooks if configuration is correct from .simple-git-hooks.json", () => {
+        it("creates git hooks if configuration is correct from .simple-git-hooks.json", async () => {
           createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_JSON_ALT);
 
-          simpleGitHooks.setHooksFromConfig(
+          await simpleGitHooks.setHooksFromConfig(
               PROJECT_WITH_CONF_IN_SEPARATE_JSON_ALT
           );
           const installedHooks = getInstalledGitHooks(
@@ -292,10 +330,10 @@ describe("Simple Git Hooks tests", () => {
           expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
         });
 
-        it("creates git hooks if configuration is correct from simple-git-hooks.json", () => {
+        it("creates git hooks if configuration is correct from simple-git-hooks.json", async () => {
           createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_JSON);
 
-          simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_JSON);
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_SEPARATE_JSON);
           const installedHooks = getInstalledGitHooks(
               path.normalize(
                   path.join(PROJECT_WITH_CONF_IN_SEPARATE_JSON, ".git", "hooks")
@@ -304,10 +342,10 @@ describe("Simple Git Hooks tests", () => {
           expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
         });
 
-        it("creates git hooks if configuration is correct from package.json", () => {
+        it("creates git hooks if configuration is correct from package.json", async () => {
           createGitHooksFolder(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
 
-          simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
           const installedHooks = getInstalledGitHooks(
               path.normalize(
                   path.join(PROJECT_WITH_CONF_IN_PACKAGE_JSON, ".git", "hooks")
@@ -318,31 +356,31 @@ describe("Simple Git Hooks tests", () => {
       });
 
       describe("Invalid configurations", () => {
-        it("fails to create git hooks if configuration contains bad git hooks", () => {
+        it("fails to create git hooks if configuration contains bad git hooks", async () => {
           createGitHooksFolder(PROJECT_WITH_BAD_CONF_IN_PACKAGE_JSON_);
 
-          expect(() =>
-              simpleGitHooks.setHooksFromConfig(PROJECT_WITH_BAD_CONF_IN_PACKAGE_JSON_)
-          ).toThrow(
+          await expect(
+            simpleGitHooks.setHooksFromConfig(PROJECT_WITH_BAD_CONF_IN_PACKAGE_JSON_)
+          ).rejects.toMatch(
               "[ERROR] Config was not in correct format. Please check git hooks or options name"
           );
         });
 
-        it("fails to create git hooks if not configured", () => {
+        it("fails to create git hooks if not configured", async () => {
           createGitHooksFolder(PROJECT_WO_CONF);
 
-          expect(() => simpleGitHooks.setHooksFromConfig(PROJECT_WO_CONF)).toThrow(
-              "[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json."
+          await expect(() => simpleGitHooks.setHooksFromConfig(PROJECT_WO_CONF)).rejects.toMatch(
+              "[ERROR] Config was not found! Please add `.simple-git-hooks.cjs` or `.simple-git-hooks.js` or `.simple-git-hooks.mjs` or `simple-git-hooks.cjs` or `simple-git-hooks.js` or `simple-git-hooks.mjs` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json."
           );
         });
       });
     });
 
     describe("Remove hooks tests", () => {
-      it("removes git hooks", () => {
+      it("removes git hooks", async () => {
         createGitHooksFolder(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
 
-        simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
+        await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
 
         let installedHooks = getInstalledGitHooks(
             path.normalize(
@@ -361,7 +399,7 @@ describe("Simple Git Hooks tests", () => {
         expect(isEqual(installedHooks, {})).toBe(true);
       });
 
-      it("creates git hooks and removes unused git hooks", () => {
+      it("creates git hooks and removes unused git hooks", async () => {
         createGitHooksFolder(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
 
         const installedHooksDir = path.normalize(
@@ -376,13 +414,13 @@ describe("Simple Git Hooks tests", () => {
         let installedHooks = getInstalledGitHooks(installedHooksDir);
         expect(isEqual(installedHooks, { "pre-push": "# do nothing" })).toBe(true);
 
-        simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
+        await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
 
         installedHooks = getInstalledGitHooks(installedHooksDir);
         expect(isEqual(installedHooks, { "pre-commit": TEST_SCRIPT })).toBe(true);
       });
 
-      it("creates git hooks and removes unused but preserves specific git hooks", () => {
+      it("creates git hooks and removes unused but preserves specific git hooks", async () => {
         createGitHooksFolder(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
 
         const installedHooksDir = path.normalize(
@@ -410,7 +448,7 @@ describe("Simple Git Hooks tests", () => {
             })
         ).toBe(true);
 
-        simpleGitHooks.setHooksFromConfig(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
+        await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
 
         installedHooks = getInstalledGitHooks(installedHooksDir);
         expect(
@@ -436,10 +474,10 @@ describe("Simple Git Hooks tests", () => {
       testCases.forEach((args) => {
         it(`creates git hooks and removes unused but preserves specific git hooks for command: ${args.join(
             " "
-        )}`, () => {
+        )}`, async () => {
           createGitHooksFolder(PROJECT_WITH_CUSTOM_CONF);
 
-          simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_CONF, args);
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_CONF, args);
           const installedHooks = getInstalledGitHooks(
               path.normalize(
                   path.join(PROJECT_WITH_CUSTOM_CONF, ".git", "hooks")
@@ -537,10 +575,10 @@ describe("Simple Git Hooks tests", () => {
         expect(tryToPerformTestCommit(path)).toBe(false);
       };
 
-      beforeEach(() => {
+      beforeEach(async () => {
         initializeGitRepository(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
         createGitHooksFolder(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
-        simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
+        await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
       });
 
       describe("SKIP_SIMPLE_GIT_HOOKS", () => {

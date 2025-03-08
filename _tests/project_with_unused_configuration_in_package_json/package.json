@@ -1,5 +1,5 @@
 {
-  "name": "simple-git-hooks-test-package",
+  "name": "simple-git-hooks-test-package-unused",
   "version": "1.0.0",
   "simple-git-hooks": {
     "pre-commit": "exit 1",

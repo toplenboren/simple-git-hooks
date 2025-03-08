@@ -120,14 +120,26 @@ Note that you should manually run `npx simple-git-hooks` **every time you change
 
 ### Additional configuration options
 
-You can also add a `.simple-git-hooks.cjs`, `.simple-git-hooks.js`, `simple-git-hooks.cjs`, `simple-git-hooks.js`, `.simple-git-hooks.json` or `simple-git-hooks.json` file to the project and write the configuration inside it.
+You can also add a `.simple-git-hooks.cjs`, `.simple-git-hooks.js`, `.simple-git-hooks.mjs`, `simple-git-hooks.cjs`, `simple-git-hooks.js`, `simple-git-hooks.mjs`, `.simple-git-hooks.json` or `simple-git-hooks.json` file to the project and write the configuration inside it.
 
 This way `simple-git-hooks` configuration in `package.json` will not take effect any more.
 
-`.simple-git-hooks.cjs`, `.simple-git-hooks.js` or `simple-git-hooks.cjs`, `simple-git-hooks.js` should look like the following.
+`.simple-git-hooks.cjs`, `.simple-git-hooks.js`, `.simple-git-hooks.mjs` or `simple-git-hooks.cjs`, `simple-git-hooks.js`, `simple-git-hooks.mjs` should look like the following.
+
+#### CommonJS
 
 ```js
 module.exports = {
+  "pre-commit": "npx lint-staged",
+  "pre-push": "npm run format",
+};
+```
+
+
+#### ES Modules
+
+```js
+export default {
   "pre-commit": "npx lint-staged",
   "pre-push": "npm run format",
 };

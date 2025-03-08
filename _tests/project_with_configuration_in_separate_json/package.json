@@ -1,5 +1,5 @@
 {
-  "name": "simple-git-hooks-test-package",
+  "name": "simple-git-hooks-test-package-json",
   "version": "1.0.0",
   "devDependencies": {
     "simple-git-hooks": "1.0.0"

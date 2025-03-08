@@ -6,7 +6,7 @@ const {checkSimpleGitHooksInDependencies, getProjectRootDirectoryFromNodeModules
 /**
  * Creates the pre-commit from command in config by default
  */
-function postinstall() {
+async function postinstall() {
     let projectDirectory;
 
     /* When script is run after install, the process.cwd() would be like <project_folder>/node_modules/simple-git-hooks
@@ -21,7 +21,7 @@ function postinstall() {
 
     if (checkSimpleGitHooksInDependencies(projectDirectory)) {
         try {
-            setHooksFromConfig(projectDirectory)
+            await setHooksFromConfig(projectDirectory)
         } catch (err) {
             console.log('[ERROR] Was not able to set git hooks. Reason: ' + err)
         }

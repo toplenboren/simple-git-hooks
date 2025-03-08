@@ -8,5 +8,13 @@ module.exports = {
     "extends": "eslint:recommended",
     "parserOptions": {
         "ecmaVersion": 12
-    }
+    },
+    "overrides": [
+        {
+            "files": ["*.mjs"],
+            "parserOptions": {
+                "sourceType": "module"
+            }
+        }
+    ]
 };

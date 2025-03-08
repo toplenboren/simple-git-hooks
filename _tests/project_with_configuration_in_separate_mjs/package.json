@@ -1,5 +1,5 @@
 {
-  "name": "simple-git-hooks-test-package-alternative-cjs",
+  "name": "simple-git-hooks-test-package-mjs",
   "version": "1.0.0",
   "devDependencies": {
     "simple-git-hooks": "1.0.0"

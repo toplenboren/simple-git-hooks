@@ -211,9 +211,19 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
 /**
  * Deletes all git hooks
  * @param {string} projectRoot
+ * @param {string[]} [argv]
  */
-function removeHooks(projectRoot=process.cwd()) {
-    for (let configEntry of VALID_GIT_HOOKS) {
+function removeHooks(projectRoot = process.cwd(), argv = process.argv) {
+    const customConfigPath = _getCustomConfigPath(argv)
+    const config = _getConfig(projectRoot, customConfigPath)
+
+    if (!config) {
+        throw ('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')
+    }
+
+    const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : []
+    const needRemoveHooks = VALID_GIT_HOOKS.filter(hook => !preserveUnused.includes(hook))
+    for (let configEntry of needRemoveHooks) {
         _removeHook(configEntry, projectRoot)
     }
 }

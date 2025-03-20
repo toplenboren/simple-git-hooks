@@ -1,6 +1,9 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
-  "changelog": "@changesets/changelog-github",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "toplenboren/simple-git-hooks" }
+  ],
   "commit": false,
   "fixed": [],
   "linked": [],

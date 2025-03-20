@@ -16,6 +16,7 @@ jobs:
     - name: Lint
       uses: actions/setup-node@v4
       with:
-        node-version: 14.x
-    - run: yarn --frozen-lockfile
+        node-version: 18.x
+        cache: yarn
+    - run: yarn --frozen-lockfile --ignore-engines
     - run: yarn lint

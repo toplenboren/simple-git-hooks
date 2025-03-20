@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const url = require('url')
 
 const VALID_GIT_HOOKS = [
     'applypatch-msg',
@@ -158,12 +159,12 @@ function checkSimpleGitHooksInDependencies(projectRootPath) {
  * @param {string} projectRootPath
  * @param {string[]} [argv]
  */
-function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv) {
+async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.argv) {
     const customConfigPath = _getCustomConfigPath(argv)
-    const config = _getConfig(projectRootPath, customConfigPath)
+    const config = await _getConfig(projectRootPath, customConfigPath)
 
     if (!config) {
-        throw('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')
+        throw('[ERROR] Config was not found! Please add `.simple-git-hooks.cjs` or `.simple-git-hooks.js` or `.simple-git-hooks.mjs` or `simple-git-hooks.cjs` or `simple-git-hooks.js` or `simple-git-hooks.mjs` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')
     }
 
     const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : config.preserveUnused ? VALID_GIT_HOOKS: []
@@ -274,10 +275,10 @@ function _getCustomConfigPath(argv=[]) {
  * @param {string} projectRootPath
  * @param {string} [configFileName]
  * @throws TypeError if projectRootPath is not string
- * @return {{string: string} | undefined}
+ * @return {Promise<{[key: string]: unknown} | undefined>}
  * @private
  */
-function _getConfig(projectRootPath, configFileName='') {
+async function _getConfig(projectRootPath, configFileName='') {
     if (typeof projectRootPath !== 'string') {
         throw TypeError("Check project root path! Expected a string, but got " + typeof projectRootPath)
     }
@@ -286,8 +287,10 @@ function _getConfig(projectRootPath, configFileName='') {
     const sources = [
         () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.cjs'),
         () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.js'),
+        () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.mjs'),
         () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.cjs'),
         () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.js'),
+        () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.mjs'),
         () => _getConfigFromFile(projectRootPath, '.simple-git-hooks.json'),
         () => _getConfigFromFile(projectRootPath, 'simple-git-hooks.json'),
         () => _getConfigFromPackageJson(projectRootPath),
@@ -299,11 +302,12 @@ function _getConfig(projectRootPath, configFileName='') {
     }
 
     for (let executeSource of sources) {
-        let config = executeSource()
-        if (config && _validateHooks(config)) {
-            return config
-        }
-        else if (config && !_validateHooks(config)) {
+        let config = await executeSource()
+        if (config) {
+            if (_validateHooks(config)) {
+                return config
+            }
+
             throw('[ERROR] Config was not in correct format. Please check git hooks or options name')
         }
     }
@@ -316,12 +320,12 @@ function _getConfig(projectRootPath, configFileName='') {
  * @param {string} projectRootPath
  * @throws TypeError if packageJsonPath is not a string
  * @throws Error if package.json couldn't be read or was not validated
- * @return {{string: string} | undefined}
+ * @return {Promise<{[key: string]: unknown}> | {[key: string]: unknown} | undefined}
  */
 function _getConfigFromPackageJson(projectRootPath = process.cwd()) {
     const {packageJsonContent} = _getPackageJson(projectRootPath)
     const config = packageJsonContent['simple-git-hooks'];
-    return typeof config === 'string' ? _getConfig(config) : packageJsonContent['simple-git-hooks']
+    return typeof config === 'string' ? _getConfig(config) : config
 }
 
 /**
@@ -329,9 +333,9 @@ function _getConfigFromPackageJson(projectRootPath = process.cwd()) {
  * Since the file is not required in node.js projects it returns undefined if something is off
  * @param {string} projectRootPath
  * @param {string} fileName
- * @return {{string: string} | undefined}
+ * @return {Promise<{[key: string]: unknown} | undefined>}
  */
-function _getConfigFromFile(projectRootPath, fileName) {
+async function _getConfigFromFile(projectRootPath, fileName) {
     if (typeof projectRootPath !== "string") {
         throw TypeError("projectRootPath is not a string")
     }
@@ -347,7 +351,12 @@ function _getConfigFromFile(projectRootPath, fileName) {
         if (filePath === __filename) {
             return undefined
         }
-        return require(filePath) // handle `.js` and `.json`
+        // handle `.json` with `require`, `import()` requires `with:{type:'json'}` which does not work for all engines
+        if (filePath.endsWith('.json')) {
+            return require(filePath)
+        }
+        const result =  await import(url.pathToFileURL(filePath)) // handle `.cjs`, `.js`, `.mjs`
+        return result.default || result
     } catch (err) {
         return undefined
     }

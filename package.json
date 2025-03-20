@@ -1,7 +1,7 @@
 {
   "name": "simple-git-hooks",
   "type": "commonjs",
-  "version": "2.11.1",
+  "version": "2.12.1",
   "description": "A simple, zero dependency tool for setting up git hooks for small projects",
   "author": "Mikhail Gorbunov <toplenboren@gmail.com>",
   "main": "simple-git-hooks.js",

@@ -6,6 +6,12 @@
   "main": "simple-git-hooks.js",
   "bin": "./cli.js",
   "packageManager": "yarn@1.22.22",
+  "files": [
+    "cli.js",
+    "postinstall.js",
+    "simple-git-hooks.js",
+    "uninstall.js"
+  ],
   "scripts": {
     "postinstall": "node ./postinstall.js",
     "lint": "eslint *.js",

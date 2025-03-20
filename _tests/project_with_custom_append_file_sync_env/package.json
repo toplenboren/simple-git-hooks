@@ -1,0 +1,10 @@
+{
+  "name": "simple-git-hooks-test-package",
+  "version": "1.0.0",
+  "simple-git-hooks": {
+    "pre-commit": "prettier --write"
+  },
+  "devDependencies": {
+    "simple-pre-commit": "1.0.0"
+  }
+}

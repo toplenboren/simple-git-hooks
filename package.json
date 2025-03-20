@@ -5,12 +5,12 @@
   "author": "Mikhail Gorbunov <toplenboren@gmail.com>",
   "main": "simple-git-hooks.js",
   "bin": "./cli.js",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "postinstall": "node ./postinstall.js",
     "lint": "eslint *.js",
     "test": "jest",
-    "publish": "publish",
-    "create-publish-dist": "clean-publish --no-publish",
+    "release": "clean-pkg-json && changeset publish",
     "uninstall": "node ./uninstall.js"
   },
   "keywords": [
@@ -29,25 +29,13 @@
   "lint-staged": {
     "*.js": "eslint"
   },
-  "clean-publish": {
-    "files": [
-      "LICENSE.txt",
-      ".gitignore",
-      "simple-git-hooks.test.js",
-      "_tests",
-      ".github",
-      ".idea",
-      ".vscode",
-      ".npmignore",
-      "changelog.md"
-    ],
-    "packageManager": "npm"
-  },
   "simple-git-hooks": {
     "pre-commit": "yarn lint"
   },
   "devDependencies": {
-    "clean-publish": "^4.2.0",
+    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/cli": "^2.28.1",
+    "clean-pkg-json": "^1.2.1",
     "eslint": "^7.19.0",
     "jest": "^26.6.3",
     "lint-staged": "^10.5.4",

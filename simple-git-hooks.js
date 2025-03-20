@@ -351,7 +351,11 @@ async function _getConfigFromFile(projectRootPath, fileName) {
         if (filePath === __filename) {
             return undefined
         }
-        const result =  await import(url.pathToFileURL(filePath)) // handle `.cjs`, `.js`, `.mjs` and `.json`
+        // handle `.json` with `require`, `import()` requires `with:{type:'json'}` which does not work for all engines
+        if (filePath.endsWith('.json')) {
+            return require(filePath)
+        }
+        const result =  await import(url.pathToFileURL(filePath)) // handle `.cjs`, `.js`, `.mjs`
         return result.default || result
     } catch (err) {
         return undefined

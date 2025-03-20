@@ -213,8 +213,8 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
  * @param {string} projectRoot
  * @param {string[]} [argv]
  */
-function removeHooks(projectRoot = process.cwd(), argv = process.argv) {
-    const customConfigPath = _getCustomConfigPath(argv)
+function removeHooks(projectRoot = process.cwd()) {
+    const customConfigPath = _getCustomConfigPath(process.argv)
     const config = _getConfig(projectRoot, customConfigPath)
 
     if (!config) {
@@ -222,8 +222,8 @@ function removeHooks(projectRoot = process.cwd(), argv = process.argv) {
     }
 
     const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : []
-    const needRemoveHooks = VALID_GIT_HOOKS.filter(hook => !preserveUnused.includes(hook))
-    for (let configEntry of needRemoveHooks) {
+    const hooksToRemove = VALID_GIT_HOOKS.filter(hook => !preserveUnused.includes(hook))
+    for (let configEntry of hooksToRemove) {
         _removeHook(configEntry, projectRoot)
     }
 }

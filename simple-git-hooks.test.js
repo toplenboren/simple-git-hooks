@@ -389,7 +389,7 @@ describe("Simple Git Hooks tests", () => {
         );
         expect(isEqual(installedHooks, { "pre-commit": TEST_SCRIPT })).toBe(true);
 
-        simpleGitHooks.removeHooks(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
+        await simpleGitHooks.removeHooks(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
 
         installedHooks = getInstalledGitHooks(
             path.normalize(
@@ -457,6 +457,37 @@ describe("Simple Git Hooks tests", () => {
               "pre-commit": TEST_SCRIPT,
             })
         ).toBe(true);
+      });
+
+      it("creates git hooks and removes hooks which are not in preserveUnused", async () => {
+        createGitHooksFolder(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
+
+        const installedHooksDir = path.normalize(
+          path.join(
+              PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON,
+              ".git",
+              "hooks"
+          )
+        );
+
+        fs.writeFileSync(
+            path.resolve(installedHooksDir, "commit-msg"),
+            "# do nothing"
+        );
+
+        let installedHooks = getInstalledGitHooks(installedHooksDir);
+
+        expect(isEqual(installedHooks, { "commit-msg": "# do nothing" })).toBe(true);
+
+        await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
+
+        installedHooks = getInstalledGitHooks(installedHooksDir);
+        expect(isEqual(installedHooks, { "pre-commit": TEST_SCRIPT, "commit-msg": "# do nothing" })).toBe(true);
+
+        await simpleGitHooks.removeHooks(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
+
+        installedHooks = getInstalledGitHooks(installedHooksDir);
+        expect(isEqual(installedHooks, { "commit-msg": "# do nothing" })).toBe(true);
       });
     });
 

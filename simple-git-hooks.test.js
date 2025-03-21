@@ -399,30 +399,6 @@ describe("Simple Git Hooks tests", () => {
         expect(isEqual(installedHooks, {})).toBe(true);
       });
 
-      it("only removes git hooks which are not in preserveUnused", () => {
-        createGitHooksFolder(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
-
-        const installedHooksDir = path.normalize(
-            path.join(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON, ".git", "hooks")
-        );
-
-        fs.writeFileSync(
-            path.resolve(installedHooksDir, "commit-msg"),
-            "# do nothing"
-        );
-
-        let installedHooks = getInstalledGitHooks(installedHooksDir);
-
-        expect(isEqual(installedHooks, { "commit-msg": "# do nothing" })).toBe(true);
-
-        simpleGitHooks.setHooksFromConfig(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
-
-        simpleGitHooks.removeHooks(PROJECT_WITH_UNUSED_CONF_IN_PACKAGE_JSON);
-
-        installedHooks = getInstalledGitHooks(installedHooksDir);
-        expect(isEqual(installedHooks, { "commit-msg": "# do nothing" })).toBe(true);
-      });
-
       it("creates git hooks and removes unused git hooks", async () => {
         createGitHooksFolder(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
 

@@ -212,9 +212,9 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
  * Deletes all git hooks
  * @param {string} projectRoot
  */
-function removeHooks(projectRoot = process.cwd()) {
+async function removeHooks(projectRoot = process.cwd()) {
     const customConfigPath = _getCustomConfigPath(process.argv)
-    const config = _getConfig(projectRoot, customConfigPath)
+    const config = await _getConfig(projectRoot, customConfigPath)
 
     if (!config) {
         throw ('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')

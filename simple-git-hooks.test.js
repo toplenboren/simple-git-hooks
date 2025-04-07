@@ -519,7 +519,7 @@ describe("Simple Git Hooks tests", () => {
         expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
       })
       it("remove git hooks in .husky if core.hooksPath is set to .husky", async () => {
-        simpleGitHooks.removeHooks(TEST_HUSKY_PROJECT);
+        async simpleGitHooks.removeHooks(TEST_HUSKY_PROJECT);
         const huskyDir = path.join(TEST_HUSKY_PROJECT, ".husky");
         const installedHooks = getInstalledGitHooks(huskyDir);
         expect(isEqual(installedHooks, {})).toBe(true);

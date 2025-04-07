@@ -2,6 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const url = require('url')
 
+const CONFIG_ERROR = '[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details'
+
 const VALID_GIT_HOOKS = [
     'applypatch-msg',
     'pre-applypatch',
@@ -164,7 +166,7 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
     const config = await _getConfig(projectRootPath, customConfigPath)
 
     if (!config) {
-        throw('[ERROR] Config was not found! Please add `.simple-git-hooks.cjs` or `.simple-git-hooks.js` or `.simple-git-hooks.mjs` or `simple-git-hooks.cjs` or `simple-git-hooks.js` or `simple-git-hooks.mjs` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')
+        throw(CONFIG_ERROR)
     }
 
     const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : config.preserveUnused ? VALID_GIT_HOOKS: []
@@ -217,7 +219,7 @@ async function removeHooks(projectRoot = process.cwd()) {
     const config = await _getConfig(projectRoot, customConfigPath)
 
     if (!config) {
-        throw ('[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details')
+        throw (CONFIG_ERROR)
     }
 
     const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : []

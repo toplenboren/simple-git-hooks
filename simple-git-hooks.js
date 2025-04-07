@@ -192,23 +192,23 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
  * @returns {string} - The resolved absolute path to the hooks directory
  * @private
  */
-function _getHooksPath(gitRoot) {
-    const defaultHooksPath = path.join(gitRoot, '.git', 'hooks')
+function _getHooksDirPath(projectRoot) {
+    const defaultHooksDirPath = path.join(projectRoot, '.git', 'hooks')
     try {
-        const customHooksPath = execSync('git config core.hooksPath', {
-            cwd: gitRoot,
+        const customHooksDirPath = execSync('git config core.hooksPath', {
+            cwd: projectRoot,
             encoding: 'utf8'
         }).trim()
 
-        if (!customHooksPath) {
-            return defaultHooksPath
+        if (!customHooksDirPath) {
+            return defaultHooksDirPath
         }
 
-        return path.isAbsolute(customHooksPath)
-            ? customHooksPath
-            : path.resolve(gitRoot, customHooksPath)
+        return path.isAbsolute(customHooksDirPath)
+            ? customHooksDirPath
+            : path.resolve(projectRoot, customHooksDirPath)
     } catch {
-        return defaultHooksPath
+        return defaultHooksDirPath
     }
 }
 
@@ -228,14 +228,13 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     }
 
     const hookCommand = PREPEND_SCRIPT + command
-    const hookDirectory = _getHooksPath(gitRoot)
+    const hookDirectory = _getHooksDirPath(projectRoot)
     const hookPath = path.join(hookDirectory, hook)
 
     const normalizedHookDirectory = path.normalize(hookDirectory)
     if (!fs.existsSync(normalizedHookDirectory)) {
         fs.mkdirSync(normalizedHookDirectory, { recursive: true })
     }
-
     fs.writeFileSync(hookPath, hookCommand)
     fs.chmodSync(hookPath, 0o0755)
 
@@ -253,15 +252,14 @@ function removeHooks(projectRoot=process.cwd()) {
 }
 
 /**
- * Removes the pre-commit hook from .git/hooks
+ * Removes the pre-commit hook
  * @param {string} hook
  * @param {string} projectRoot
  * @private
  */
 function _removeHook(hook, projectRoot=process.cwd()) {
-    const gitRoot = getGitProjectRoot(projectRoot)
-    const hookPath = path.normalize(gitRoot + '/hooks/' + hook)
-
+    const hookDirectory = _getHooksDirPath(projectRoot)
+    const hookPath = path.join(hookDirectory, hook)
     if (fs.existsSync(hookPath)) {
         fs.unlinkSync(hookPath)
     }

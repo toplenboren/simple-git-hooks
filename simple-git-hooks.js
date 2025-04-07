@@ -237,6 +237,7 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     if (!fs.existsSync(normalizedHookDirectory)) {
         fs.mkdirSync(normalizedHookDirectory, { recursive: true })
     }
+
     fs.writeFileSync(hookPath, hookCommand)
     fs.chmodSync(hookPath, 0o0755)
 
@@ -272,6 +273,7 @@ async function removeHooks(projectRoot = process.cwd()) {
 function _removeHook(hook, projectRoot=process.cwd()) {
     const hookDirectory = _getHooksDirPath(projectRoot)
     const hookPath = path.join(hookDirectory, hook)
+
     if (fs.existsSync(hookPath)) {
         fs.unlinkSync(hookPath)
     }

@@ -503,10 +503,13 @@ describe("Simple Git Hooks tests", () => {
       beforeAll(() => {
         execSync('git config core.hooksPath .husky');
       });
+
       afterAll(() => {
         execSync('git config --unset core.hooksPath');
       });
+
       const TEST_HUSKY_PROJECT = PROJECT_WITH_CONF_IN_SEPARATE_JS_ALT;
+
       it("creates git hooks in .husky if core.hooksPath is set to .husky", async () => {
         const huskyDir = path.join(TEST_HUSKY_PROJECT, ".husky");
     
@@ -518,6 +521,7 @@ describe("Simple Git Hooks tests", () => {
         const installedHooks = getInstalledGitHooks(huskyDir);
         expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
       })
+
       it("remove git hooks in .husky if core.hooksPath is set to .husky", async () => {
         await simpleGitHooks.removeHooks(TEST_HUSKY_PROJECT);
         const huskyDir = path.join(TEST_HUSKY_PROJECT, ".husky");

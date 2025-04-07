@@ -45,10 +45,18 @@ if [ "$SKIP_SIMPLE_GIT_HOOKS" = "1" ]; then
     exit 0
 fi
 
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
+
 if [ -f "$SIMPLE_GIT_HOOKS_RC" ]; then
     . "$SIMPLE_GIT_HOOKS_RC"
 fi
 
+`
+
+const APPEND_SCRIPT = 
+`
+
+echo "$FILES" | xargs git add
 `
 
 /**
@@ -199,7 +207,7 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
         return
     }
 
-    const hookCommand = PREPEND_SCRIPT + command
+    const hookCommand = PREPEND_SCRIPT + command + APPEND_SCRIPT
     const hookDirectory = gitRoot + '/hooks/'
     const hookPath = path.normalize(hookDirectory + hook)
 

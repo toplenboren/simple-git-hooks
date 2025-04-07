@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const url = require('url')
+const { execSync } = require('child_process');
 
 const CONFIG_ERROR = '[ERROR] Config was not found! Please add `.simple-git-hooks.cjs` or `.simple-git-hooks.js` or `.simple-git-hooks.mjs` or `simple-git-hooks.cjs` or `simple-git-hooks.js` or `simple-git-hooks.mjs` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details'
 
@@ -185,7 +186,36 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
 }
 
 /**
- * Creates or replaces an existing executable script in .git/hooks/<hook> with provided command
+ * Returns the absolute path to the Git hooks directory.
+ * Respects user-defined core.hooksPath from Git config if present;
+ * otherwise defaults to <gitRoot>/.git/hooks.
+ *
+ * @param {string} gitRoot - The absolute path to the Git project root
+ * @returns {string} - The resolved absolute path to the hooks directory
+ * @private
+ */
+function _getHooksDirPath(projectRoot) {
+    const defaultHooksDirPath = path.join(projectRoot, '.git', 'hooks')
+    try {
+        const customHooksDirPath = execSync('git config core.hooksPath', {
+            cwd: projectRoot,
+            encoding: 'utf8'
+        }).trim()
+
+        if (!customHooksDirPath) {
+            return defaultHooksDirPath
+        }
+
+        return path.isAbsolute(customHooksDirPath)
+            ? customHooksDirPath
+            : path.resolve(projectRoot, customHooksDirPath)
+    } catch {
+        return defaultHooksDirPath
+    }
+}
+
+/**
+ * Creates or replaces an existing executable script in the git hooks directory with provided command
  * @param {string} hook
  * @param {string} command
  * @param {string} projectRoot
@@ -200,12 +230,12 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     }
 
     const hookCommand = PREPEND_SCRIPT + command
-    const hookDirectory = gitRoot + '/hooks/'
-    const hookPath = path.normalize(hookDirectory + hook)
+    const hookDirectory = _getHooksDirPath(projectRoot)
+    const hookPath = path.join(hookDirectory, hook)
 
     const normalizedHookDirectory = path.normalize(hookDirectory)
     if (!fs.existsSync(normalizedHookDirectory)) {
-        fs.mkdirSync(normalizedHookDirectory)
+        fs.mkdirSync(normalizedHookDirectory, { recursive: true })
     }
 
     fs.writeFileSync(hookPath, hookCommand)
@@ -235,14 +265,14 @@ async function removeHooks(projectRoot = process.cwd()) {
 }
 
 /**
- * Removes the pre-commit hook from .git/hooks
+ * Removes the pre-commit hook
  * @param {string} hook
  * @param {string} projectRoot
  * @private
  */
 function _removeHook(hook, projectRoot=process.cwd()) {
-    const gitRoot = getGitProjectRoot(projectRoot)
-    const hookPath = path.normalize(gitRoot + '/hooks/' + hook)
+    const hookDirectory = _getHooksDirPath(projectRoot)
+    const hookPath = path.join(hookDirectory, hook)
 
     if (fs.existsSync(hookPath)) {
         fs.unlinkSync(hookPath)

@@ -96,11 +96,6 @@ If you need multiple verbose commands per git hook, flexible configuration or au
 3. Run the CLI script to update the git hooks with the commands from the config:
 
    ```sh
-   # [Optional] These 2 steps can be skipped for non-husky users
-   git config core.hooksPath .git/hooks/
-   rm -rf .git/hooks
-
-   # Update ./git/hooks
    npx simple-git-hooks
    ```
 
@@ -210,34 +205,6 @@ If your client provides a toggle to skip Git hooks, you can utilize it to bypass
 If you have the option to set arguments or environment variables, you can use the --no-verify option or the SKIP_SIMPLE_GIT_HOOKS environment variable.
 
 If these options are not available, you may need to resort to using the terminal for skipping hooks.
-
-### When migrating from `husky` git hooks are not running
-
-**Why is this happening?**
-
-Husky might change the `core.gitHooks` value to `.husky`, this way, git hooks would search `.husky` directory instead of `.git/hooks/`.
-
-Read more on git configuration in [Git book](https://git-scm.com/docs/githooks)
-
-You can check it by running this command inside of your repo:
-
-`git config core.hooksPath`
-
-If it outputs `.husky` then this is your case
-
-**How to fix?**
-
-you need to point `core.gitHooks` value to `your-awesome-project/.git/hooks`. You can use this command:
-
-`git config core.hooksPath .git/hooks/`
-
-validate the value is set:
-
-`git config core.hooksPath`
-
-should output: `.git/hooks/`
-
-Then remove the `.husky` folder that are generated previously by `husky`.
 
 ### I am getting "npx: command not found" error in a GUI git client
 

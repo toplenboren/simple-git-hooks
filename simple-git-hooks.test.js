@@ -499,6 +499,38 @@ describe("Simple Git Hooks tests", () => {
       });
     });
 
+    describe("Custom core.hooksPath", () => {
+      beforeAll(() => {
+        execSync('git config core.hooksPath .husky');
+      });
+
+      afterAll(() => {
+        execSync('git config --unset core.hooksPath');
+      });
+
+      const TEST_HUSKY_PROJECT = PROJECT_WITH_CONF_IN_SEPARATE_JS_ALT;
+
+      it("creates git hooks in .husky if core.hooksPath is set to .husky", async () => {
+        const huskyDir = path.join(TEST_HUSKY_PROJECT, ".husky");
+    
+        if (!fs.existsSync(huskyDir)) {
+          fs.mkdirSync(huskyDir);
+        }
+
+        await simpleGitHooks.setHooksFromConfig(TEST_HUSKY_PROJECT);
+
+        const installedHooks = getInstalledGitHooks(huskyDir);
+        expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
+      })
+
+      it("remove git hooks in .husky if core.hooksPath is set to .husky", async () => {
+        await simpleGitHooks.removeHooks(TEST_HUSKY_PROJECT);
+        const huskyDir = path.join(TEST_HUSKY_PROJECT, ".husky");
+        const installedHooks = getInstalledGitHooks(huskyDir);
+        expect(isEqual(installedHooks, {})).toBe(true);
+      })
+    })
+
     describe("CLI tests", () => {
       const testCases = [
         ["npx", "simple-git-hooks", "./git-hooks.js"],

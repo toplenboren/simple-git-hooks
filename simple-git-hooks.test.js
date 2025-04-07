@@ -516,6 +516,7 @@ describe("Simple Git Hooks tests", () => {
         if (!fs.existsSync(huskyDir)) {
           fs.mkdirSync(huskyDir);
         }
+
         await simpleGitHooks.setHooksFromConfig(TEST_HUSKY_PROJECT);
 
         const installedHooks = getInstalledGitHooks(huskyDir);

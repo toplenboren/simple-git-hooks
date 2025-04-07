@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const url = require('url')
 
-const CONFIG_ERROR = '[ERROR] Config was not found! Please add `.simple-git-hooks.js` or `simple-git-hooks.js` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details'
+const CONFIG_ERROR = '[ERROR] Config was not found! Please add `.simple-git-hooks.cjs` or `.simple-git-hooks.js` or `.simple-git-hooks.mjs` or `simple-git-hooks.cjs` or `simple-git-hooks.js` or `simple-git-hooks.mjs` or `.simple-git-hooks.json` or `simple-git-hooks.json` or `simple-git-hooks` entry in package.json.\r\nCheck README for details'
 
 const VALID_GIT_HOOKS = [
     'applypatch-msg',

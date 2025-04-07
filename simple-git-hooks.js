@@ -109,6 +109,10 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
     if (indexOfPnpmDir > -1) {
         return projDir.slice(0, indexOfPnpmDir - 1).join('/');
     }
+    const indexOfDenoDir = projDir.indexOf('.deno')
+    if (indexOfDenoDir > -1) {
+        return projDir.slice(0, indexOfDenoDir - 1).join('/');
+    }
 
     const indexOfStoreDir = projDir.indexOf('.store')
     if (indexOfStoreDir > -1) {

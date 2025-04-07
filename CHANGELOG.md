@@ -10,7 +10,7 @@
 
 - [#127](https://github.com/toplenboren/simple-git-hooks/pull/127) [`8bb9818`](https://github.com/toplenboren/simple-git-hooks/commit/8bb9818876f11a2295ea8f80f666a5ee8e8ae13a) Thanks [@yyz945947732](https://github.com/yyz945947732)! - feat: optimize the migration experience from `husky`
 
-## 2.13.0
+## 2.12.1
 
 ### Minor Changes
 

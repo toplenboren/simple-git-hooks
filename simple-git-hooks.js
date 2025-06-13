@@ -423,6 +423,15 @@ function _validateHooks(config) {
 
     return true
 }
+/** Checks if the environment variable for skipping hooks is defined. */
+function skipInstall() {
+    const {SKIP_INSTALL_SIMPLE_GIT_HOOKS} = process.env
+    if (['1', 'true'].includes(SKIP_INSTALL_SIMPLE_GIT_HOOKS)) {
+        console.log(`[INFO] SKIP_INSTALL_SIMPLE_GIT_HOOKS is set to "${SKIP_INSTALL_SIMPLE_GIT_HOOKS}", skipping installing hook.`)
+        return true;
+    }
+    return false;
+}
 
 module.exports = {
     checkSimpleGitHooksInDependencies,
@@ -430,5 +439,6 @@ module.exports = {
     getProjectRootDirectoryFromNodeModules,
     getGitProjectRoot,
     removeHooks,
+    skipInstall: skipInstall,
     PREPEND_SCRIPT
 }

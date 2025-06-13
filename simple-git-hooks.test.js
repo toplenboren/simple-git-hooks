@@ -610,6 +610,40 @@ describe("Simple Git Hooks tests", () => {
           );
           expect(installedHooks).toEqual({ "pre-commit": TEST_SCRIPT });
         });
+
+        it("does not create git hooks during postinstall hook when SKIP_INSTALL_SIMPLE_GIT_HOOKS is set to 1", () => {
+          createGitHooksFolder(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
+          execSync(`node ${require.resolve("./postinstall")}`, {
+            cwd: PROJECT_WITH_CONF_IN_PACKAGE_JSON,
+            env: {
+                ...process.env,
+                SKIP_INSTALL_SIMPLE_GIT_HOOKS: "1",
+            },
+          });
+          const installedHooks = getInstalledGitHooks(
+              path.normalize(
+                  path.join(PROJECT_WITH_CONF_IN_PACKAGE_JSON, ".git", "hooks")
+              )
+          );
+          expect(installedHooks).toEqual({});
+        });
+
+        it("creates git hooks during postinstall when SKIP_INSTALL_SIMPLE_GIT_HOOKS is set to 0", () => {
+          createGitHooksFolder(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
+          execSync(`node ${require.resolve("./postinstall")}`, {
+            cwd: PROJECT_WITH_CONF_IN_PACKAGE_JSON,
+            env: {
+                ...process.env,
+                SKIP_INSTALL_SIMPLE_GIT_HOOKS: "0",
+            },
+          });
+          const installedHooks = getInstalledGitHooks(
+              path.normalize(
+                  path.join(PROJECT_WITH_CONF_IN_PACKAGE_JSON, ".git", "hooks")
+              )
+          );
+          expect(installedHooks).toEqual({ "pre-commit": TEST_SCRIPT });
+        });
       });
     });
 

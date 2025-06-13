@@ -1,12 +1,17 @@
 #!/usr/bin/env node
 
-const {checkSimpleGitHooksInDependencies, getProjectRootDirectoryFromNodeModules, setHooksFromConfig} = require("./simple-git-hooks");
+const {checkSimpleGitHooksInDependencies, getProjectRootDirectoryFromNodeModules, setHooksFromConfig, skipInstall} = require("./simple-git-hooks");
 
 
 /**
  * Creates the pre-commit from command in config by default
  */
 async function postinstall() {
+
+    if(skipInstall()) {
+        return;
+    }
+
     let projectDirectory;
 
     /* When script is run after install, the process.cwd() would be like <project_folder>/node_modules/simple-git-hooks

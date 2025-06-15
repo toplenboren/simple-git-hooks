@@ -439,6 +439,6 @@ module.exports = {
     getProjectRootDirectoryFromNodeModules,
     getGitProjectRoot,
     removeHooks,
-    skipInstall: skipInstall,
+    skipInstall,
     PREPEND_SCRIPT
 }

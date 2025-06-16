@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.1
+
+### Patch Changes
+
+- [#128](https://github.com/toplenboren/simple-git-hooks/pull/128) [`2ad5514`](https://github.com/toplenboren/simple-git-hooks/commit/2ad5514dbbfbf11ffef9414c64d15a2dbe8ea756) Thanks [@OlofFredriksson](https://github.com/OlofFredriksson)! - fix: postinstall should ignore adding hooks if SKIP_INSTALL_SIMPLE_GIT_HOOKS is defined
+
 ## 2.13.0
 
 ### Minor Changes

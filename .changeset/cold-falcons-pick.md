@@ -2,4 +2,4 @@
 "simple-git-hooks": patch
 ---
 
-just get config hooksPath local
+fix: only get local `coore.hooksPath` config

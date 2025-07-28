@@ -190,12 +190,19 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
  * Respects user-defined core.hooksPath from Git config if present;
  * otherwise defaults to <gitRoot>/.git/hooks.
  *
- * @param {string} gitRoot - The absolute path to the Git project root
+ * @param {string} projectRoot - The absolute path to the project root
  * @returns {string} - The resolved absolute path to the hooks directory
  * @private
  */
 function _getHooksDirPath(projectRoot) {
-    const defaultHooksDirPath = path.join(projectRoot, '.git', 'hooks')
+    const gitRoot = getGitProjectRoot(projectRoot)
+
+    if (!gitRoot) {
+        console.info('[INFO] No `.git` root folder found, skipping')
+        return
+    }
+
+    const defaultHooksDirPath = path.join(gitRoot, 'hooks')
     try {
         const customHooksDirPath = execSync('git config core.hooksPath', {
             cwd: projectRoot,
@@ -222,15 +229,19 @@ function _getHooksDirPath(projectRoot) {
  * @private
  */
 function _setHook(hook, command, projectRoot=process.cwd()) {
-    const gitRoot = getGitProjectRoot(projectRoot)
-
-    if (!gitRoot) {
-        console.info('[INFO] No `.git` root folder found, skipping')
+    const hookDirectory = _getHooksDirPath(projectRoot)
+    
+    if (!hookDirectory) {
+        console.info('[INFO] No hooks folder found, skipping')
         return
     }
 
-    const hookCommand = PREPEND_SCRIPT + command
-    const hookDirectory = _getHooksDirPath(projectRoot)
+    let finalCommand = command;
+    if(hookDirectory !== path.join(projectRoot, '.git', 'hooks')) {
+        finalCommand = `pushd . && cd ${projectRoot} && ${command} && popd`
+    }
+    const hookCommand = PREPEND_SCRIPT + finalCommand
+
     const hookPath = path.join(hookDirectory, hook)
 
     const normalizedHookDirectory = path.normalize(hookDirectory)
@@ -272,6 +283,12 @@ async function removeHooks(projectRoot = process.cwd()) {
  */
 function _removeHook(hook, projectRoot=process.cwd()) {
     const hookDirectory = _getHooksDirPath(projectRoot)
+
+    if (!hookDirectory) {
+        console.info('[INFO] No hooks folder found, skipping')
+        return
+    }
+
     const hookPath = path.join(hookDirectory, hook)
 
     if (fs.existsSync(hookPath)) {

@@ -197,7 +197,7 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
 function _getHooksDirPath(projectRoot) {
     const defaultHooksDirPath = path.join(projectRoot, '.git', 'hooks')
     try {
-        const customHooksDirPath = execSync('git config core.hooksPath', {
+        const customHooksDirPath = execSync('git config --local core.hooksPath', {
             cwd: projectRoot,
             encoding: 'utf8'
         }).trim()

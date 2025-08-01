@@ -195,14 +195,15 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
  * @private
  */
 function _getHooksDirPath(projectRoot) {
-    const gitRoot = getGitProjectRoot(projectRoot)
-
-    if (!gitRoot) {
-        console.info('[INFO] No `.git` root folder found, skipping')
-        return
+    const getDefaultHooksDirPath = (projectRootPath) => {
+        const gitRoot = getGitProjectRoot(projectRootPath)
+        if (!gitRoot) {
+            console.info('[INFO] No `.git` root folder found, skipping')
+            return
+        }
+        return path.join(gitRoot, 'hooks')
     }
 
-    const defaultHooksDirPath = path.join(gitRoot, 'hooks')
     try {
         const customHooksDirPath = execSync('git config core.hooksPath', {
             cwd: projectRoot,
@@ -210,14 +211,14 @@ function _getHooksDirPath(projectRoot) {
         }).trim()
 
         if (!customHooksDirPath) {
-            return defaultHooksDirPath
+            return getDefaultHooksDirPath(projectRoot)
         }
 
         return path.isAbsolute(customHooksDirPath)
             ? customHooksDirPath
             : path.resolve(projectRoot, customHooksDirPath)
     } catch {
-        return defaultHooksDirPath
+        return getDefaultHooksDirPath(projectRoot)
     }
 }
 

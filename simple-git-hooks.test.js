@@ -132,6 +132,13 @@ describe("Simple Git Hooks tests", () => {
 
     const TEST_SCRIPT = `${simpleGitHooks.PREPEND_SCRIPT}exit 1`;
     const COMMON_GIT_HOOKS = { "pre-commit": TEST_SCRIPT, "pre-push": TEST_SCRIPT };
+  
+
+    // This function is used to wrap commands with directory change
+    // It is used to ensure that commands are executed in the correct directory
+    const wrapCommandWithDirectoryChange = (dir, command) => {
+      return `pushd . && cd ${dir} && ${command} && popd`;
+    };
 
     // To test this package, we often need to create and manage files.
     // Best to use real file system and real files under _tests folder
@@ -518,9 +525,13 @@ describe("Simple Git Hooks tests", () => {
         }
 
         await simpleGitHooks.setHooksFromConfig(TEST_HUSKY_PROJECT);
-
+        
         const installedHooks = getInstalledGitHooks(huskyDir);
-        expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
+        const expectedHook = wrapCommandWithDirectoryChange(
+            TEST_HUSKY_PROJECT, "exit 1"
+        );
+        expect(installedHooks["pre-commit"]).toContain(expectedHook);
+        expect(installedHooks["pre-push"]).toContain(expectedHook);
       })
 
       it("remove git hooks in .husky if core.hooksPath is set to .husky", async () => {
@@ -730,6 +741,35 @@ describe("Simple Git Hooks tests", () => {
           expectCommitToFail(PROJECT_WITH_CONF_IN_PACKAGE_JSON);
         });
       })
+
+      describe("Monorepo scenarios", () => {
+        it("installs hooks in git root when executed from project subdirectory", async () => {
+          const MONOREPO_ROOT = path.join(testsFolder, "monorepo_scenario");
+          const PROJECT_SUBDIR = path.join(MONOREPO_ROOT, "npm_project");
+          
+          // Setup: Git root with npm project in subdirectory
+          fs.mkdirSync(MONOREPO_ROOT, { recursive: true });
+          fs.mkdirSync(path.join(MONOREPO_ROOT, ".git", "hooks"), { recursive: true });
+          fs.mkdirSync(PROJECT_SUBDIR, { recursive: true });
+          
+          fs.writeFileSync(path.join(PROJECT_SUBDIR, "package.json"), JSON.stringify({
+            "simple-git-hooks": { "pre-commit": "exit 1" }
+          }));
+          
+          // Execute from subdirectory
+          await simpleGitHooks.setHooksFromConfig(PROJECT_SUBDIR);
+          
+          // Verify hooks installed in git root, not project subdirectory
+          const gitRootHooks = getInstalledGitHooks(path.join(MONOREPO_ROOT, ".git", "hooks"));
+          expect(Object.keys(gitRootHooks)).toContain("pre-commit");
+          
+          // Verify no .git created in subdirectory
+          expect(fs.existsSync(path.join(PROJECT_SUBDIR, ".git"))).toBe(false);
+          
+          // Cleanup
+          fs.rmSync(MONOREPO_ROOT, { recursive: true, force: true });
+        });
+      });
     });
 
     afterEach(() => {

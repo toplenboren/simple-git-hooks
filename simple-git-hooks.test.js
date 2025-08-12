@@ -72,6 +72,14 @@ describe("Simple Git Hooks tests", () => {
             )
         ).toBe("var/my-project");
       });
+
+      it("return correct dir when installed using bun with --linker=isolated", () => {
+        expect(
+            simpleGitHooks.getProjectRootDirectoryFromNodeModules(
+                `var/my-project/node_modules/.bun/simple-git-hooks@${packageVersion}/node_modules/simple-git-hooks`
+            )
+        ).toBe('var/my-project');
+      })
     });
 
     describe("getGitProjectRoot", () => {

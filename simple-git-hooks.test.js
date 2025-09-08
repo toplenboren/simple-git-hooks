@@ -557,6 +557,15 @@ describe("Simple Git Hooks tests", () => {
           expect(JSON.stringify(installedHooks)).toBe(JSON.stringify(COMMON_GIT_HOOKS));
           expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
         });
+
+        it(`should silently succeed if all hooks are already set for command: ${args.join(" ")}`, async () => {
+          createGitHooksFolder(PROJECT_WITH_CUSTOM_CONF);
+
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_CONF, args);
+          const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_CONF, args);
+          expect(consoleSpy).not.toHaveBeenCalled();
+        });
       });
 
       describe("SKIP_INSTALL_SIMPLE_GIT_HOOKS", () => {

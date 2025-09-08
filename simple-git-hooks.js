@@ -176,12 +176,24 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
 
     const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : config.preserveUnused ? VALID_GIT_HOOKS: []
 
+    let hasContentsChanged = false
+
     for (let hook of VALID_GIT_HOOKS) {
         if (Object.prototype.hasOwnProperty.call(config, hook)) {
-            _setHook(hook, config[hook], projectRootPath)
+            const isHookSet = _setHook(hook, config[hook], projectRootPath)
+            if (isHookSet) {
+                hasContentsChanged = true
+            }
         } else if (!preserveUnused.includes(hook)) {
-            _removeHook(hook, projectRootPath)
+            const isHookRemoved = _removeHook(hook, projectRootPath)
+            if (isHookRemoved) {
+                hasContentsChanged = true
+            }
         }
+    }
+
+    return {
+        hasContentsChanged,
     }
 }
 
@@ -219,6 +231,7 @@ function _getHooksDirPath(projectRoot) {
  * @param {string} hook
  * @param {string} command
  * @param {string} projectRoot
+ * @returns {boolean} whether the hook was set successfully, false if it was already set with same contents
  * @private
  */
 function _setHook(hook, command, projectRoot=process.cwd()) {
@@ -226,7 +239,7 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
 
     if (!gitRoot) {
         console.info('[INFO] No `.git` root folder found, skipping')
-        return
+        return false
     }
 
     const hookCommand = PREPEND_SCRIPT + command
@@ -238,10 +251,17 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
         fs.mkdirSync(normalizedHookDirectory, { recursive: true })
     }
 
+    if (fs.existsSync(hookPath)) {
+        const existingHook = fs.readFileSync(hookPath, { encoding: 'utf-8' })
+        if (existingHook === hookCommand) {
+            return false
+        }
+    }
     fs.writeFileSync(hookPath, hookCommand)
     fs.chmodSync(hookPath, 0o0755)
 
     console.info(`[INFO] Successfully set the ${hook} with command: ${command}`)
+    return true
 }
 
 /**
@@ -268,6 +288,7 @@ async function removeHooks(projectRoot = process.cwd()) {
  * Removes the pre-commit hook
  * @param {string} hook
  * @param {string} projectRoot
+ * @returns {boolean} whether the hook was removed
  * @private
  */
 function _removeHook(hook, projectRoot=process.cwd()) {
@@ -276,7 +297,9 @@ function _removeHook(hook, projectRoot=process.cwd()) {
 
     if (fs.existsSync(hookPath)) {
         fs.unlinkSync(hookPath)
+        return true
     }
+    return false
 }
 
 /** Reads package.json file, returns package.json content and path

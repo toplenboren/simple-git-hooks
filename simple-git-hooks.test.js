@@ -557,15 +557,6 @@ describe("Simple Git Hooks tests", () => {
           expect(JSON.stringify(installedHooks)).toBe(JSON.stringify(COMMON_GIT_HOOKS));
           expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
         });
-
-        it(`should silently succeed if all hooks are already set for command: ${args.join(" ")}`, async () => {
-          createGitHooksFolder(PROJECT_WITH_CUSTOM_CONF);
-
-          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_CONF, args);
-          const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-          await simpleGitHooks.setHooksFromConfig(PROJECT_WITH_CUSTOM_CONF, args);
-          expect(consoleSpy).not.toHaveBeenCalled();
-        });
       });
 
       describe("SKIP_INSTALL_SIMPLE_GIT_HOOKS", () => {
@@ -653,6 +644,19 @@ describe("Simple Git Hooks tests", () => {
           );
           expect(installedHooks).toEqual({ "pre-commit": TEST_SCRIPT });
         });
+      });
+
+      describe('should silently succeed if all hooks are already', () => {
+        it('silent success by default', async () => {
+          createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_JSON);
+
+          const output1 = execSync(`node ${require.resolve("./cli")}`, { cwd: PROJECT_WITH_CONF_IN_SEPARATE_JSON, encoding: 'utf8' });
+          expect(output1).toMatch(/\[INFO\] Successfully set all git hooks/);
+          expect(output1).toMatch(/\[INFO\] Successfully set the pre-commit with command: exit 1/);
+
+          const output2 = execSync(`node ${require.resolve("./cli")}`, { cwd: PROJECT_WITH_CONF_IN_SEPARATE_JSON, encoding: 'utf8' }).trim();
+          expect(output2).toBe('');
+        })
       });
     });
 

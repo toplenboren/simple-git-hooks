@@ -11,8 +11,8 @@ if(skipInstall()) {
 }
 
 setHooksFromConfig(process.cwd(), process.argv)
-    .then(({ hasContentsChanged }) => {
-        if (!hasContentsChanged) {
+    .then(({ isHookChanged }) => {
+        if (!isHookChanged) {
             // all configured hooks are set but with same contents, silent success
             return
         }

@@ -646,7 +646,7 @@ describe("Simple Git Hooks tests", () => {
         });
       });
 
-      describe('should silently succeed if all hooks are already', () => {
+      describe('should silently succeed if all hooks are already installed', () => {
         it('silent success by default', async () => {
           createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_JSON);
 

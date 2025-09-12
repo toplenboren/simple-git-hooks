@@ -176,20 +176,20 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
 
     const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : config.preserveUnused ? VALID_GIT_HOOKS: []
 
-    let hasContentsChanged = false
+    let isHookChanged = false
 
     for (let hook of VALID_GIT_HOOKS) {
         if (Object.prototype.hasOwnProperty.call(config, hook)) {
-            const isHookSet = _setHook(hook, config[hook], projectRootPath)
-            hasContentsChanged = hasContentsChanged || isHookSet
+            const isHookUpdated = _setHook(hook, config[hook], projectRootPath).hookChanged
+            isHookChanged = isHookChanged || isHookUpdated
         } else if (!preserveUnused.includes(hook)) {
             const isHookRemoved = _removeHook(hook, projectRootPath)
-            hasContentsChanged = hasContentsChanged || isHookRemoved
+            isHookChanged = isHookChanged || isHookRemoved
         }
     }
 
     return {
-        hasContentsChanged,
+        isHookChanged,
     }
 }
 
@@ -227,7 +227,6 @@ function _getHooksDirPath(projectRoot) {
  * @param {string} hook
  * @param {string} command
  * @param {string} projectRoot
- * @returns {boolean} whether the hook was set successfully, false if it was already set with same contents
  * @private
  */
 function _setHook(hook, command, projectRoot=process.cwd()) {
@@ -235,7 +234,10 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
 
     if (!gitRoot) {
         console.info('[INFO] No `.git` root folder found, skipping')
-        return false
+        return {
+            hookChanged: false,
+            success: false
+        }
     }
 
     const hookCommand = PREPEND_SCRIPT + command
@@ -250,14 +252,20 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     if (fs.existsSync(hookPath)) {
         const existingHook = fs.readFileSync(hookPath, { encoding: 'utf-8' })
         if (existingHook === hookCommand) {
-            return false
+            return {
+                hookChanged: false,
+                success: true
+            }
         }
     }
     fs.writeFileSync(hookPath, hookCommand)
     fs.chmodSync(hookPath, 0o0755)
 
     console.info(`[INFO] Successfully set the ${hook} with command: ${command}`)
-    return true
+    return {
+        hookChanged: true,
+        success: true
+    }
 }
 
 /**

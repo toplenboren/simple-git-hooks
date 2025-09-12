@@ -176,17 +176,18 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
 
     const preserveUnused = Array.isArray(config.preserveUnused) ? config.preserveUnused : config.preserveUnused ? VALID_GIT_HOOKS: []
 
-    let isHookChanged = false
+    let isHookUpdated = false
+    let isHookDeleted = false
 
     for (let hook of VALID_GIT_HOOKS) {
         if (Object.prototype.hasOwnProperty.call(config, hook)) {
-            const isHookUpdated = _setHook(hook, config[hook], projectRootPath).hookChanged
-            isHookChanged = isHookChanged || isHookUpdated
+            isHookUpdated = _setHook(hook, config[hook], projectRootPath).hookChanged
         } else if (!preserveUnused.includes(hook)) {
-            const isHookRemoved = _removeHook(hook, projectRootPath)
-            isHookChanged = isHookChanged || isHookRemoved
+            isHookDeleted = _removeHook(hook, projectRootPath)
         }
     }
+
+    const isHookChanged = isHookUpdated || isHookDeleted
 
     return {
         isHookChanged,

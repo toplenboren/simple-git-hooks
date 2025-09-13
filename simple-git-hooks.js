@@ -181,9 +181,9 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
 
     for (let hook of VALID_GIT_HOOKS) {
         if (Object.prototype.hasOwnProperty.call(config, hook)) {
-            isHookUpdated = _setHook(hook, config[hook], projectRootPath).hookChanged
+            isHookUpdated = isHookUpdated || _setHook(hook, config[hook], projectRootPath).hookChanged
         } else if (!preserveUnused.includes(hook)) {
-            isHookDeleted = _removeHook(hook, projectRootPath)
+            isHookDeleted = isHookDeleted || _removeHook(hook, projectRootPath)
         }
     }
 

@@ -11,5 +11,11 @@ if(skipInstall()) {
 }
 
 setHooksFromConfig(process.cwd(), process.argv)
-    .then(() => console.log('[INFO] Successfully set all git hooks'))
+    .then(({ isHookChanged }) => {
+        if (!isHookChanged) {
+            // all configured hooks are set but with same contents, silent success
+            return
+        }
+        console.log('[INFO] Successfully set all git hooks')
+    })
     .catch(e => console.log('[ERROR], Was not able to set git hooks. Error: ' + e))

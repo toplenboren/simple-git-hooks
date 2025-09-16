@@ -653,6 +653,19 @@ describe("Simple Git Hooks tests", () => {
           expect(installedHooks).toEqual({ "pre-commit": TEST_SCRIPT });
         });
       });
+
+      describe('should silently succeed if all hooks are already installed', () => {
+        it('silent success by default', async () => {
+          createGitHooksFolder(PROJECT_WITH_CONF_IN_SEPARATE_JSON);
+
+          const output1 = execSync(`node ${require.resolve("./cli")}`, { cwd: PROJECT_WITH_CONF_IN_SEPARATE_JSON, encoding: 'utf8' });
+          expect(output1).toMatch(/\[INFO\] Successfully set all git hooks/);
+          expect(output1).toMatch(/\[INFO\] Successfully set the pre-commit with command: exit 1/);
+
+          const output2 = execSync(`node ${require.resolve("./cli")}`, { cwd: PROJECT_WITH_CONF_IN_SEPARATE_JSON, encoding: 'utf8' }).trim();
+          expect(output2).toBe('');
+        })
+      });
     });
 
     describe("ENV vars features tests", () => {

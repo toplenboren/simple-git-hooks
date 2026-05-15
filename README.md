@@ -162,7 +162,14 @@ It causes errors for end users of your package
 > Uninstallation will remove all the existing git hooks.
 
 ```sh
-npm uninstall simple-git-hooks
+pnpm uninstall simple-git-hooks
+```
+
+Note: It only works for some 3rd-party package managers e.g. pnpm. For **npm** - default node package manager - it isn't supported, see [documentation](https://docs.npmjs.com/cli/v11/using-npm/scripts#a-note-on-a-lack-of-npm-uninstall-scripts).
+You can uninstall hooks manually from your project root
+
+```sh
+node node_modules/simple-git-hooks/uninstall.js
 ```
 
 ## Common issues

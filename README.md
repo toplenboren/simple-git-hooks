@@ -165,7 +165,7 @@ It causes errors for end users of your package
 pnpm uninstall simple-git-hooks
 ```
 
-Note: It only works for some 3rd-party package managers e.g. pnpm. For **npm** - default node package manager - it isn't supported, see [documentation](https://docs.npmjs.com/cli/v11/using-npm/scripts#a-note-on-a-lack-of-npm-uninstall-scripts).
+Note: It only works for some 3rd-party package managers e.g. pnpm. For **npm** - default node package manager - it isn't supported, see [documentation](https://docs.npmjs.com/cli/using-npm/scripts#a-note-on-a-lack-of-npm-uninstall-scripts).
 You can uninstall hooks manually from your project root
 
 ```sh

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.14.0
+
+### Minor Changes
+
+- [#138](https://github.com/toplenboren/simple-git-hooks/pull/138) [`2f3ec3f`](https://github.com/toplenboren/simple-git-hooks/commit/2f3ec3f95d895c46f0b9c7229504967a21f2a6cf) Thanks [@younggglcy](https://github.com/younggglcy)! - feat: silent success if nothing has changed
+
 ## 2.13.1
 
 ### Patch Changes

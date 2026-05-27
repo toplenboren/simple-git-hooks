@@ -462,6 +462,10 @@ function skipInstall() {
         console.log(`[INFO] SKIP_INSTALL_SIMPLE_GIT_HOOKS is set to "${SKIP_INSTALL_SIMPLE_GIT_HOOKS}", skipping installing hook.`)
         return true;
     }
+    if (require('is-ci')) {
+        console.log(`[INFO] CI detected, skipping installing hook.`)
+        return true
+    }
     return false;
 }
 

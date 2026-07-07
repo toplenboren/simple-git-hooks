@@ -82,6 +82,68 @@ describe("Simple Git Hooks tests", () => {
       })
     });
 
+    describe("getProjectRootDirectory", () => {
+      // __dirname is this repo's root, which contains a package.json — a stand-in
+      // for a real INIT_CWD (the directory a package manager runs postinstall from).
+      const realProjectRoot = __dirname;
+
+      // The test runner (npm/yarn/pnpm test) sets INIT_CWD itself, so clear it to
+      // keep each case hermetic; the value is passed explicitly where it matters.
+      let originalInitCwd;
+      beforeEach(() => {
+        originalInitCwd = process.env.INIT_CWD;
+        delete process.env.INIT_CWD;
+      });
+      afterEach(() => {
+        if (originalInitCwd === undefined) {
+          delete process.env.INIT_CWD;
+        } else {
+          process.env.INIT_CWD = originalInitCwd;
+        }
+      });
+
+      it("prefers INIT_CWD when it points at a directory with a package.json", () => {
+        // cwd is the package's physical location in an isolated store whose marker
+        // getProjectRootDirectoryFromNodeModules does not recognize — the layout
+        // that used to crash. INIT_CWD resolves the root regardless of the layout.
+        expect(
+            simpleGitHooks.getProjectRootDirectory(
+                realProjectRoot,
+                "/var/my-project/node_modules/.some-store/simple-git-hooks@2.13.1/node_modules/simple-git-hooks"
+            )
+        ).toBe(realProjectRoot);
+      });
+
+      it("falls back to the node_modules heuristic when INIT_CWD is unset", () => {
+        expect(
+            simpleGitHooks.getProjectRootDirectory(
+                undefined,
+                `/var/my-project/node_modules/.pnpm/simple-git-hooks@${packageVersion}/node_modules/simple-git-hooks`
+            )
+        ).toBe("/var/my-project");
+      });
+
+      it("ignores INIT_CWD when it does not point at a directory with a package.json", () => {
+        expect(
+            simpleGitHooks.getProjectRootDirectory(
+                path.join(realProjectRoot, "this-directory-does-not-exist"),
+                "/var/my-project/node_modules/simple-git-hooks"
+            )
+        ).toBe("/var/my-project");
+      });
+
+      it("falls back to cwd when INIT_CWD is unset and cwd is not inside node_modules", () => {
+        expect(
+            simpleGitHooks.getProjectRootDirectory(undefined, "/var/my-project")
+        ).toBe("/var/my-project");
+      });
+
+      it("reads process.env.INIT_CWD when called with no arguments", () => {
+        process.env.INIT_CWD = realProjectRoot;
+        expect(simpleGitHooks.getProjectRootDirectory()).toBe(realProjectRoot);
+      });
+    });
+
     describe("getGitProjectRoot", () => {
       const gitProjectRoot = path.normalize(path.join(__dirname, ".git"));
       const currentPath = path.normalize(path.join(__dirname));

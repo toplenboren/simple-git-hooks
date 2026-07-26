@@ -15,7 +15,7 @@ A tool that lets you easily manage git hooks
 | lefthook `2.1.10` | `28.4 kB` | `28.4 kB` |
 | pre-commit `2.0.0` | `35.9 kB` | `~850 kB` |
 
-### Who uses simple-git-hooks?
+## Who uses simple-git-hooks?
 
 - [PostCSS](https://github.com/postcss/postcss)
 - [Nano ID](https://github.com/ai/nanoid)
@@ -102,12 +102,12 @@ Now all the git hooks are created.
 ```jsonc
 {
   "scripts": {
-    "prepare": "npx simple-git-hooks"
+    "prepare": "existing-command && simple-git-hooks"
   }
 }
 ```
 
-Now git hooks will be installed automatically when `npm install` is ran
+Now git hooks will be installed automatically when `npm install` is run
 
 ### Update git hooks command
 
@@ -188,21 +188,19 @@ node node_modules/simple-git-hooks/uninstall.js
 
 Modern package managers block dependency install scripts by default for security reasons:
 
-Since  postinstall scripts are blocked. 
-
 - pnpm, Yarn Berry, and Bun already block them today.
-- npm v12+ (estimated mid-2026) will also block them via [RFC #868](https://github.com/npm/rfcs/pull/868).
+- npm v12+ will also block them via [RFC #868](https://github.com/npm/rfcs/pull/868).
 
 If your package manager blocks the built-in `postinstall`, you have two options:
 
-#### Best solution: Add `npx simple-git-hooks` to `prepare` of package.json of your projec
+#### Best solution: Add `simple-git-hooks` to `prepare` of package.json of your project
 
 This works with all package managers (npm, pnpm, Yarn, Bun) and requires no allowlist.
 
 ```jsonc
 {
   "scripts": {
-    "prepare": "npx simple-git-hooks"
+    "prepare": "existing-command && simple-git-hooks"
   }
 }
 ```
@@ -228,11 +226,23 @@ Then run `npm approve-scripts simple-git-hooks`.
 
 ```yaml
 # pnpm-workspace.yaml
-onlyBuiltDependencies:
-  - simple-git-hooks
+allowBuilds:
+  simple-git-hooks: true
 ```
 
 Or run `pnpm approve-builds simple-git-hooks`.
+
+**Yarn Berry**
+
+```jsonc
+{
+  "dependenciesMeta": {
+    "simple-git-hooks": {
+      "built": true
+    }
+  }
+}
+```
 
 **bun**
 

@@ -4,31 +4,27 @@
 
 A tool that lets you easily manage git hooks
 
-> The package was recently renamed from `simple-pre-commit`.
-
-> See **Releases** for the `simple-pre-commit` documentation and changelog
-
 - Zero dependency
 - Small configuration (1 object in package.json)
 - Lightweight:
 
-  | Package                       | Unpacked size | With deps |
-  |-------------------------------|--------------|-----------|
-  | husky v4 `4.3.8`              | `53.5 kB`    | `~1 mB`   |
-  | husky v8 `8.0.3`              | `6.44 kB`    | `6.44 kB` |
-  | pre-commit `1.2.2`            | `~80 kB`     | `~850 kB` |
-  | **simple-git-hooks** `2.11.0` | `10.9 kB`    | `10.9 kB` |
+| Package | Unpacked size | With deps |
+|---------|-------------|-----------|
+| husky `9.1.7` | `4.0 kB` | `4.0 kB` |
+| **simple-git-hooks** `2.13.1` | `13.0 kB` | `13.0 kB` |
+| lefthook `2.1.10` | `28.4 kB` | `28.4 kB` |
+| pre-commit `2.0.0` | `35.9 kB` | `~850 kB` |
 
-### Who uses simple-git-hooks?
+## Who uses simple-git-hooks?
 
-- [Autoprefixer](https://github.com/postcss/autoprefixer)
-- [PostCSS](https://github.com/postcss/postcss.org)
-- [Browserslist](https://github.com/browserslist/browserslist)
+- [PostCSS](https://github.com/postcss/postcss)
 - [Nano ID](https://github.com/ai/nanoid)
-- [Size Limit](https://github.com/ai/size-limit)
-- [Storeon](https://github.com/storeon/storeon)
-- [Directus](https://github.com/directus/directus)
+- [VitePress](https://github.com/vuejs/vitepress)
+- [VueUse](https://github.com/vueuse/vueuse)
+- [Slidev](https://github.com/slidevjs/slidev)
 - [Vercel/pkg](https://github.com/vercel/pkg)
+- [WXT](https://github.com/wxt-dev/wxt)
+- [Elk](https://github.com/elk-zone/elk)
 - More, see [full list](https://github.com/toplenboren/simple-git-hooks/network/dependents?package_id=UGFja2FnZS0xOTk1ODMzMTA4)
 
 ### What is a git hook?
@@ -98,8 +94,20 @@ If you need multiple verbose commands per git hook, flexible configuration or au
    ```sh
    npx simple-git-hooks
    ```
-
+   
 Now all the git hooks are created.
+   
+4. Add simple-git-hooks to `prepare` for automatic hooks installation
+
+```jsonc
+{
+  "scripts": {
+    "prepare": "existing-command && simple-git-hooks"
+  }
+}
+```
+
+Now git hooks will be installed automatically when `npm install` is run
 
 ### Update git hooks command
 
@@ -173,6 +181,72 @@ node node_modules/simple-git-hooks/uninstall.js
 ```
 
 ## Common issues
+
+### Scripts are not installed automatically / Postinstall (npm [RFC #868](https://github.com/npm/rfcs/pull/868))
+
+`simple-git-hooks` runs a `postinstall` script when installed as a dependency, so hooks appear on their own after `npm install`. 
+
+Modern package managers block dependency install scripts by default for security reasons:
+
+- pnpm, Yarn Berry, and Bun already block them today.
+- npm v12+ will also block them via [RFC #868](https://github.com/npm/rfcs/pull/868).
+
+If your package manager blocks the built-in `postinstall`, you have two options:
+
+#### Best solution: Add `simple-git-hooks` to `prepare` of package.json of your project
+
+This works with all package managers (npm, pnpm, Yarn, Bun) and requires no allowlist.
+
+```jsonc
+{
+  "scripts": {
+    "prepare": "existing-command && simple-git-hooks"
+  }
+}
+```
+
+#### Workaround: Allow the built-in `postinstall` to run
+
+If you prefer to keep using the built-in postinstall (the default behavior where supported), you must explicitly allow it.
+
+> Note: Postinstall script is planned to be removed in `3.x.x`
+
+**npm (RFC #868)**
+
+
+```jsonc 
+{
+  "allowScripts": ["simple-git-hooks"]
+}
+```
+
+Then run `npm approve-scripts simple-git-hooks`.
+
+**pnpm**
+
+```yaml
+# pnpm-workspace.yaml
+allowBuilds:
+  simple-git-hooks: true
+```
+
+Or run `pnpm approve-builds simple-git-hooks`.
+
+**Yarn Berry**
+
+```jsonc
+{
+  "dependenciesMeta": {
+    "simple-git-hooks": {
+      "built": true
+    }
+  }
+}
+```
+
+**bun**
+
+Bun does not support dependency install scripts. Use the prepare solution above.
 
 ### I want to skip git hooks!
 
@@ -260,4 +334,3 @@ validate the value is set:
 should output: `.git/hooks/`
 
 Then remove the `.husky` folder that are generated previously by `husky`.
-

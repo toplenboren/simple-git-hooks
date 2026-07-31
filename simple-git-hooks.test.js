@@ -547,7 +547,16 @@ describe("Simple Git Hooks tests", () => {
       // In a worktree, hooks live in the main repository's .git/hooks
       const SHARED_HOOKS_DIR = path.join(MAIN_REPO, ".git", "hooks");
 
-      beforeEach(() => {
+      // git writes a relative gitdir into the worktree .git file only since 2.48
+      const supportsRelativePaths = execSync("git worktree add -h 2>&1 || true")
+          .toString()
+          .includes("relative-paths");
+
+      /**
+       * Creates a main repository with one linked worktree
+       * @param {string} worktreeAddFlags - extra flags for git worktree add
+       */
+      function createRepoWithWorktree(worktreeAddFlags = "") {
         fs.rmSync(WORKTREE_TEST_DIR, { recursive: true, force: true });
         fs.mkdirSync(MAIN_REPO, { recursive: true });
 
@@ -565,13 +574,17 @@ describe("Simple Git Hooks tests", () => {
         );
         git("add -A");
         git('commit -m init');
-        git(`worktree add ${LINKED_WORKTREE} -b linked-branch`);
+        git(`worktree add ${worktreeAddFlags} ${LINKED_WORKTREE} -b linked-branch`);
 
         // git init fills .git/hooks with *.sample files, drop them so that
         // the directory only contains what simple-git-hooks puts there
         for (const sample of fs.readdirSync(SHARED_HOOKS_DIR)) {
           fs.rmSync(path.join(SHARED_HOOKS_DIR, sample));
         }
+      }
+
+      beforeEach(() => {
+        createRepoWithWorktree();
       });
 
       afterEach(() => {
@@ -584,6 +597,20 @@ describe("Simple Git Hooks tests", () => {
         const installedHooks = getInstalledGitHooks(SHARED_HOOKS_DIR);
         expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
       });
+
+      // The test process runs from the package root, so this also covers the case
+      // where the current working directory is not the worktree itself
+      (supportsRelativePaths ? it : it.skip)(
+          "creates git hooks in the main repository when the worktree uses relative paths",
+          async () => {
+            createRepoWithWorktree("--relative-paths");
+
+            await simpleGitHooks.setHooksFromConfig(LINKED_WORKTREE);
+
+            const installedHooks = getInstalledGitHooks(SHARED_HOOKS_DIR);
+            expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
+          }
+      );
 
       it("removes git hooks from the main repository when run from a worktree", async () => {
         await simpleGitHooks.setHooksFromConfig(LINKED_WORKTREE);

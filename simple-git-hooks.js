@@ -79,7 +79,9 @@ function getGitProjectRoot(directory=process.cwd()) {
             let content = fs.readFileSync(fullPath, { encoding: 'utf-8' })
             let match = /^gitdir: (.*)\s*$/.exec(content)
             if (match) {
-                let gitDir = match[1]
+                // `git worktree add --relative-paths` writes a gitdir that is relative
+                // to the worktree, so resolve it against the .git file location
+                let gitDir = path.resolve(path.dirname(fullPath), match[1])
                 let commonDir = path.join(gitDir, 'commondir');
                 if (fs.existsSync(commonDir)) {
                     commonDir = fs.readFileSync(commonDir, 'utf8').trim();

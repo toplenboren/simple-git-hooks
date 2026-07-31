@@ -539,6 +539,61 @@ describe("Simple Git Hooks tests", () => {
       })
     })
 
+    describe("Git worktree support", () => {
+      // A worktree needs a real git repository, so we create one under _tests
+      const WORKTREE_TEST_DIR = path.join(testsFolder, "tmp_worktree_project");
+      const MAIN_REPO = path.join(WORKTREE_TEST_DIR, "main");
+      const LINKED_WORKTREE = path.join(WORKTREE_TEST_DIR, "linked");
+      // In a worktree, hooks live in the main repository's .git/hooks
+      const SHARED_HOOKS_DIR = path.join(MAIN_REPO, ".git", "hooks");
+
+      beforeEach(() => {
+        fs.rmSync(WORKTREE_TEST_DIR, { recursive: true, force: true });
+        fs.mkdirSync(MAIN_REPO, { recursive: true });
+
+        const git = (cmd) => execSync(`git ${cmd}`, { cwd: MAIN_REPO, stdio: "ignore" });
+
+        git("init");
+        git("config user.email test@test.test");
+        git("config user.name test");
+        fs.writeFileSync(
+            path.join(MAIN_REPO, "package.json"),
+            JSON.stringify({
+              name: "worktree-project",
+              "simple-git-hooks": { "pre-commit": "exit 1", "pre-push": "exit 1" }
+            })
+        );
+        git("add -A");
+        git('commit -m init');
+        git(`worktree add ${LINKED_WORKTREE} -b linked-branch`);
+
+        // git init fills .git/hooks with *.sample files, drop them so that
+        // the directory only contains what simple-git-hooks puts there
+        for (const sample of fs.readdirSync(SHARED_HOOKS_DIR)) {
+          fs.rmSync(path.join(SHARED_HOOKS_DIR, sample));
+        }
+      });
+
+      afterEach(() => {
+        fs.rmSync(WORKTREE_TEST_DIR, { recursive: true, force: true });
+      });
+
+      it("creates git hooks in the main repository when run from a worktree", async () => {
+        await simpleGitHooks.setHooksFromConfig(LINKED_WORKTREE);
+
+        const installedHooks = getInstalledGitHooks(SHARED_HOOKS_DIR);
+        expect(isEqual(installedHooks, COMMON_GIT_HOOKS)).toBe(true);
+      });
+
+      it("removes git hooks from the main repository when run from a worktree", async () => {
+        await simpleGitHooks.setHooksFromConfig(LINKED_WORKTREE);
+        await simpleGitHooks.removeHooks(LINKED_WORKTREE);
+
+        const installedHooks = getInstalledGitHooks(SHARED_HOOKS_DIR);
+        expect(isEqual(installedHooks, {})).toBe(true);
+      });
+    });
+
     describe("CLI tests", () => {
       const testCases = [
         ["npx", "simple-git-hooks", "./git-hooks.js"],

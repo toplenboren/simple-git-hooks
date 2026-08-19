@@ -152,6 +152,12 @@ function checkSimpleGitHooksInDependencies(projectRootPath) {
         throw TypeError("Package json path is not a string!")
     }
 
+    // No package.json means we're not in a project that depends on simple-git-hooks
+    // (e.g. postinstall resolved to a directory without one) — skip instead of crashing.
+    if (!fs.existsSync(path.normalize(projectRootPath + '/package.json'))) {
+        return false
+    }
+
     const {packageJsonContent} = _getPackageJson(projectRootPath)
 
     // if simple-git-hooks in dependencies -> note user that he should remove move it to devDeps!
@@ -325,7 +331,7 @@ function _getPackageJson(projectPath = process.cwd()) {
 
     const targetPackageJson = path.normalize(projectPath + '/package.json')
 
-    if (!fs.statSync(targetPackageJson).isFile()) {
+    if (!fs.existsSync(targetPackageJson) || !fs.statSync(targetPackageJson).isFile()) {
         throw Error("Package.json doesn't exist")
     }
 

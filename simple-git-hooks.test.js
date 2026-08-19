@@ -129,6 +129,15 @@ describe("Simple Git Hooks tests", () => {
             simpleGitHooks.checkSimpleGitHooksInDependencies(PROJECT_WITHOUT_SIMPLE_GIT_HOOKS)
         ).toBe(false);
       });
+
+      it("returns false (does not throw) when package.json does not exist", () => {
+        const NON_EXISTENT_PROJECT = path.normalize(
+            path.join(process.cwd(), "_tests", "this_directory_does_not_exist")
+        );
+        expect(
+            simpleGitHooks.checkSimpleGitHooksInDependencies(NON_EXISTENT_PROJECT)
+        ).toBe(false);
+      });
     });
   });
 

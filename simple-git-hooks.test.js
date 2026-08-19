@@ -131,12 +131,17 @@ describe("Simple Git Hooks tests", () => {
       });
 
       it("returns false (does not throw) when package.json does not exist", () => {
-        const NON_EXISTENT_PROJECT = path.normalize(
-            path.join(process.cwd(), "_tests", "this_directory_does_not_exist")
+        // A directory that exists but has no package.json (the postinstall scenario in #112)
+        const dirWithoutPackageJson = fs.mkdtempSync(
+            path.join(process.cwd(), "_tests", "no_package_json_")
         );
-        expect(
-            simpleGitHooks.checkSimpleGitHooksInDependencies(NON_EXISTENT_PROJECT)
-        ).toBe(false);
+        try {
+          expect(
+              simpleGitHooks.checkSimpleGitHooksInDependencies(dirWithoutPackageJson)
+          ).toBe(false);
+        } finally {
+          fs.rmSync(dirWithoutPackageJson, { recursive: true, force: true });
+        }
       });
     });
   });

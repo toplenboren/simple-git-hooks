@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.14.0
+
+### Minor Changes
+
+- [#138](https://github.com/toplenboren/simple-git-hooks/pull/138) [`2f3ec3f`](https://github.com/toplenboren/simple-git-hooks/commit/2f3ec3f95d895c46f0b9c7229504967a21f2a6cf) Thanks [@younggglcy](https://github.com/younggglcy)! - feat: silent success if nothing has changed
+
+### Patch Changes
+
+- [#146](https://github.com/toplenboren/simple-git-hooks/pull/146) [`e9e9367`](https://github.com/toplenboren/simple-git-hooks/commit/e9e93677304956a2c1991c62c3a4aff4b9917a59) Thanks [@colinhacks](https://github.com/colinhacks)! - fix: resolve the project root from `INIT_CWD` during postinstall so hooks install correctly on isolated `node_modules` layouts (pnpm, yarn, bun, and other package managers) regardless of the store directory name
+
+- [#149](https://github.com/toplenboren/simple-git-hooks/pull/149) [`f071064`](https://github.com/toplenboren/simple-git-hooks/commit/f07106496af997a17d5b315d1795f23036845be5) Thanks [@wmaurer](https://github.com/wmaurer)! - fix: install and remove hooks correctly inside a git worktree, including worktrees created with `git worktree add --relative-paths`
+
+- [#151](https://github.com/toplenboren/simple-git-hooks/pull/151) [`eb795de`](https://github.com/toplenboren/simple-git-hooks/commit/eb795deb076cd85b994da1c2b00e3ca748129d07) Thanks [@DanMat](https://github.com/DanMat)! - fix: don't crash `postinstall` when the resolved project directory has no package.json — skip instead of throwing an uncaught ENOENT
+
 ## 2.13.1
 
 ### Patch Changes

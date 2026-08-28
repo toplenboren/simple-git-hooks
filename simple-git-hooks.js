@@ -79,7 +79,9 @@ function getGitProjectRoot(directory=process.cwd()) {
             let content = fs.readFileSync(fullPath, { encoding: 'utf-8' })
             let match = /^gitdir: (.*)\s*$/.exec(content)
             if (match) {
-                let gitDir = match[1]
+                // `git worktree add --relative-paths` writes a gitdir that is relative
+                // to the worktree, so resolve it against the .git file location
+                let gitDir = path.resolve(path.dirname(fullPath), match[1])
                 let commonDir = path.join(gitDir, 'commondir');
                 if (fs.existsSync(commonDir)) {
                     commonDir = fs.readFileSync(commonDir, 'utf8').trim();
@@ -201,14 +203,17 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
 /**
  * Returns the absolute path to the Git hooks directory.
  * Respects user-defined core.hooksPath from Git config if present;
- * otherwise defaults to <gitRoot>/.git/hooks.
+ * otherwise defaults to <gitRoot>/hooks.
  *
- * @param {string} gitRoot - The absolute path to the Git project root
+ * @param {string} projectRoot - The absolute path to the working directory. A relative
+ *                               core.hooksPath is resolved against it, the same way git does
+ * @param {string} gitRoot - The absolute path to the .git directory. In a worktree this is
+ *                           the main repository's .git directory, which holds the shared hooks
  * @returns {string} - The resolved absolute path to the hooks directory
  * @private
  */
-function _getHooksDirPath(projectRoot) {
-    const defaultHooksDirPath = path.join(projectRoot, '.git', 'hooks')
+function _getHooksDirPath(projectRoot, gitRoot) {
+    const defaultHooksDirPath = path.join(gitRoot, 'hooks')
     try {
         const customHooksDirPath = execSync('git config --local core.hooksPath', {
             cwd: projectRoot,
@@ -246,7 +251,7 @@ function _setHook(hook, command, projectRoot=process.cwd()) {
     }
 
     const hookCommand = PREPEND_SCRIPT + command
-    const hookDirectory = _getHooksDirPath(projectRoot)
+    const hookDirectory = _getHooksDirPath(projectRoot, gitRoot)
     const hookPath = path.join(hookDirectory, hook)
 
     const normalizedHookDirectory = path.normalize(hookDirectory)
@@ -301,7 +306,14 @@ async function removeHooks(projectRoot = process.cwd()) {
  * @private
  */
 function _removeHook(hook, projectRoot=process.cwd()) {
-    const hookDirectory = _getHooksDirPath(projectRoot)
+    const gitRoot = getGitProjectRoot(projectRoot)
+
+    if (!gitRoot) {
+        console.info('[INFO] No `.git` root folder found, skipping')
+        return false
+    }
+
+    const hookDirectory = _getHooksDirPath(projectRoot, gitRoot)
     const hookPath = path.join(hookDirectory, hook)
 
     if (fs.existsSync(hookPath)) {

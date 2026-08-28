@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const {checkSimpleGitHooksInDependencies, getProjectRootDirectoryFromNodeModules, setHooksFromConfig, skipInstall} = require("./simple-git-hooks");
+const {checkSimpleGitHooksInDependencies, getProjectRootDirectory, setHooksFromConfig, skipInstall} = require("./simple-git-hooks");
 
 
 /**
@@ -12,17 +12,12 @@ async function postinstall() {
         return;
     }
 
-    let projectDirectory;
-
-    /* When script is run after install, the process.cwd() would be like <project_folder>/node_modules/simple-git-hooks
-       Here we try to get the original project directory by going upwards by 2 levels
-       If we were not able to get new directory we assume, we are already in the project root */
-    const parsedProjectDirectory = getProjectRootDirectoryFromNodeModules(process.cwd())
-    if (parsedProjectDirectory !== undefined) {
-        projectDirectory = parsedProjectDirectory
-    } else {
-        projectDirectory = process.cwd()
-    }
+    /* When the script is run after install, process.cwd() is the package's own
+       location inside node_modules (e.g. <project>/node_modules/simple-git-hooks,
+       or <project>/node_modules/.pnpm/... for isolated stores). getProjectRootDirectory
+       recovers the real project root — preferring INIT_CWD, which package managers
+       set to the install directory, and falling back to walking up from cwd. */
+    const projectDirectory = getProjectRootDirectory()
 
     if (checkSimpleGitHooksInDependencies(projectDirectory)) {
         try {

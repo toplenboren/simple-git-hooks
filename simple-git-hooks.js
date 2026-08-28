@@ -144,6 +144,31 @@ function getProjectRootDirectoryFromNodeModules(projectPath) {
 }
 
 /**
+ * Resolves the project root during the postinstall step.
+ *
+ * Prefers INIT_CWD — the directory the package manager was invoked from, which
+ * npm, pnpm, yarn, and bun all set to the project root when running lifecycle
+ * scripts. Unlike getProjectRootDirectoryFromNodeModules, it does not depend on
+ * the physical node_modules layout, so it resolves correctly for isolated stores
+ * whose directory name we don't recognize (and for future package managers)
+ * without hardcoding each store directory. Falls back to walking up from cwd
+ * when INIT_CWD is unavailable (e.g. the script is run directly, or by a tool
+ * that does not set INIT_CWD).
+ *
+ * @param {string | undefined} [initCwd] - value of process.env.INIT_CWD
+ * @param {string} [cwd] - current working directory
+ * @return {string} - an absolute path to the project root
+ */
+function getProjectRootDirectory(initCwd = process.env.INIT_CWD, cwd = process.cwd()) {
+    if (initCwd && fs.existsSync(path.join(initCwd, 'package.json'))) {
+        return initCwd
+    }
+
+    const parsedProjectDirectory = getProjectRootDirectoryFromNodeModules(cwd)
+    return parsedProjectDirectory !== undefined ? parsedProjectDirectory : cwd
+}
+
+/**
  * Checks the 'simple-git-hooks' in dependencies of the project
  * @param {string} projectRootPath
  * @throws TypeError if packageJsonData not an object
@@ -487,6 +512,7 @@ module.exports = {
     checkSimpleGitHooksInDependencies,
     setHooksFromConfig,
     getProjectRootDirectoryFromNodeModules,
+    getProjectRootDirectory,
     getGitProjectRoot,
     removeHooks,
     skipInstall,

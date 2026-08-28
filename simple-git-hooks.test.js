@@ -801,6 +801,7 @@ describe("Simple Git Hooks tests", () => {
             env: {
                 ...process.env,
                 SKIP_INSTALL_SIMPLE_GIT_HOOKS: "0",
+                INIT_CWD: undefined,
             },
           });
           const installedHooks = getInstalledGitHooks(

@@ -695,6 +695,66 @@ describe("Simple Git Hooks tests", () => {
         const installedHooks = getInstalledGitHooks(SHARED_HOOKS_DIR);
         expect(isEqual(installedHooks, {})).toBe(true);
       });
+
+      describe("core.hooksPath", () => {
+        const CUSTOM_HOOKS_DIR = path.join(WORKTREE_TEST_DIR, "custom-hooks");
+        const worktreeGit = (cmd) => execSync(`git ${cmd}`, { cwd: LINKED_WORKTREE, stdio: "ignore" });
+
+        it("creates git hooks in a core.hooksPath set at worktree scope", async () => {
+          worktreeGit("config extensions.worktreeConfig true");
+          worktreeGit(`config --worktree core.hooksPath "${CUSTOM_HOOKS_DIR}"`);
+          // worktree scope takes precedence over local scope
+          worktreeGit(`config --local core.hooksPath "${path.join(WORKTREE_TEST_DIR, "local-hooks")}"`);
+
+          await simpleGitHooks.setHooksFromConfig(LINKED_WORKTREE);
+
+          expect(isEqual(getInstalledGitHooks(CUSTOM_HOOKS_DIR), COMMON_GIT_HOOKS)).toBe(true);
+          expect(isEqual(getInstalledGitHooks(SHARED_HOOKS_DIR), {})).toBe(true);
+        });
+
+        it("resolves a relative core.hooksPath set at worktree scope against the worktree", async () => {
+          worktreeGit("config extensions.worktreeConfig true");
+          worktreeGit("config --worktree core.hooksPath .hooks");
+
+          await simpleGitHooks.setHooksFromConfig(LINKED_WORKTREE);
+
+          const hooksDir = path.join(LINKED_WORKTREE, ".hooks");
+          expect(isEqual(getInstalledGitHooks(hooksDir), COMMON_GIT_HOOKS)).toBe(true);
+          expect(isEqual(getInstalledGitHooks(SHARED_HOOKS_DIR), {})).toBe(true);
+        });
+
+        it("creates git hooks in a local core.hooksPath when extensions.worktreeConfig is off", async () => {
+          worktreeGit(`config --local core.hooksPath "${CUSTOM_HOOKS_DIR}"`);
+
+          await simpleGitHooks.setHooksFromConfig(LINKED_WORKTREE);
+
+          expect(isEqual(getInstalledGitHooks(CUSTOM_HOOKS_DIR), COMMON_GIT_HOOKS)).toBe(true);
+          expect(isEqual(getInstalledGitHooks(SHARED_HOOKS_DIR), {})).toBe(true);
+        });
+
+        it("creates git hooks in the default directory when extensions.worktreeConfig is on but core.hooksPath is not set", async () => {
+          worktreeGit("config extensions.worktreeConfig true");
+
+          await simpleGitHooks.setHooksFromConfig(LINKED_WORKTREE);
+
+          expect(isEqual(getInstalledGitHooks(SHARED_HOOKS_DIR), COMMON_GIT_HOOKS)).toBe(true);
+        });
+
+        it("ignores a global core.hooksPath", () => {
+          const globalConfig = path.join(WORKTREE_TEST_DIR, "global.gitconfig");
+          fs.writeFileSync(globalConfig, `[core]\n\thooksPath = ${CUSTOM_HOOKS_DIR}\n`);
+
+          // run the CLI in a child process, so that git picks up the global config from the environment
+          execSync(`node ${require.resolve("./cli")}`, {
+            cwd: LINKED_WORKTREE,
+            stdio: "ignore",
+            env: { ...process.env, GIT_CONFIG_GLOBAL: globalConfig },
+          });
+
+          expect(fs.existsSync(CUSTOM_HOOKS_DIR)).toBe(false);
+          expect(isEqual(getInstalledGitHooks(SHARED_HOOKS_DIR), COMMON_GIT_HOOKS)).toBe(true);
+        });
+      });
     });
 
     describe("CLI tests", () => {

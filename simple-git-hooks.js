@@ -245,21 +245,43 @@ async function setHooksFromConfig(projectRootPath=process.cwd(), argv=process.ar
  */
 function _getHooksDirPath(projectRoot, gitRoot) {
     const defaultHooksDirPath = path.join(gitRoot, 'hooks')
-    try {
-        const customHooksDirPath = execSync('git config --local core.hooksPath', {
-            cwd: projectRoot,
-            encoding: 'utf8'
-        }).trim()
+    const customHooksDirPath = _getRepoScopedHooksPath(projectRoot)
 
-        if (!customHooksDirPath) {
-            return defaultHooksDirPath
-        }
-
-        return path.isAbsolute(customHooksDirPath)
-            ? customHooksDirPath
-            : path.resolve(projectRoot, customHooksDirPath)
-    } catch {
+    if (!customHooksDirPath) {
         return defaultHooksDirPath
+    }
+
+    return path.isAbsolute(customHooksDirPath)
+        ? customHooksDirPath
+        : path.resolve(projectRoot, customHooksDirPath)
+}
+
+/**
+ * Reads core.hooksPath from the repository-level config scopes only, in the order git applies them:
+ * worktree scope (config.worktree) first, then local scope (.git/config).
+ * Global and system scopes are deliberately ignored, so a machine-wide core.hooksPath
+ * does not make one project overwrite hooks shared with other projects.
+ *
+ * @param {string} projectRoot - The absolute path to the working directory
+ * @returns {string | undefined} - The configured value, or undefined if it is not set
+ * @private
+ */
+function _getRepoScopedHooksPath(projectRoot) {
+    for (const scope of ['--worktree', '--local']) {
+        try {
+            const value = execSync(`git config ${scope} --get core.hooksPath`, {
+                cwd: projectRoot,
+                encoding: 'utf8',
+                stdio: ['ignore', 'pipe', 'ignore']
+            }).trim()
+
+            if (value) {
+                return value
+            }
+        } catch {
+            // --worktree fails in a linked worktree unless extensions.worktreeConfig is enabled,
+            // and --get exits with 1 when the key is not set. Both mean "try the next scope"
+        }
     }
 }
 

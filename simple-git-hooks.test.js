@@ -206,6 +206,38 @@ describe("Simple Git Hooks tests", () => {
         }
       });
     });
+
+    describe("isInsideNodeModules", () => {
+      it("returns true for a package directory inside node_modules", () => {
+        expect(
+            simpleGitHooks.isInsideNodeModules("/var/my-project/node_modules/some-dep")
+        ).toBe(true);
+      });
+
+      it("returns true for nested node_modules layouts like pnpm's store", () => {
+        expect(
+            simpleGitHooks.isInsideNodeModules("/var/my-project/node_modules/.pnpm/some-dep@1.0.0/node_modules/some-dep")
+        ).toBe(true);
+      });
+
+      it("returns true when used with windows delimiters", () => {
+        expect(
+            simpleGitHooks.isInsideNodeModules("C:\\projects\\my-project\\node_modules\\some-dep")
+        ).toBe(true);
+      });
+
+      it("returns false for a regular project directory", () => {
+        expect(
+            simpleGitHooks.isInsideNodeModules("/var/my-project")
+        ).toBe(false);
+      });
+
+      it("returns false when node_modules appears only inside a segment name", () => {
+        expect(
+            simpleGitHooks.isInsideNodeModules("/var/node_modules_backup/my-project")
+        ).toBe(false);
+      });
+    });
   });
 
   /**
@@ -824,6 +856,49 @@ describe("Simple Git Hooks tests", () => {
           const output2 = execSync(`node ${require.resolve("./cli")}`, { cwd: PROJECT_WITH_CONF_IN_SEPARATE_JSON, encoding: 'utf8' }).trim();
           expect(output2).toBe('');
         })
+      });
+
+      describe("invoked from a dependency's install script", () => {
+        // A dependency whose postinstall runs `npx simple-git-hooks` executes the
+        // CLI with cwd inside the parent's node_modules — hooks must not be
+        // installed into (or removed from) the parent's .git
+        const PARENT_PROJECT = path.join(testsFolder, "tmp_parent_with_dep");
+        const DEP_DIR = path.join(PARENT_PROJECT, "node_modules", "some-dep");
+        const PARENT_HOOKS_DIR = path.join(PARENT_PROJECT, ".git", "hooks");
+        const PARENT_HOOK = "#!/bin/sh\necho parent-owned-hook";
+
+        beforeEach(() => {
+          fs.rmSync(PARENT_PROJECT, { recursive: true, force: true });
+          fs.mkdirSync(DEP_DIR, { recursive: true });
+          fs.writeFileSync(
+              path.join(DEP_DIR, "package.json"),
+              JSON.stringify({
+                name: "some-dep",
+                "simple-git-hooks": { "pre-commit": "echo dep-hook" },
+              })
+          );
+          execSync("git init", { cwd: PARENT_PROJECT, stdio: "ignore" });
+          // git init fills .git/hooks with *.sample files, drop them so the
+          // directory only contains the hook we put there
+          for (const sample of fs.readdirSync(PARENT_HOOKS_DIR)) {
+            fs.rmSync(path.join(PARENT_HOOKS_DIR, sample));
+          }
+          fs.writeFileSync(path.join(PARENT_HOOKS_DIR, "pre-push"), PARENT_HOOK);
+        });
+
+        afterEach(() => {
+          fs.rmSync(PARENT_PROJECT, { recursive: true, force: true });
+        });
+
+        it("skips hook installation and leaves the parent's hooks untouched", () => {
+          const output = execSync(`node ${require.resolve("./cli")}`, {
+            cwd: DEP_DIR,
+            encoding: "utf8",
+          });
+
+          expect(output).toMatch(/\[INFO\] Current working directory is inside `node_modules`, skipping installing git hooks\./);
+          expect(getInstalledGitHooks(PARENT_HOOKS_DIR)).toEqual({ "pre-push": PARENT_HOOK });
+        });
       });
     });
 

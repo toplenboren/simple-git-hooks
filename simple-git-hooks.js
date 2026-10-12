@@ -508,6 +508,17 @@ function skipInstall() {
     return false;
 }
 
+/**
+ * Checks whether the directory is inside a `node_modules` folder, e.g. when the
+ * CLI is invoked by a dependency's own install script. Installing hooks from
+ * there would target the parent project's `.git`, so the CLI should skip.
+ * @param {string} directory
+ * @return {boolean}
+ */
+function isInsideNodeModules(directory=process.cwd()) {
+    return directory.split(/[\\/]/).includes('node_modules')
+}
+
 module.exports = {
     checkSimpleGitHooksInDependencies,
     setHooksFromConfig,
@@ -516,5 +527,6 @@ module.exports = {
     getGitProjectRoot,
     removeHooks,
     skipInstall,
+    isInsideNodeModules,
     PREPEND_SCRIPT
 }
